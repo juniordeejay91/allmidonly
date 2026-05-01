@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AllMidOnly — Sesión iniciada</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#0c1b3a;
+      color:#c8bfb0;
+      font-family:'Segoe UI', sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      flex-direction:column;
+      gap:20px;
+    }
+    .logo {
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:3px;
+      color:#4a5060;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+    .logo span { color:#4d8eff; }
+    .check {
+      width:72px;
+      height:72px;
+      border-radius:50%;
+      background:rgba(39,201,63,.1);
+      border:2px solid #27c93f;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .title {
+      font-size:20px;
+      color:#c8bfb0;
+      font-weight:600;
+    }
+    .sub {
+      font-size:13px;
+      color:#4a5060;
+    }
+    .btn {
+      margin-top:8px;
+      padding:10px 24px;
+      background:rgba(77,142,255,.1);
+      border:1px solid #2a4a8a;
+      border-radius:8px;
+      color:#4d8eff;
+      font-size:13px;
+      cursor:pointer;
+      transition:background .2s;
+      text-decoration:none;
+    }
+    .btn:hover { background:rgba(77,142,255,.2); }
+  </style>
+  <script>
+    // Pasar el token a la app via protocolo personalizado
+    window.onload = function() {
+      const hash   = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const at     = params.get('access_token');
+      const rt     = params.get('refresh_token') || '';
+      if (at) {
+        window.location.href = 'allmidonly://auth/callback#access_token=' + encodeURIComponent(at) + '&refresh_token=' + encodeURIComponent(rt);
+      }
+    };
+  </script>
+</head>
+<body>
+  <div class="logo">ALL <span>MID</span> ONLY</div>
+  <div class="check">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#27c93f" stroke-width="2.5" stroke-linecap="round">
+      <path d="M5 13l4 4L19 7"/>
+    </svg>
+  </div>
+  <div class="title">Sesión iniciada correctamente</div>
+  <div class="sub">Puedes cerrar esta pestaña</div>
+  <a class="btn" href="javascript:window.close()">Cerrar pestaña</a>
+</body>
+</html>
