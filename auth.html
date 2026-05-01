@@ -84,3 +84,29 @@
   <a class="btn" href="javascript:window.close()">Cerrar pestaña</a>
 </body>
 </html>
+<script>
+  const hash   = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  const at     = params.get('access_token');
+  const rt     = params.get('refresh_token') || '';
+  const ei     = params.get('expires_in') || 3600;
+
+  if (at) {
+    // Obtener datos del usuario
+    fetch('https://eoyrxsctnxqilzkrjjzy.supabase.co/auth/v1/user', {
+      headers: {
+        'apikey': 'aquí-tu-anon-key',
+        'Authorization': `Bearer ${at}`
+      }
+    })
+    .then(r => r.json())
+    .then(user => {
+      const session = { access_token: at, refresh_token: rt, expires_in: ei, user };
+      localStorage.setItem('sb_session', JSON.stringify(session));
+      // Redirigir al perfil
+      setTimeout(() => { window.location.href = './profile.html'; }, 800);
+    });
+  } else {
+    setTimeout(() => window.close(), 1500);
+  }
+</script>
