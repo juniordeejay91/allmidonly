@@ -1,0 +1,9 @@
+node_modules/
+cache/
+historial/
+logs/*.json
+logs/*.log
+__pycache__/
+*.pyc
+dist/
+vendor/python/

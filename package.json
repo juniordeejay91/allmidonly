@@ -1,0 +1,96 @@
+{
+  "name": "amo",
+  "version": "0.260507.1",
+  "description": "AMO - Helper para ARAM Mayhem",
+  "main": "src/electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:local": "electron-builder --config.extraMetadata.amoEnableDevtools=true",
+    "build:release": "electron-builder --config.extraMetadata.amoEnableDevtools=false",
+    "python:setup": "powershell -ExecutionPolicy Bypass -File .\\scripts\\setup_embedded_python.ps1",
+    "web:start": "node src/server/server.js"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
+    "axios": "^1.14.0",
+    "cheerio": "^1.2.0",
+    "electron-updater": "^6.8.3",
+    "lcu-connector": "^2.1.4",
+    "node-fetch": "^3.3.2",
+    "puppeteer": "^24.40.0",
+    "ws": "^8.20.0"
+  },
+  "build": {
+    "appId": "com.allmidonly.app",
+    "productName": "ALL MID ONLY",
+    "artifactName": "ALL MID ONLY Setup.${ext}",
+    "publish": {
+      "provider": "github",
+      "owner": "juniordeejay91",
+      "repo": "amo-app"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": "vendor/python",
+        "to": "python",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "scripts/python",
+        "to": "app_runtime/scripts/python",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "img",
+        "to": "app_runtime/img",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "files": [
+      "**/*",
+      "!cache",
+      "!cache/**",
+      "!historial",
+      "!historial/**",
+      "!dist",
+      "!dist/**",
+      "!logs",
+      "!logs/**",
+      "!vendor/python",
+      "!vendor/python/**",
+      "!**/__pycache__",
+      "!**/__pycache__/**",
+      "!**/*.pyc"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/images/logoicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "uninstallDisplayName": "ALL MID ONLY",
+      "installerIcon": "assets/images/logoicon.ico",
+      "uninstallerIcon": "assets/images/logoicon.ico",
+      "installerHeaderIcon": "assets/images/logoicon.ico",
+      "installerHeader": "assets/installer/header.bmp",
+      "installerSidebar": "assets/installer/sidebar.bmp",
+      "uninstallerSidebar": "assets/installer/sidebar.bmp"
+    }
+  }
+}

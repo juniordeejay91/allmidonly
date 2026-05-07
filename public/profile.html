@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi perfil | All Mid Only</title>
+    <meta
+      name="description"
+      content="Consulta tus cuentas enlazadas, historial ARAM y aumentos sincronizados con All Mid Only."
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700;900&family=Ubuntu+Condensed&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="icon" href="/assets/images/logoicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body class="profile-page">
+    <div class="page-bg"></div>
+    <header class="topbar">
+      <div class="topbar-side topbar-left">
+        <a class="brand" href="./index.html" aria-label="All Mid Only">
+          <span class="brand-badge">
+            <img src="/assets/images/logoicon.ico" alt="Logo All Mid Only" onerror="this.src='./logocargaa.png'">
+          </span>
+          <span>ALL MID ONLY</span>
+        </a>
+      </div>
+
+      <div class="topbar-center">
+        <nav class="profile-nav" aria-label="Secciones del perfil">
+          <button class="profile-nav-tab is-active" type="button" data-tab="perfil">Perfil</button>
+          <button class="profile-nav-tab" type="button" data-tab="historial">Historial</button>
+          <button class="profile-nav-tab" type="button" data-tab="aumentos">Aumentos</button>
+        </nav>
+      </div>
+
+      <div class="topbar-side topbar-right">
+        <div id="profile-auth-info" class="profile-auth-info">
+          <img id="profile-user-avatar" class="profile-user-avatar" src="" alt="Avatar del usuario">
+          <div class="profile-auth-copy">
+            <strong id="profile-user-name">-</strong>
+            <span id="profile-user-email">-</span>
+          </div>
+          <a href="./index.html" class="nav-link nav-link-strong">Inicio</a>
+          <a onclick="webLogout()" href="#" class="nav-link">Salir</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="hero-shell profile-shell">
+      <section class="profile-layout">
+        <aside class="profile-sidebar detail-card">
+          <div class="web-identity-block">
+            <p class="eyebrow">Cuenta conectada</p>
+            <h2>Identidad web</h2>
+            <p id="profile-status" class="summoner-status">Cargando sesión...</p>
+          </div>
+
+          <div class="linked-accounts-head profile-sidebar-head">
+            <div>
+              <p class="eyebrow">League of Legends</p>
+              <h3>Cuentas asociadas</h3>
+            </div>
+            <span id="linked-accounts-count" class="pill-badge">0</span>
+          </div>
+          <div id="linked-accounts-list" class="linked-accounts-list"></div>
+        </aside>
+
+        <section class="profile-content">
+          <section id="tab-perfil" class="tab-panel is-active">
+            <div id="profile-summary" class="summoner-content hidden">
+              <section class="app-profile-hero">
+                <div class="app-avatar-shell">
+                  <div id="active-account-icon-wrap" class="app-avatar-circle">
+                    <img id="active-account-icon" class="profile-icon" alt="Icono del invocador">
+                  </div>
+                  <div id="active-account-level" class="app-avatar-level">-</div>
+                </div>
+
+                <div class="app-profile-main">
+                  <p class="eyebrow">Cuenta activa</p>
+                  <h1 id="active-account-name" class="app-profile-name">-</h1>
+                  <p id="active-account-meta" class="app-profile-sub">-</p>
+                </div>
+
+                <div class="app-profile-sidecards">
+                  <article class="mini-side-card">
+                    <span>Solo/Duo</span>
+                    <strong id="profile-rank-solo">Sin rango</strong>
+                    <p id="profile-rank-solo-meta">Sin partidas clasificatorias</p>
+                  </article>
+                  <article class="mini-side-card">
+                    <span>Flex</span>
+                    <strong id="profile-rank-flex">Sin rango</strong>
+                    <p id="profile-rank-flex-meta">Sin partidas clasificatorias</p>
+                  </article>
+                </div>
+              </section>
+
+              <section class="summary-grid">
+                <article class="summary-card">
+                  <span>Partidas ARAM</span>
+                  <strong id="profile-games">0</strong>
+                </article>
+                <article class="summary-card">
+                  <span>Winrate</span>
+                  <strong id="profile-winrate">0%</strong>
+                </article>
+                <article class="summary-card">
+                  <span>KDA medio</span>
+                  <strong id="profile-kda">0 / 0 / 0</strong>
+                </article>
+                <article class="summary-card">
+                  <span>Daño medio</span>
+                  <strong id="profile-damage">0</strong>
+                </article>
+                <article class="summary-card">
+                  <span>Campeón top</span>
+                  <strong id="profile-champion">-</strong>
+                </article>
+                <article class="summary-card">
+                  <span>Última partida</span>
+                  <strong id="profile-last-match">-</strong>
+                </article>
+              </section>
+
+              <section class="detail-grid profile-detail-grid">
+                <article class="detail-card">
+                  <div class="detail-head">
+                    <p class="eyebrow">Resumen</p>
+                    <h3>Estado sincronizado</h3>
+                  </div>
+                  <div id="sync-highlights" class="stack-list"></div>
+                </article>
+
+                <article class="detail-card">
+                  <div class="detail-head">
+                    <p class="eyebrow">Últimas partidas</p>
+                    <h3>Vista rápida</h3>
+                  </div>
+                  <div id="profile-recent-matches" class="history-list compact-history-list"></div>
+                </article>
+              </section>
+            </div>
+          </section>
+
+          <section id="tab-historial" class="tab-panel">
+            <div class="detail-card">
+              <div class="detail-head history-head">
+                <div>
+                  <p class="eyebrow">Historial sincronizado</p>
+                  <h3>Partidas guardadas</h3>
+                </div>
+                <span id="history-count" class="pill-badge">0</span>
+              </div>
+              <div id="history-list" class="history-list"></div>
+            </div>
+          </section>
+
+          <section id="tab-aumentos" class="tab-panel">
+            <div class="summary-grid augment-summary-grid">
+              <article class="summary-card">
+                <span>Aumentos distintos</span>
+                <strong id="augment-total">0</strong>
+              </article>
+              <article class="summary-card">
+                <span>Más repetido</span>
+                <strong id="augment-most-used">-</strong>
+              </article>
+              <article class="summary-card">
+                <span>Rareza top</span>
+                <strong id="augment-top-rarity">-</strong>
+              </article>
+            </div>
+
+            <div class="detail-grid augment-detail-grid">
+              <article class="detail-card">
+                <div class="detail-head">
+                  <p class="eyebrow">Resumen</p>
+                  <h3>Más usados</h3>
+                </div>
+                <div id="augment-usage-list" class="stack-list"></div>
+              </article>
+
+              <article class="detail-card">
+                <div class="detail-head">
+                  <p class="eyebrow">Catálogo</p>
+                  <h3>Tus aumentos recientes</h3>
+                </div>
+                <div id="augment-grid" class="augment-grid"></div>
+              </article>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./profile.js"></script>
+  </body>
+</html>

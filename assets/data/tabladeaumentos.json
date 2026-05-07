@@ -1,0 +1,1009 @@
+{
+  "set_de_aumentos": [
+    {
+      "id": "set_1",
+      "nombre": "Acumulasaurio Rex",
+      "texto": "Al obtener acumulaciones, consigues acumulaciones adicionales.",
+      "mejoras": {
+        "mejora1": {
+          "texto": "Obtienes un 50% de acumulaciones adicionales.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "Obtienes un 100% de acumulaciones adicionales.",
+          "numero_en_icono": 3,
+          "tipo_de_icono": "img/iconos/oro.png"
+        },
+        "mejora3": {
+          "texto": "Obtienes un 200% de acumulaciones adicionales.",
+          "numero_en_icono": 4,
+          "tipo_de_icono": "img/iconos/brillante.png"
+        }
+      },
+      "icono": "img/iconos/trait_stackasaurus.png",
+      "tier": 1,
+      "lista_aumentos": ["aumento1", "aumento2", "aumento3"]
+    },
+    {
+      "id": "set_2",
+      "nombre": "Conjunto de Artificiero",
+      "texto": "Los fuegos artificiales rebotan más veces hacia los enemigos más cercanos e infligen parte del daño original.",
+      "mejoras": {
+        "mejora1": {
+          "texto": "2 rebotes, que infligen un 25% del daño original.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "3 rebotes, que infligen un 50% del daño original.",
+          "numero_en_icono": 4,
+          "tipo_de_icono": "img/iconos/oro.png"
+        }
+      },
+      "icono": "img/iconos/trait_firecracker.png",
+      "tier": 2,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_3",
+      "nombre": "Gran apuesta",
+      "texto": "",
+      "mejoras": {
+        "mejora1": {
+          "texto": "Los súbditos pueden dejar caer un yunque de estadísticas al morir.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "+20% de probabilidad de yunques dorados o prismáticos.",
+          "numero_en_icono": 3,
+          "tipo_de_icono": "img/iconos/oro.png"
+        },
+        "mejora3": {
+          "texto": "+50% de probabilidad de yunques dorados o prismáticos.",
+          "numero_en_icono": 4,
+          "tipo_de_icono": "img/iconos/brillante.png"
+        }
+      },
+      "icono": "img/iconos/trait_highroller.png",
+      "tier": 2,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_4",
+      "nombre": "Automatización absoluta",
+      "texto": "",
+      "mejoras": {
+        "mejora1": {
+          "texto": "El enfriamiento de los lanzamientos automáticos se reduce un 30%.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "El enfriamiento de los lanzamientos automáticos progresa con la velocidad de habilidades.",
+          "numero_en_icono": 3,
+          "tipo_de_icono": "img/iconos/oro.png"
+        }
+      },
+      "icono": "img/iconos/trait_fullyautomated.png",
+      "tier": 3,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_5",
+      "nombre": "Que llueva",
+      "texto": "Los enemigos sueltan monedas al ser asesinados.",
+      "mejoras": {
+        "mejora1": {
+          "texto": "Suelta 6 monedas.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "Suelta 12 monedas.",
+          "numero_en_icono": 3,
+          "tipo_de_icono": "img/iconos/oro.png"
+        }
+      },
+      "icono": "img/iconos/trait_makeitrain.png",
+      "tier": 3,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_6",
+      "nombre": "Archimago",
+      "texto": "Al lanzar una habilidad, restaura un porcentaje del enfriamiento de otra habilidad aleatoria.",
+      "mejoras": {
+        "mejora1": {
+          "texto": "Restaura un 30%.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        }
+      },
+      "icono": "img/iconos/trait_archmage.png",
+      "tier": 4,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_7",
+      "nombre": "Conjunto de Incursión bombardera",
+      "texto": "",
+      "mejoras": {
+        "mejora1": {
+          "texto": "Reduce un 25% el tiempo de reaparición al morir.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        }
+      },
+      "icono": "img/iconos/trait_deathknell.png",
+      "tier": 4,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_8",
+      "nombre": "NIII NOO NIII NOOO",
+      "texto": "Otorga efectos adicionales al moverte hacia aliados con menos de un 50% de vida.",
+      "mejoras": {
+        "mejora1": {
+          "texto": "Obtiene un 50% de velocidad de movimiento.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "Tu siguiente curación o escudo restaura un 12% de la vida que le falte al objetivo (10 s de enfriamiento por objetivo).",
+          "numero_en_icono": 3,
+          "tipo_de_icono": "img/iconos/oro.png"
+        }
+      },
+      "icono": "img/iconos/trait_weewooweewoo.png",
+      "tier": 4,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    },
+    {
+      "id": "set_9",
+      "nombre": "Día de nieve",
+      "texto": "Aumenta la velocidad de habilidades y el daño de los aumentos de Bola de nieve.",
+      "mejoras": {
+        "mejora1": {
+          "texto": "+50 de velocidad de habilidades y 30% de daño adicionales.",
+          "numero_en_icono": 2,
+          "tipo_de_icono": "img/iconos/plata.png"
+        },
+        "mejora2": {
+          "texto": "+100 de velocidad de habilidades y 50% de daño adicionales.",
+          "numero_en_icono": 3,
+          "tipo_de_icono": "img/iconos/oro.png"
+        },
+        "mejora3": {
+          "texto": "+150 de velocidad de habilidades y 100% de daño adicionales.",
+          "numero_en_icono": 4,
+          "tipo_de_icono": "img/iconos/brillante.png"
+        }
+      },
+      "icono": "img/iconos/trait_snowday.png",
+      "tier": 5,
+      "lista_aumentos": ["aumento4", "aumento5"]
+    }
+  ],
+
+
+  
+  "aumentos": {
+    "aumento1": {
+      "nombre": "¡Eureka!",
+      "descripcion1": "Otorga velocidad de habilidades equivalente al 30% del poder de habilidad.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/eureka_large.png"
+    },
+    "aumento2": {
+      "nombre": "Conducto infernal",
+      "descripcion1": "Tus habilidades aplican una quemadura que se puede acumular e inflige daño prolongado.",
+      "descripcion2": "Tus efectos de quemadura reducen el enfriamiento de tus habilidades básicas.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/infernalconduit_large.png"
+    },
+    "aumento3": {
+      "nombre": "Goliat",
+      "descripcion1": "Aumentas de tamaño y obtienes un 35% de vida y un 15% de fuerza adaptable.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/goliath_large.png"
+    },
+    "aumento4": {
+      "nombre": "Guantelete enjoyado",
+      "descripcion1": "Tus habilidades pueden asestar impactos críticos. Obtienes un 25% de probabilidad de crítico.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/jeweledgauntlet_large.png"
+    },
+    "aumento5": {
+      "nombre": "Recursión infinita",
+      "descripcion1": "Otorga 60 de velocidad de habilidades, y 3 de velocidad de habilidades por cada eliminación.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/infiniterecursion_large.png"
+    },
+    "aumento6": {
+      "nombre": "Taconeo",
+      "descripcion1": "Tus ataques te otorgan velocidad de movimiento. Obtienes velocidad de ataque en función de tu velocidad de movimiento.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/tapdancer_large.png"
+    },
+    "aumento7": {
+      "nombre": "Verdugo de gigantes",
+      "descripcion1": "Empequeñeces, obtienes velocidad de movimiento e infliges daño adicional a los campeones en función de la diferencia de tamaño.",
+      "tier": 1,
+      "rango": "prismatico",
+      "icono": "img/iconos/giantslayer_large.png"
+    },
+    "aumento8": {
+      "nombre": "A dos manos",
+      "descripcion1": "Los ataques disparan un proyectil que aplica efectos Al impacto con menor fuerza. Obtienes un 10% de velocidad de ataque total.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/dualwield_large.png"
+    },
+    "aumento9": {
+      "nombre": "Armas telescópicamente telescópicas",
+      "descripcion1": "Obtienes 250 de alcance de ataque, que se reduce a 150 si atacas a distancia.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/scopiestweapons_large.png"
+    },
+    "aumento10": {
+      "nombre": "Grieta del Vacío",
+      "descripcion1": "Infligir daño a enemigos con habilidades crea una cicatriz del Vacío. Si hay otra cicatriz del Vacío cerca, se consumen para crear una grieta entre ambas, lo que inflige daño mágico y ralentiza a los enemigos en su interior.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/voidrift_large.png"
+    },
+    "aumento11": {
+      "nombre": "Martillazo de dispersión",
+      "descripcion1": "Los ataques lanzan 5 fuegos artificiales adicionales que infligen más daño en función de la distancia. Cada dirección tiene su propio enfriamiento.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/fanthehammer_large.png"
+    },
+    "aumento12": {
+      "nombre": "Misión: La caída de Icathia",
+      "descripcion1": "Inmediatamente: Obtienes 1 Rescoldo de Bami y puedes comprar 2 objetos de Inmolar.",
+      "descripcion2": "Requisito: Poseer Égida de fuego solar y Fulgor vano.",
+      "descripcion3": "Recompensa: Estos objetos se combinan para formar Inmolación del Vacío.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/quest_voidimmolation_large.png"
+    },
+    "aumento13": {
+      "nombre": "Misión: Sombrero de Wooglet",
+      "descripcion1": "Al instante: Obtienes 1 Vara innecesariamente grande.",
+      "descripcion2": "Requisito: Posee 1 Sombrero mortal de Rabadon y 1 Reloj de arena de Zhonya.",
+      "descripcion3": "Recompensa: Obtienes 1 Sombrero de Wooglet.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/quest_woogletswitchcap_large.png"
+    },
+    "aumento14": {
+      "nombre": "Patada voladora",
+      "descripcion1": "Tus ataques ejecutan a los campeones enemigos con poca vida, lo que los empuja para provocar una explosión y te cura.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/dropkick_large.png"
+    },
+    "aumento15": {
+      "nombre": "Transmutar: Caos",
+      "descripcion1": "Obtienes 2 aumentos aleatorios.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/transmutechaos_large.png"
+    },
+    "aumento16": {
+      "nombre": "Universidad de payasos",
+      "descripcion1": "Obtienes el hechizo de invocador Engañar.",
+      "descripcion2": "Obtienes la pasiva Puñalada por la espalda.",
+      "descripcion3": "Al morir, generas una caja explosiva que inflige una gran cantidad de daño verdadero y aterroriza a los enemigos cercanos.",
+      "tier": 2,
+      "rango": "prismatico",
+      "icono": "img/iconos/clowncollege_large.png"
+    },
+    "aumento17": {
+      "nombre": "¡Desenvaina la espada!",
+      "descripcion1": "Pasas a atacar cuerpo a cuerpo y obtienes daño de ataque, vida, velocidad de ataque, robo de vida y velocidad de movimiento (que aumenta en función del alcance que hayas perdido).",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/drawyoursword_large.png"
+    },
+    "aumento18": {
+      "nombre": "¡Estadísticas a cascoporro!",
+      "descripcion1": "Obtienes 4 yunques de estadísticas, ¡y la probabilidad de que sean yunques dorados o prismáticos es mayor!",
+      "descripcion2": "En la próxima selección de aumento, obtienes 1 cambio adicional por hueco.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/statsonstatsonstats_large.png"
+    },
+    "aumento19": {
+      "nombre": "A fuego lento",
+      "descripcion1": "Cada segundo, aplica una quemadura a los campeones enemigos cercanos que se puede acumular infinitamente y que progresa con tu vida máxima.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/slowcooker_large.png"
+    },
+    "aumento20": {
+      "nombre": "Bendición de hablavientos",
+      "descripcion1": "Tu curación y tus escudos también aumentan la armadura y la resistencia mágica del objetivo durante 3 s.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/windspeakersblessing_large.png"
+    },
+    "aumento21": {
+      "nombre": "Crueldad",
+      "descripcion1": "Al inmovilizar o anclar a un campeón, invoca un cometa que aterriza tras un breve retardo e inflige daño mágico a los enemigos cercanos.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/cruelty_large.png"
+    },
+    "aumento22": {
+      "nombre": "Guantazo místico",
+      "descripcion1": "Reduce el enfriamiento de tus habilidades en 1.25 s Al impacto.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/mysticpunch_large.png"
+    },
+    "aumento23": {
+      "nombre": "La bola más grande de la historia",
+      "descripcion1": "Obtienes 100 de velocidad de habilidades al usar Bola de nieve.",
+      "descripcion2": "Tu bola de nieve es ENORME y atraviesa a los súbditos. Ralentiza, lanza por los aires a los campeones e inflige daño adicional.",
+      "descripcion3": "Si no tienes ninguna, obtienes una bola de nieve.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/biggestsnowballever_large.png"
+    },
+    "aumento24": {
+      "nombre": "La forma definitiva",
+      "descripcion1": "Tras lanzar tu definitiva, obtienes un escudo en función de tu vida máxima, omnisucción y velocidad de movimiento durante 10 s.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/finalform_large.png"
+    },
+    "aumento25": {
+      "nombre": "Sinfonía de guerra",
+      "descripcion1": "Obtienes las runas clave Compás letal y Conquistador.",
+      "tier": 3,
+      "rango": "prismatico",
+      "icono": "img/iconos/symphonyofwar_large.png"
+    },
+    "aumento26": {
+      "nombre": "¡Ojito, pastelito!",
+      "descripcion1": "De forma intermitente, habrá pastelitos sobrevolando el puente. Los pastelitos otorgan oro a quien los recoge y restauran vida al primer campeón golpeado y sus aliados cercanos. El oro obtenido depende de la curación recibida.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/watchoutgrapefruit_large.png"
+    },
+    "aumento27": {
+      "nombre": "A precio de sangre",
+      "descripcion1": "Infligir daño a un campeón con ataques o habilidades inflige daño mágico adicional y te otorga oro y velocidad de movimiento.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/goldrend_large.png"
+    },
+    "aumento28": {
+      "nombre": "Cerbero",
+      "descripcion1": "Obtienes las runas clave Lluvia de cuchillas y Ataque intensificado.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/cerberus_large.png"
+    },
+    "aumento29": {
+      "nombre": "Científico loco",
+      "descripcion1": "Cada vez que revives, aumentas de tamaño (lo que otorga fuerza adaptable y vida) o empequeñeces (lo que otorga velocidad de habilidades y velocidad de movimiento).",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/madscientist_large.png"
+    },
+    "aumento30": {
+      "nombre": "Círculo de muerte",
+      "descripcion1": "Tu curación y regeneración de vida también le infligen daño mágico al campeón enemigo más cercano.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/circleofdeath_large.png"
+    },
+    "aumento31": {
+      "nombre": "Coraje del coloso",
+      "descripcion1": "Obtienes un escudo de ? tras inmovilizar o anclar a un campeón enemigo.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/courageofthecolossus_large.png"
+    },
+    "aumento32": {
+      "nombre": "Deslizamiento",
+      "descripcion1": "Tus habilidades de deslizamiento, salto, teleportación o teleportación instantánea obtienen 175 de velocidad de habilidades.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/dashing_large.png"
+    },
+    "aumento33": {
+      "nombre": "Despertar definitivo",
+      "descripcion1": "Otorga 30 de velocidad de habilidad definitiva.",
+      "descripcion2": "Tras usar tu definitiva, reinicia tus habilidades básicas y otorga 300 de velocidad de habilidades básicas durante 15 s (20 s de enfriamiento).",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/zerohour_large.png"
+    },
+    "aumento34": {
+      "nombre": "Dualidad",
+      "descripcion1": "Tus ataques te otorgan poder de habilidad acumulable. Tus habilidades te otorgan daño de ataque.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/masterofduality_large.png"
+    },
+    "aumento35": {
+      "nombre": "Informática cuántica",
+      "descripcion1": "Lanza automáticamente un tajo enorme de forma periódica. Los enemigos alcanzados quedan ralentizados, reciben daño en función de la vida máxima adicional y te curas.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/quantumcomputing_large.png"
+    },
+    "aumento36": {
+      "nombre": "Mejora de Bendición de Mikael",
+      "descripcion1": "Otorga Bendición de Mikael. Reduce el enfriamiento de Bendición de Mikael a 45 s.",
+      "descripcion2": "Al activar el objeto, elimina todos los efectos de inhabilitación e inmovilización. Además, cura a los aliados dentro del alcance.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/upgrademikaelsblessing_large.png"
+    },
+    "aumento37": {
+      "nombre": "Misión: Campeón de Urf",
+      "descripcion1": "Requisito: Consigue 18 eliminaciones.",
+      "descripcion2": "Recompensa: Espátula dorada",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/quest_urfschampion_large.png"
+    },
+    "aumento38": {
+      "nombre": "Omnialma",
+      "descripcion1": "Obtienes 3 almas de dragón aleatorias.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/omnisoul_large.png"
+    },
+    "aumento39": {
+      "nombre": "Prodigio certero",
+      "descripcion1": "Al infligir daño a un campeón desde la distancia, disparas una Andanada certera.",
+      "descripcion2": "",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/trueshotprodigy_large.png"
+    },
+    "aumento40": {
+      "nombre": "Reina del baile",
+      "descripcion1": "Cada 25 s, se lanza de forma automática y una reluciente tiara cae sobre ti. Cuando aterriza, obtienes la definitiva de Rakan, que hechiza a los enemigos al tocarlos.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/promqueen_large.png"
+    },
+    "aumento41": {
+      "nombre": "Revolución definitiva",
+      "descripcion1": "Reinicia tu definitiva tras lanzarla (75 s de enfriamiento; se reinicia al morir).",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/ultimaterevolution_large.png"
+    },
+    "aumento42": {
+      "nombre": "Soy el rey",
+      "descripcion1": "La primera vez que usas el portal enemigo con un objeto legendario, se te corona, lo que mejora tu objeto y te otorga un aumento prismático aleatorio.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/kingme_large.png"
+    },
+    "aumento43": {
+      "nombre": "Tajo",
+      "descripcion1": "Otorga un 50% de velocidad de ataque. Inflige daño verdadero al golpear, que progresa según tu armadura.",
+      "descripcion2": "",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/darksteeltalons_large.png"
+    },
+    "aumento44": {
+      "nombre": "Vuelta a lo básico",
+      "descripcion1": "Obtienes un aumento de daño de habilidad, curación, escudo y velocidad de habilidades, pero no puedes usar tu habilidad definitiva.",
+      "tier": 4,
+      "rango": "prismatico",
+      "icono": "img/iconos/backtobasics_large.png"
+    },
+    "aumento45": {
+      "nombre": "¡Que nadie se mueva!",
+      "descripcion1": "Utilizar tu definitiva provoca a los enemigos cercanos y te otorga reducción de daño durante unos segundos.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/stuckinherewithme_large.png"
+    },
+    "aumento446": {
+      "nombre": "¿¿??",
+      "descripcion1": "Las alertas de Enemigo desaparecido dispararán un misil a la ubicación marcada, lo que inflige daño a los enemigos y cura a los aliados.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/missingping_large.png"
+    },
+    "aumento47": {
+      "nombre": "Batido de proteína",
+      "descripcion1": "Obtienes un ?% de poder de curaciones y escudos en función de la armadura y la resistencia mágica adicionales.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/proteinshake_large.png"
+    },
+    "aumento48": {
+      "nombre": "Capoeibara",
+      "descripcion1": "Obtienes el hechizo de invocador Capoeibara.",
+      "descripcion2": "Tras un lapso de tiempo, invoca un capibara que inflige un 30% de la vida máxima como daño verdadero.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/orbitallaser_large.png"
+    },
+    "aumento49": {
+      "nombre": "Curación láser",
+      "descripcion1": "Lanza un láser durante 2,5 s que cura a los aliados, ralentiza e inflige daño mágico a los enemigos.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/laseheal_large.png"
+    },
+    "aumento50": {
+      "nombre": "Danza de la espada",
+      "descripcion1": "Obtienes el hechizo de invocador Danza de la espada.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/bladewaltz_large.png"
+    },
+    "aumento52": {
+      "nombre": "Diablillo susurrante",
+      "descripcion1": "Haces un pacto con el mismísimo Diablillo. Va drenando tu vida con el tiempo, pero recompensa tu violencia otorgándote daño verdadero adicional contra campeones y creando vestigios curativos que puedes recoger.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/littledevil_large.png"
+    },
+    "aumento53": {
+      "nombre": "El poder de la fe",
+      "descripcion1": "Al curar u otorgar escudos a un aliado, lo bendices durante varios segundos, lo que provoca que su daño cimiente tu Devoción. Con la suficiente Devoción, desatas una onda de choque que inflige daño mágico y ejecuta a los enemigos con poca vida.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/empoweredbythefaithful_large.png"
+    },
+    "aumento54": {
+      "nombre": "Esto va a quemar",
+      "descripcion1": "Obtienes el hechizo de invocador Esto va a quemar.",
+      "descripcion2": "Esto va a quemar lanza Prender y Extenuación a todos los campeones enemigos cercanos.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/feeltheburn_large.png"
+    },
+    "aumento55": {
+      "nombre": "Fuerte pero frágil",
+      "descripcion1": "Reduce un 30% la vida máxima. Inflige un 15% de daño adicional como daño verdadero.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/glasscannon_large.png"
+    },
+    "aumento56": {
+      "nombre": "Gatillo infernal a muerte",
+      "descripcion1": "Obtienes Impulso temerario. Al alcanzar el rango S de estilo, usas Gatillo infernal de forma automática.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/madscientist_large (1).png"
+    },
+    "aumento57": {
+      "nombre": "La caja de Pandora",
+      "descripcion1": "Transmuta todos tus aumentos en aumentos prismáticos aleatorios.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/pandoras_box_large.png"
+    },
+    "aumento58": {
+      "nombre": "Magia espiritual",
+      "descripcion1": "Al infligir daño con tu habilidad definitiva, transforma a los enemigos durante unos segundos.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/feymagic_large.png"
+    },
+    "aumento59": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/aaaaaaaa.png"
+    },
+    "aumento60": {
+      "nombre": "Mano del Barón",
+      "descripcion1": "Otorga un 25% de fuerza adaptable. Potencia mucho a los súbditos aliados cercanos.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/handofbaron_large.png"
+    },
+    "aumento61": {
+      "nombre": "Mejora de Espada del amanecer floreciente",
+      "descripcion1": "Otorga un 100% de velocidad de ataque.",
+      "descripcion2": "Tus ataques contra campeones infligen un 50% de daño, pero la curación de Espada del amanecer floreciente aumenta un 250%.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/upgrademikaelsblessing_large.png"
+    },
+    "aumento62": {
+      "nombre": "Pacto ominoso",
+      "descripcion1": "Obtienes poder de habilidad, velocidad de movimiento y omnisucción, en función de la vida que te falte, y recibes daño cada vez que lanzas una habilidad.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/wisdomofages_large.png"
+    },
+    "aumento63": {
+      "nombre": "Promesa empírea",
+      "descripcion1": "Obtienes un 15% de poder de curaciones y escudos. Obtienes el hechizo de invocador Promesa empírea.",
+      "descripcion2": "Promesa empírea: Te teleportas hasta tu aliado y le otorgas un escudo de ? durante 3 s al llegar.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/empyreampromise_large.png"
+    },
+    "aumento64": {
+      "nombre": "Rebote del Rey Poro",
+      "descripcion1": "¡Sustituye un hechizo de invocador por Rebote del Rey Poro!",
+      "descripcion2": "Rebote del Rey Poro: Te transformas en el Rey Poro, lo que te vuelve imparable y fantasmal. Obtienes reducción de daño y velocidad de movimiento, pero te silencia y no puedes atacar. Además, rebotas repetidamente, lo que inflige daño físico y empuja a los enemigos cercanos.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/poroking_large.png"
+    },
+    "aumento65": {
+      "nombre": "Santa bola de nieve",
+      "descripcion1": "Obtienes 100 de velocidad de habilidades al usar Bola de nieve.",
+      "descripcion2": "Te vuelves invulnerable brevemente al deslizarte con Bola de nieve.",
+      "descripcion3": "Si no tienes una, obtienes una Bola de nieve.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/goldensnowball_large.png"
+    },
+    "aumento66": {
+      "nombre": "Se mira pero no se toca",
+      "descripcion1": "Utilizar la definitiva te hace invulnerable durante un breve periodo.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/canttouchthis_large.png"
+    },
+    "aumento67": {
+      "nombre": "Soy un gatito bebé, ¿dónde está mi mamá?",
+      "descripcion1": "Estar cerca de un aliado lo convierte en tu mamá.",
+      "descripcion2": "Obtienes velocidad de movimiento al moverte hacia tu mamá. Obtienes velocidad de movimiento y poder de curación y escudos cuando estás cerca de tu mamá.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/babykitty_large.png"
+    },
+    "aumento68": {
+      "nombre": "Terremoto",
+      "descripcion1": "Tus habilidades de deslizamiento, teleportación o teleportación instantánea dejan un rastro que detona tras 0.75 s.",
+      "tier": 5,
+      "rango": "prismatico",
+      "icono": "img/iconos/earthwake_large.png"
+    },
+    "aumento69": {
+      "nombre": "Aceleración mágica",
+      "descripcion1": "Al golpear a los enemigos con habilidades, se crea una explosión que inflige daño mágico desde tu ubicación hasta la zona en la que has asestado la habilidad.",
+      "tier": 6,
+      "rango": "prismatico",
+      "icono": "img/iconos/spellwake_large.png"
+    },
+    "aumento70": {
+      "nombre": "Adicción a las botas",
+      "descripcion1": "Al instante: Obtienes un par aleatorio de botas mejoradas.",
+      "descripcion2": "Requisito: Completa la misión para cambiarlo por otro.",
+      "descripcion3": "Recompensa: Botas de Jarvan I",
+      "tier": 6,
+      "rango": "prismatico",
+      "icono": "img/iconos/sneakerhead_large.png"
+    },
+    "aumento71": {
+      "nombre": "Ojos láser",
+      "descripcion1": "Activa un láser en la dirección a la que miras que inflige daño mágico continuo.",
+      "tier": 6,
+      "rango": "prismatico",
+      "icono": "img/iconos/lasereyes_large.kiwi_15_24_content.png"
+    },
+    "aumento72": {
+      "nombre": "¡Estadísticas a mansalva!",
+      "descripcion1": "Obtienes 3 yunques de estadísticas, ¡y la probabilidad de que sean yunques dorados o prismáticos es mayor!",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/statsonstats_large.png"
+    },
+    "aumento73": {
+      "nombre": "Aceite picante de la yaya",
+      "descripcion1": "Los ataques básicos y habilidades que golpean a enemigos aplican una quemadura que deja caer un charco de aceite picante cerca. El aceite picante restaura vida y quema a los enemigos.",
+      "descripcion2": "El efecto del aceite picante se vuelve más potente con cada quemadura aplicada.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/grandmaschilioil_large.png"
+    },
+    "aumento74": {
+      "nombre": "Armas más telescópicas",
+      "descripcion1": "Obtienes 200 de alcance de ataque, que se reduce a 100 si atacas a distancia.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/scopierweapons_large.png"
+    },
+    "aumento75": {
+      "nombre": "De principio a fin",
+      "descripcion1": "Obtienes las runas clave Primer golpe y Cosecha oscura.",
+      "descripcion2": "",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/frombeginningtoend_large.png"
+    },
+    "aumento76": {
+      "nombre": "Devorador de almas",
+      "descripcion1": "Al inmovilizar a un campeón enemigo, otorga 20 de vida máxima.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/souleater_large.png"
+    },
+    "aumento77": {
+      "nombre": "Enhebra la aguja",
+      "descripcion1": "Obtienes un 18% de penetración de armadura y de penetración mágica.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/threadtheneedle_large.png"
+    },
+    "aumento78": {
+      "nombre": "Exterminación",
+      "descripcion1": "Infliges un 10% más de daño a los enemigos que estén por debajo del 30% de vida. Reinicia las habilidades básicas con eliminaciones.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/spiritualpurification_large.png"
+    },
+    "aumento79": {
+      "nombre": "Hora de la matanza",
+      "descripcion1": "Tras lanzar tu definitiva, marca a todos los enemigos y acumula el daño que les infliges. Cuando termina, detona para infligir el daño.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/itskillingtime_large.png"
+    },
+    "aumento80": {
+      "nombre": "Locomotora",
+      "descripcion1": "Al conseguir una eliminación, obtienes una acumulación que aumenta tu tamaño y te otorga vida máxima. Pierdes acumulaciones al morir.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/tank_engine_large.png"
+    },
+    "aumento81": {
+      "nombre": "Maldad increíble",
+      "descripcion1": "Aumenta en 1 tu poder de habilidad de forma permanente cuando golpeas a tus enemigos con habilidades.",
+      "descripcion2": "Si lo eliges como tu segundo aumento, comienzas con 40 de poder de habilidad.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/aram_phenomenalevil_large.png"
+    },
+    "aumento82": {
+      "nombre": "Mejora de Soberbia",
+      "descripcion1": "Soberbia ahora te cura al participar en un asesinato y te otorga velocidad de movimiento mientras dure este efecto. Ambas mejoras aumentan en función de las estadísticas. Además, obtienes 250 de oro.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/upgradehubris_large.png"
+    },
+    "aumento83": {
+      "nombre": "Misil crítico",
+      "descripcion1": "Al asestar un impacto crítico, disparas 1 + ? fuegos artificiales, cada uno de los cuales inflige ? de daño mágico. Además, otorga un 25% de probabilidad de impacto crítico.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/criticalmissile_large.png"
+    },
+    "aumento84": {
+      "nombre": "Misil mágico",
+      "descripcion1": "Infligir daño con habilidades lanza 3 fuegos artificiales a los enemigos, y cada uno inflige hasta un porcentaje de daño verdadero según la vida máxima en función de la distancia recorrida.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/magicmissile_large.kiwi.png"
+    },
+    "aumento85": {
+      "nombre": "Misión: Robacorazones",
+      "descripcion1": "Requisito: Debes poseer Corazón de acero con 300 acumulaciones o más.",
+      "descripcion2": "Recompensa: Multiplica las acumulaciones de Corazón de acero por 3.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/quest_steelyourheart_large.png"
+    },
+    "aumento86": {
+      "nombre": "Motor empequeñecedor",
+      "descripcion1": "Las eliminaciones reducen tu tamaño y te otorgan velocidad de habilidades y velocidad de movimiento.",
+      "descripcion2": "Pierdes un 65% de las acumulaciones al morir.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/shrinkengine_large.png"
+    },
+    "aumento87": {
+      "nombre": "Rayos y retruécanos",
+      "descripcion1": "Obtienes un 20% de velocidad de ataque total.",
+      "descripcion2": "Al asestar ? ataques por segundo, infliges daño mágico adicional Al impacto.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/lightningstrikes_large.png"
+    },
+    "aumento88": {
+      "nombre": "Sobres rojos",
+      "descripcion1": "A tu alrededor, aparecen sobres rojos de forma aleatoria. Al recogerlos, obtienes oro y una pequeña cantidad de una estadística aleatoria.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/redenvelopes_large.png"
+    },
+    "aumento89": {
+      "nombre": "Transmutar: Prismático",
+      "descripcion1": "Obtienes 1 aumento prismático aleatorio.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/transmuteprismatic_large.png"
+    },
+    "aumento90": {
+      "nombre": "Vampirismo",
+      "descripcion1": "Los aliados no pueden curarte ni tampoco puedes obtener regeneración de vida. Obtienes un 25% de omnisucción.",
+      "tier": 1,
+      "rango": "dorado",
+      "icono": "img/iconos/vampired_large.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    },
+    "aumento91": {
+      "nombre": "",
+      "descripcion1": "",
+      "descripcion2": "",
+      "tier": 2,
+      "rango": "dorado",
+      "icono": "img/iconos/XXXXXXXXXXX.png"
+    }
+  }
+}

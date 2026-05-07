@@ -1,0 +1,1032 @@
+{
+  "¡Eureka!": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Eureka"
+  },
+  "Conducto infernal": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Giant Slayer"
+  },
+  "Goliat": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Goliath"
+  },
+  "Guantelete enjoyado": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Infernal Conduit"
+  },
+  "Recursión infinita": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Infinite Recursion"
+  },
+  "Taconeo": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Jeweled Gauntlet"
+  },
+  "Verdugo de gigantes": {
+    "rareza": "Prismatic",
+    "tier": "S",
+    "nombre_en": "Tap Dancer"
+  },
+  "A dos manos": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Clown College"
+  },
+  "Armas telescópicamente telescópicas": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Dropkick"
+  },
+  "Grieta del Vacío": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Dual Wield"
+  },
+  "Martillazo de dispersión": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Fan The Hammer"
+  },
+  "Misión: Sombrero de Wooglet": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Quest: Wooglet's Witchcap"
+  },
+  "Patada voladora": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Scopiest Weapons"
+  },
+  "Transmutar: Caos": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Transmute: Chaos"
+  },
+  "Universidad de payasos": {
+    "rareza": "Prismatic",
+    "tier": "A",
+    "nombre_en": "Void Rift"
+  },
+  "¡Desenvaina la espada!": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Biggest Snowball Ever"
+  },
+  "¡Estadísticas a cascoporro!": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Cruelty"
+  },
+  "A fuego lento": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Draw Your Sword"
+  },
+  "Bendición de hablavientos": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Final Form"
+  },
+  "Crueldad": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Mystic Punch"
+  },
+  "Guantazo místico": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Quest: Icathia's Fall"
+  },
+  "La bola más grande de la historia": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Slow Cooker"
+  },
+  "La forma definitiva": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Stats on Stats on Stats!"
+  },
+  "Misión: La caída de Icathia": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Symphony of War"
+  },
+  "Sinfonía de guerra": {
+    "rareza": "Prismatic",
+    "tier": "B",
+    "nombre_en": "Windspeaker's Blessing"
+  },
+  "¡Ojito, pastelito!": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Back To Basics"
+  },
+  "A precio de sangre": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Cerberus"
+  },
+  "Cerbero": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Circle of Death"
+  },
+  "Científico loco": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Courage of the Colossus"
+  },
+  "Círculo de muerte": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Dashing"
+  },
+  "Coraje del coloso": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Gash"
+  },
+  "Deslizamiento": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Goldrend"
+  },
+  "Despertar definitivo": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Heads Up Cupcake!"
+  },
+  "Dualidad": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "King Me"
+  },
+  "Informática cuántica": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Mad Scientist"
+  },
+  "Mejora de Bendición de Mikael": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Master of Duality"
+  },
+  "Misión: Campeón de Urf": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Omni Soul"
+  },
+  "Omnialma": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Prom Queen"
+  },
+  "Prodigio certero": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Quantum Computing"
+  },
+  "Reina del baile": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Quest: Urf's Champion"
+  },
+  "Revolución definitiva": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Trueshot Prodigy"
+  },
+  "Soy el rey": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Ultimate Awakening"
+  },
+  "Tajo": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Ultimate Revolution"
+  },
+  "Vuelta a lo básico": {
+    "rareza": "Prismatic",
+    "tier": "C",
+    "nombre_en": "Upgrade Mikael's Blessing"
+  },
+  "¡Que nadie se mueva!": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "???"
+  },
+  "¿¿??": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Blade Waltz"
+  },
+  "Batido de proteína": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Bounce of the Poro King"
+  },
+  "Capoeibara": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Can't Touch This"
+  },
+  "Curación láser": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Devil on Your Shoulder"
+  },
+  "Danza de la espada": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Droppybara"
+  },
+  "Diablillo susurrante": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Earthwake"
+  },
+  "El poder de la fe": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Empowered By The Faithful"
+  },
+  "Esto va a quemar": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Empyrean Promise"
+  },
+  "Fuerte pero frágil": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Feel the Burn"
+  },
+  "Gatillo infernal a muerte": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Fey Magic"
+  },
+  "La caja de Pandora": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Glass Cannon"
+  },
+  "Magia espiritual": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Hand of Baron"
+  },
+  "Mano del Barón": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Holy Snowball"
+  },
+  "Mejora de Espada del amanecer floreciente": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "I'm a Baby Kitty Where is Mama"
+  },
+  "Pacto ominoso": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Laser Heal"
+  },
+  "Promesa empírea": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Ominous Pact"
+  },
+  "Rebote del Rey Poro": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Pandora's Box"
+  },
+  "Santa bola de nieve": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Protein Shake"
+  },
+  "Se mira pero no se toca": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Stuck In Here With Me"
+  },
+  "Soy un gatito bebé, ¿dónde está mi mamá?": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Triggered Inferno"
+  },
+  "Terremoto": {
+    "rareza": "Prismatic",
+    "tier": "D",
+    "nombre_en": "Upgrade Sword of Blossoming Dawn"
+  },
+  "Aceleración mágica": {
+    "rareza": "Prismatic",
+    "tier": "",
+    "nombre_en": "Laser Eyes"
+  },
+  "Adicción a las botas": {
+    "rareza": "Prismatic",
+    "tier": "",
+    "nombre_en": "Sneakerhead"
+  },
+  "Ojos láser": {
+    "rareza": "Prismatic",
+    "tier": "",
+    "nombre_en": "Spellwake"
+  },
+  "¡Estadísticas a mansalva!": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Critical Missile"
+  },
+  "Aceite picante de la yaya": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Executioner"
+  },
+  "Armas más telescópicas": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "From Beginning To End"
+  },
+  "De principio a fin": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Grandma's Chili Oil"
+  },
+  "Devorador de almas": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "It's Killing Time"
+  },
+  "Enhebra la aguja": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Lightning Strikes"
+  },
+  "Exterminación": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Magic Missile"
+  },
+  "Hora de la matanza": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Phenomenal Evil"
+  },
+  "Locomotora": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Poro Blaster"
+  },
+  "Maldad increíble": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Quest: Steel Your Heart"
+  },
+  "Mejora de Soberbia": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Red Envelopes"
+  },
+  "Misil crítico": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Scopier Weapons"
+  },
+  "Misil mágico": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Shrink Engine"
+  },
+  "Misión: Robacorazones": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Soul Eater"
+  },
+  "Motor empequeñecedor": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Stats on Stats!"
+  },
+  "Porostola": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Tank Engine"
+  },
+  "Rayos y retruécanos": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Thread the Needle"
+  },
+  "Sobres rojos": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Transmute: Prismatic"
+  },
+  "Transmutar: Prismático": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Upgrade Hubris"
+  },
+  "Vampirismo": {
+    "rareza": "Gold",
+    "tier": "S",
+    "nombre_en": "Vampirism"
+  },
+  "¡A tope!": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Bread And Butter"
+  },
+  "Absorbealmas": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Celestial Body"
+  },
+  "Adepto de runas clave": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Critical Healing"
+  },
+  "Cada dos por tres": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Critical Rhythm"
+  },
+  "Cuerpo celeste": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Donation"
+  },
+  "Curación crítica": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Firebrand"
+  },
+  "Donación": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Get Excited!"
+  },
+  "Enardecimiento": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Keystone Conjurer"
+  },
+  "Francotirador habilidoso": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Marksmage"
+  },
+  "Mejora de Filo infinito": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Overflow"
+  },
+  "Pan con queso": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Perseverance"
+  },
+  "Perseverancia": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Rabble Rousing"
+  },
+  "Purificación espiritual": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Recursion"
+  },
+  "Quemazón": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Skilled Sniper"
+  },
+  "Recursión": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Soul Siphon"
+  },
+  "Ritmo crítico": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Spiritual Purification"
+  },
+  "Sobrecarga": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Twice Thrice"
+  },
+  "Tirador mágico": {
+    "rareza": "Gold",
+    "tier": "A",
+    "nombre_en": "Upgrade Infinity Edge"
+  },
+  "A tope con el bumerán": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "All For You"
+  },
+  "Acecho nocturno": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Apex Inventor"
+  },
+  "Cerebro galaxia": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Big Brain"
+  },
+  "Coraje del forajido": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Bread and Cheese"
+  },
+  "Danza demoníaca": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Cheating"
+  },
+  "Estado crítico": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Demon's Dance"
+  },
+  "Intervención divina": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Divine Intervention"
+  },
+  "Intransitable": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Double Tap"
+  },
+  "Inventor de élite": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Final City Transit"
+  },
+  "Mejora de Bola de nieve": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Impassable"
+  },
+  "Pan con aceite": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "It's Critical"
+  },
+  "Pinball": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Nightstalking"
+  },
+  "Redoble": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Ok Boomerang"
+  },
+  "Restauración incansable": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Outlaw's Grit"
+  },
+  "Ruleta de bolas de nieve": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Pinball"
+  },
+  "Sonata": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Restless Restoration"
+  },
+  "Todo por ti": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Snowball Roulette"
+  },
+  "Trampas": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Snowball Upgrade"
+  },
+  "Transporte de Último Bastión": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Sonata"
+  },
+  "Vulnerabilidad": {
+    "rareza": "Gold",
+    "tier": "B",
+    "nombre_en": "Vulnerability"
+  },
+  "Arma etérea": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Bread And Jam"
+  },
+  "Con premura": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Dawnbringer's Resolve"
+  },
+  "Crecimiento salvaje": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Ethereal Weapon"
+  },
+  "Fuego sagrado": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Growth Spurt"
+  },
+  "Mejora de Brillo": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Holy Fire"
+  },
+  "Pan con tomate": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Shrink Ray"
+  },
+  "Rayo reductor": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Slow And Steady"
+  },
+  "Sin pausa pero sin prisa": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "Upgrade Sheen"
+  },
+  "Valor de los guerreros del orden": {
+    "rareza": "Gold",
+    "tier": "C",
+    "nombre_en": "With Haste"
+  },
+  "Albor incandescente": {
+    "rareza": "Gold",
+    "tier": "D",
+    "nombre_en": "Flashy"
+  },
+  "Llamativo": {
+    "rareza": "Gold",
+    "tier": "D",
+    "nombre_en": "Minionmancer"
+  },
+  "Subditomante": {
+    "rareza": "Gold",
+    "tier": "D",
+    "nombre_en": "Searing Dawn"
+  },
+  "A cachetazo limpio": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "ADAPt"
+  },
+  "A-DA-PH-TARSE": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Deft"
+  },
+  "Chupasangre": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Goredrink"
+  },
+  "Destreza": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Slap Around"
+  },
+  "Ideas mágicas": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Transmute: Gold"
+  },
+  "Mejora de Recaudadora": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Upgrade Collector"
+  },
+  "Reservas trucadas": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Weighted Popoffs"
+  },
+  "Transmutar: Oro": {
+    "rareza": "Silver",
+    "tier": "S",
+    "nombre_en": "Witchful Thinking"
+  },
+  "¡Estadísticas!": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "FireFox"
+  },
+  "Algidez": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "First-Aid Kit"
+  },
+  "Alma infernal": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Hat on a Hat"
+  },
+  "Armas con mira telescópica": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Heavy Hitter"
+  },
+  "Botiquín": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Ice Cold"
+  },
+  "Demonio raudo": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Infernal Soul"
+  },
+  "Fuego gemelo": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Light 'Em Up!"
+  },
+  "Fuego zorruno": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Mind to Matter"
+  },
+  "Mente y materia": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Scoped Weapons"
+  },
+  "Peso pesado": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Speed Demon"
+  },
+  "Que ardan": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Stats!"
+  },
+  "Sombrero con sombrero": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Twin Fire"
+  },
+  "Tifón": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Typhoon"
+  },
+  "Zealot": {
+    "rareza": "Silver",
+    "tier": "A",
+    "nombre_en": "Zealot"
+  },
+  "A salvo": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Blunt Force"
+  },
+  "Ágil e invulnerable": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Buff Buddies"
+  },
+  "Alma de océano": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Dive Bomber"
+  },
+  "Autodestrucción": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Erosion"
+  },
+  "Con la mano abierta": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "escAPADe"
+  },
+  "Corredor de la penumbra": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Escape Plan"
+  },
+  "Día de pierna": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Frost Wraith"
+  },
+  "Dulce pecado": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Guilty Pleasure"
+  },
+  "Dúo dinámico": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Homeguard"
+  },
+  "Embrutecedor": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Leg Day"
+  },
+  "Erosión": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Ocean Soul"
+  },
+  "EscaPHaDA": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Self Destruct"
+  },
+  "Espectro helado": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Shadow Runner"
+  },
+  "Incursión bombardera": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Swift and Safe"
+  },
+  "Mejora de Malla de espinas": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "The Brutalizer"
+  },
+  "Mejora de Reloj de arena de Zhonya": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Upgrade Thornmail"
+  },
+  "Plan de huida": {
+    "rareza": "Silver",
+    "tier": "B",
+    "nombre_en": "Upgrade Zhonya's"
+  },
+  "Alma de montaña": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Adamant"
+  },
+  "Alma hextech": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Hextech Soul"
+  },
+  "Asesinato asegurado": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Kill Secured"
+  },
+  "Definitiva imparable": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Mountain Soul"
+  },
+  "Explosión sónica": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Sonic Boom"
+  },
+  "Firme": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Tank It Or Leave It"
+  },
+  "Mejora de Inmolar": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Tormentor"
+  },
+  "Tanques y mazmorras": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Ultimate Unstoppable"
+  },
+  "Tormento": {
+    "rareza": "Silver",
+    "tier": "C",
+    "nombre_en": "Upgrade Immolate"
+  },
+  "Bien exprimido": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Crack Open That Egg"
+  },
+  "Casca ese huevo": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Crit 'n Cast"
+  },
+  "Críticos y conjuros": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Don't Blink"
+  },
+  "Destello 2": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Flash 2"
+  },
+  "Destello explosivo": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Flashbang"
+  },
+  "Escudo de fuerza": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Juiced"
+  },
+  "No parpadees": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Mighty Shield"
+  },
+  "Poltergeist": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Poltergeist"
+  },
+  "Purista - Lanzador": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Purist - Caster"
+  },
+  "Repulsión": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "ReEnergize"
+  },
+  "Revitalizante": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Repulsor"
+  },
+  "Spin to Win": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Spin To Win"
+  },
+  "Velo de la protección": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Veil of Warding"
+  },
+  "Viento y espada": {
+    "rareza": "Silver",
+    "tier": "D",
+    "nombre_en": "Wind Beneath Blade"
+  },
+  "Acumulasaurio Rex": {
+    "rareza": "Silver",
+    "tier": "",
+    "nombre_en": "Fetch"
+  },
+  "Busca": {
+    "rareza": "Silver",
+    "tier": "",
+    "nombre_en": "Spin Me Right Round"
+  },
+  "Ciclo de la virtud": {
+    "rareza": "Silver",
+    "tier": "",
+    "nombre_en": "Stackosaurus Rex"
+  },
+  "Mejora de Sable espectral": {
+    "rareza": "Silver",
+    "tier": "",
+    "nombre_en": "Upgrade Cutlass"
+  },
+  "Vueltas en mi cabeza": {
+    "rareza": "Silver",
+    "tier": "",
+    "nombre_en": "Virtuous Cycle"
+  }
+}

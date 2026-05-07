@@ -1,0 +1,8 @@
+flask==3.0.3
+flask-cors==5.0.0
+requests==2.32.3
+opencv-python==4.10.0.84
+mss==10.0.0
+numpy==2.1.1
+Pillow==10.4.0
+rapidocr-onnxruntime==1.4.4

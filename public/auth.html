@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticando | All Mid Only</title>
+    <link rel="icon" href="/assets/images/logoicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body class="auth-page">
+    <div class="page-bg"></div>
+    <main class="hero-shell auth-shell">
+      <section class="auth-card">
+        <p class="eyebrow">Cuenta</p>
+        <h1>Conectando tu sesión</h1>
+        <p id="auth-status" class="auth-status">Estamos validando tu acceso con Supabase...</p>
+      </section>
+    </main>
+    <script>
+      (function handleAuthCallback() {
+        const statusNode = document.getElementById("auth-status");
+        const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        const basePath =
+          window.location.hostname.endsWith("github.io") && parts.length > 0
+            ? `/${parts[0]}`
+            : "";
+        const accessToken = hash.get("access_token");
+        const refreshToken = hash.get("refresh_token");
+        const expiresAt = hash.get("expires_at");
+        const providerToken = hash.get("provider_token");
+        const providerRefreshToken = hash.get("provider_refresh_token");
+
+        if (!accessToken || !refreshToken) {
+          if (statusNode) {
+            statusNode.textContent = "No se ha encontrado una sesión válida. Vuelve a iniciar sesión.";
+          }
+          return;
+        }
+
+        const session = {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_at: expiresAt ? Number(expiresAt) : null,
+          provider_token: providerToken,
+          provider_refresh_token: providerRefreshToken,
+          token_type: hash.get("token_type") || "bearer",
+          user: null,
+        };
+
+        localStorage.setItem("sb_session", JSON.stringify(session));
+        if (statusNode) {
+          statusNode.textContent = "Sesión iniciada. Te llevamos a tu perfil...";
+        }
+
+        window.location.replace(`${window.location.origin}${basePath}/profile.html`);
+      })();
+    </script>
+  </body>
+</html>

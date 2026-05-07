@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Mid Only</title>
+  <meta
+    name="description"
+    content="All Mid Only: descarga el programa, busca contenido y accede con tu cuenta."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="icon" href="/assets/images/logoicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+<body>
+  <div class="page-bg"></div>
+  <canvas id="startup-particles" class="startup-canvas startup-canvas-page" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="topbar-side topbar-left">
+      <a class="brand" href="/" aria-label="All Mid Only">
+        <span class="brand-badge">
+          <img src="/assets/images/logoicon.ico" alt="Logo All Mid Only" onerror="this.src='./logocargaa.png'">
+        </span>
+        <span>ALL MID ONLY</span>
+      </a>
+    </div>
+
+    <div class="topbar-center">
+      <a class="nav-button nav-button-primary" href="#descargar">Descargar</a>
+    </div>
+
+    <div class="topbar-side topbar-right">
+      <div id="web-auth-btns" style="display:flex;gap:12px;align-items:center;">
+        <a class="nav-link nav-link-strong" onclick="webLogin()" href="#" id="web-login-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right:6px;vertical-align:middle;">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Entrar con Google
+        </a>
+      </div>
+      <div id="web-user-info" style="display:none;align-items:center;gap:12px;">
+        <img id="web-user-avatar" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(212,168,79,.4);" src="" onerror="this.style.display='none'">
+        <span id="web-user-name" style="font-size:13px;color:#d5cab7;"></span>
+        <a href="./profile.html" class="nav-link nav-link-strong" style="font-size:13px;">Mi perfil</a>
+        <a onclick="webLogout()" href="#" style="font-size:12px;color:#666;">Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="hero-shell">
+    <section class="search-panel">
+      <div class="hero-logo-wrap" aria-label="Logo animado de All Mid Only">
+        <div class="hero-logo-glow"></div>
+        <img class="hero-logo" src="./logocargaa.png" alt="All Mid Only">
+      </div>
+
+      <div class="search-topbar" id="search-topbar"></div>
+
+      <form class="search-box" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M10.5 4a6.5 6.5 0 1 0 4.03 11.6l4.43 4.43 1.41-1.41-4.43-4.43A6.5 6.5 0 0 0 10.5 4Zm0 2a4.5 4.5 0 1 1 0 9a4.5 4.5 0 0 1 0-9Z"
+          />
+        </svg>
+        <input
+          id="summoner-search-input"
+          type="search"
+          placeholder="Buscar invocador: nombre#tag"
+          aria-label="Buscar invocador"
+        >
+        <button class="search-submit" type="submit">Buscar</button>
+      </form>
+
+      <p class="search-help">Ejemplo: `MiInvocador#EUW`</p>
+
+      <div class="search-tags" aria-label="Categorias destacadas">
+        <a href="#">Invocadores</a>
+        <a href="#">Campeones</a>
+        <a href="#">Builds</a>
+        <a href="#">Modos de juego</a>
+      </div>
+
+      <section id="summoner-result" class="summoner-panel hidden" aria-live="polite">
+        <div id="summoner-status" class="summoner-status"></div>
+
+        <div id="summoner-content" class="summoner-content hidden">
+          <section class="profile-hero">
+            <div class="profile-main">
+              <img id="summoner-icon" class="profile-icon" alt="Icono del invocador">
+              <div>
+                <p class="eyebrow">Perfil</p>
+                <h2 id="summoner-name" class="profile-name">-</h2>
+                <p id="summoner-meta" class="profile-meta">-</p>
+              </div>
+            </div>
+
+            <div class="rank-grid">
+              <article class="rank-card">
+                <span>Solo/Duo</span>
+                <strong id="rank-solo-tier">Sin rango</strong>
+                <p id="rank-solo-meta">-</p>
+              </article>
+              <article class="rank-card">
+                <span>Flex</span>
+                <strong id="rank-flex-tier">Sin rango</strong>
+                <p id="rank-flex-meta">-</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="summary-grid">
+            <article class="summary-card">
+              <span>Winrate ARAM</span>
+              <strong id="summary-winrate">-</strong>
+            </article>
+            <article class="summary-card">
+              <span>KDA medio</span>
+              <strong id="summary-kda">-</strong>
+            </article>
+            <article class="summary-card">
+              <span>Partidas</span>
+              <strong id="summary-games">-</strong>
+            </article>
+            <article class="summary-card">
+              <span>Daño medio</span>
+              <strong id="summary-damage">-</strong>
+            </article>
+            <article class="summary-card">
+              <span>Oro medio</span>
+              <strong id="summary-gold">-</strong>
+            </article>
+            <article class="summary-card">
+              <span>Más jugado</span>
+              <strong id="summary-most-played">-</strong>
+            </article>
+          </section>
+
+          <section class="detail-grid">
+            <article class="detail-card">
+              <div class="detail-head">
+                <p class="eyebrow">Top maestría</p>
+                <h3>Campeones principales</h3>
+              </div>
+              <div id="mastery-list" class="mastery-list"></div>
+            </article>
+
+            <article class="detail-card">
+              <div class="detail-head">
+                <p class="eyebrow">Historial ARAM</p>
+                <h3>Últimas partidas</h3>
+              </div>
+              <div id="match-list" class="match-list"></div>
+            </article>
+          </section>
+        </div>
+      </section>
+
+      <section class="reviews-panel" aria-labelledby="reviews-title">
+        <div class="reviews-head">
+          <div>
+            <p class="eyebrow">Reseñas</p>
+            <h2 id="reviews-title">Ultimas opiniones</h2>
+          </div>
+          <a class="reviews-more" href="/reviews.html">Ver mas</a>
+        </div>
+
+        <div class="reviews-grid">
+          <article class="review-card">
+            <div class="review-top">
+              <strong>Iván M.</strong>
+              <span class="review-stars" aria-label="5 estrellas">★★★★★</span>
+            </div>
+            <p>
+              Muy limpia y rapida. Lo que mas me gusta es que abre directo y no se siente
+              pesada mientras juego.
+            </p>
+            <time datetime="2026-04-23">23 abr 2026</time>
+          </article>
+
+          <article class="review-card">
+            <div class="review-top">
+              <strong>Laura SR</strong>
+              <span class="review-stars" aria-label="4 estrellas">★★★★☆</span>
+            </div>
+            <p>
+              Tiene justo ese look premium que pega con el juego. Si luego mete cuenta y
+              sincronizacion, va a quedar brutal.
+            </p>
+            <time datetime="2026-04-21">21 abr 2026</time>
+          </article>
+
+          <article class="review-card">
+            <div class="review-top">
+              <strong>Dani ARAM</strong>
+              <span class="review-stars" aria-label="5 estrellas">★★★★★</span>
+            </div>
+            <p>
+              La interfaz me convencio desde el primer momento. Todo esta donde toca y se ve
+              muchisimo mejor que otras herramientas.
+            </p>
+            <time datetime="2026-04-18">18 abr 2026</time>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

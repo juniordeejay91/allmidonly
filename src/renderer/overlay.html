@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="../../">
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100vw; height: 100vh;
+    background: transparent;
+    overflow: hidden;
+  }
+  .slot {
+    position: fixed;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    user-select: none;
+  }
+  .slot.visible { opacity: 1; }
+  .slot img { display: block; width: 100%; height: 100%; pointer-events: none; }
+</style>
+</head>
+<body>
+  <div class="slot" id="slot0"><img id="img0" src=""></div>
+  <div class="slot" id="slot1"><img id="img1" src=""></div>
+  <div class="slot" id="slot2"><img id="img2" src=""></div>
+
+<script>
+  // Pack activo — se carga desde localStorage o Default
+let TIER_IMGS = {
+  1: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier1.png') : 'img/tiers/tier1.png',
+  2: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier2.png') : 'img/tiers/tier2.png',
+  3: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier3.png') : 'img/tiers/tier3.png',
+  4: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier4.png') : 'img/tiers/tier4.png',
+  5: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier5.png') : 'img/tiers/tier5.png'
+};
+
+  function loadPack(pack) {
+    // pack = { "1": "img/tiers/tier1poro.png", ... }
+    TIER_IMGS = {};
+    Object.entries(pack).forEach(([num, path]) => {
+      TIER_IMGS[parseInt(num)] = path;
+    });
+    console.log('[overlay] pack cargado:', TIER_IMGS);
+  }
+
+  function loadSavedPack() {
+    try {
+      const s = localStorage.getItem('tier_pack');
+      if (s) loadPack(JSON.parse(s));
+    } catch(e) {}
+  }
+
+  loadSavedPack();
+
+  // ── Resolución real de pantalla ────────────────────────────
+  const SCREEN_W = window.screen.width;   // ej: 3440 (ultrawide)
+  const SCREEN_H = window.screen.height;  // ej: 1440
+
+  // Base 16:9 centrada — el juego siempre usa 16:9 centrado
+  const GAME_W    = Math.round(SCREEN_H * 16 / 9);  // 2560
+  const GAME_H    = SCREEN_H;                        // 1440
+  const OFFSET_X  = Math.round((SCREEN_W - GAME_W) / 2); // 440 en 3440
+
+  console.log(`[overlay] pantalla: ${SCREEN_W}x${SCREEN_H} | juego 16:9: ${GAME_W}x${GAME_H} | offset: ${OFFSET_X}`);
+
+  // ── Posiciones por defecto en % (relativas al área 16:9) ──
+  // { x: %, y: %, w: %, h: % } — se escalan a cualquier resolución
+  const DEFAULT_POSITIONS = [
+    { x: 18, y: 62, w: 14, h: 8 },
+    { x: 43, y: 62, w: 14, h: 8 },
+    { x: 68, y: 62, w: 14, h: 8 },
+  ];
+
+  // ── Cargar/guardar posiciones ──────────────────────────────
+  function loadPositions() {
+    try {
+      const s = localStorage.getItem('oe_positions');
+      if (s) return JSON.parse(s);
+    } catch(e) {}
+    return DEFAULT_POSITIONS.map(p => ({...p}));
+  }
+
+  function savePositions(pos) {
+    localStorage.setItem('oe_positions', JSON.stringify(pos));
+  }
+
+  // ── Aplicar posiciones (% → px reales con offset ultrawide) 
+  function applyPositions(pos) {
+    pos.forEach((p, i) => {
+      const slot = document.getElementById('slot' + i);
+      slot.style.left   = (OFFSET_X + p.x / 100 * GAME_W) + 'px';
+      slot.style.top    = (p.y / 100 * GAME_H) + 'px';
+      slot.style.width  = (p.w / 100 * GAME_W) + 'px';
+      slot.style.height = (p.h / 100 * GAME_H) + 'px';
+    });
+  }
+
+  // Aplicar al arrancar
+  applyPositions(loadPositions());
+
+  // ── Mostrar tiers desde matches ───────────────────────────
+  function mostrarTiers(data) {
+    // Soporta tanto el nuevo formato {matches} como el legacy {tiers}
+    const matches = data.matches || data.tiers.map((tier, i) => ({
+      tier, id: (data.ids || [])[i] || null, score: { combined: 1 }
+    }));
+
+    matches.forEach((match, i) => {
+      const slot = document.getElementById('slot' + i);
+      const img  = document.getElementById('img'  + i);
+
+      // Umbral minimo de confianza para mostrar
+      const combined = match.score ? match.score.combined : 1;
+      if (combined < 0.4) {
+        slot.classList.remove('visible');
+        console.log(`[overlay] slot ${i} descartado por score bajo (${combined})`);
+        return;
+      }
+
+      const src = TIER_IMGS[match.tier];
+      if (src) {
+        img.src = src;
+        slot.classList.add('visible');
+        console.log(`[overlay] slot ${i}: ${match.name || match.id} tier=${match.tier} score=${combined}`);
+      } else {
+        slot.classList.remove('visible');
+      }
+    });
+  }
+
+  function ocultarOverlay() {
+    document.querySelectorAll('.slot').forEach(s => s.classList.remove('visible'));
+  }
+
+  // ── API desde main.js ──────────────────────────────────────
+  if (window.overlayAPI) {
+    window.overlayAPI.onPack(pack => {
+      console.log('[overlay] pack recibido:', pack);
+      loadPack(pack);
+      localStorage.setItem('tier_pack', JSON.stringify(pack));
+    });
+
+    window.overlayAPI.onTiers(data => {
+      console.log('[overlay] datos recibidos:', data);
+      mostrarTiers(data);
+    });
+
+    // Ocultar overlay
+    window.overlayAPI.onOcultar(() => {
+      console.log('[overlay] ocultando');
+      ocultarOverlay();
+    });
+
+    // Recibir posiciones guardadas desde el editor
+    window.overlayAPI.onPositions(newPositions => {
+      console.log('[overlay] posiciones actualizadas:', newPositions);
+      savePositions(newPositions);
+      applyPositions(newPositions);
+    });
+
+    console.log('[overlay] overlayAPI conectado OK');
+  } else {
+    console.error('[overlay] overlayAPI no disponible');
+  }
+</script>
+</body>
+</html>
