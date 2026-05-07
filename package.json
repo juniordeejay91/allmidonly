@@ -1,7 +1,7 @@
 {
   "name": "amo",
   "version": "0.260507.1",
-  "description": "AMO - Helper para ARAM Mayhem",
+  "description": "ALL MID ONLY - Helper para ARAM",
   "main": "src/electron/main.js",
   "scripts": {
     "start": "electron .",
@@ -32,7 +32,7 @@
     "publish": {
       "provider": "github",
       "owner": "juniordeejay91",
-      "repo": "amo-app"
+      "repo": "allmidonly"
     },
     "directories": {
       "output": "dist"

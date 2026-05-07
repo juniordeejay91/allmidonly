@@ -1,48 +1,89 @@
-# ARAM CAOS
+# ALL MID ONLY
 
-Helper de Electron para ARAM Caos con overlay OCR, integración con LCU y versión web ligera.
+Aplicacion de escritorio creada con Electron para apoyar partidas de ARAM con utilidades visuales, integracion con el cliente de League of Legends y build para Windows.
+
+## Caracteristicas
+
+- Aplicacion de escritorio con Electron
+- Integracion con LCU
+- Recursos locales para overlays, imagenes y datos
+- Build para Windows con `electron-builder`
+- Preparada para publicar releases en GitHub
+
+## Stack
+
+- Electron
+- Node.js
+- electron-builder
+- Supabase
+- Puppeteer
 
 ## Estructura
 
 ```text
-aram-caos/
-├── main.js
-├── preload.js
-├── aram_caos_v6.html
-├── overlay.html
-├── overlay_preload.js
-├── aramcaos_ocr.py
-├── proxy_riot.py
-├── server.js
-├── package.json
-├── public/
-├── cache/
-├── campeones/
+allmidonly/
+├── assets/
 ├── img/
-├── augmentos/
 ├── objetos/
-├── docs/
+├── public/
 ├── scripts/
-├── tools/
-└── legacy/
+├── src/
+├── package.json
+└── README.md
 ```
 
-## Qué va en cada sitio
+## Desarrollo
 
-- `docs/`: setup, notas y pendientes.
-- `scripts/`: generadores y utilidades de mantenimiento.
-- `tools/calibration/`: herramientas para recalibrar OCR.
-- `tools/debug/`: pruebas manuales, capturas y utilidades OCR.
-- `tools/experiments/`: pruebas no integradas en el flujo principal.
-- `legacy/`: archivos antiguos fuera del arranque actual.
-
-## Arranque
+Instalar dependencias:
 
 ```bash
 npm install
+```
+
+Arrancar la app:
+
+```bash
 npm start
 ```
 
-## Nota
+Servidor web auxiliar:
 
-El núcleo de producción se mantiene en la raíz para no romper rutas de Electron y Python.
+```bash
+npm run web:start
+```
+
+## Build
+
+Generar instalador Windows:
+
+```bash
+npm run build:release
+```
+
+Build local con devtools:
+
+```bash
+npm run build:local
+```
+
+El instalador generado queda en:
+
+```text
+dist/ALL MID ONLY Setup.exe
+```
+
+## GitHub
+
+El proyecto publica sus releases en:
+
+`juniordeejay91/allmidonly`
+
+## Archivos ignorados
+
+Estos directorios no deben subirse al repo:
+
+- `node_modules/`
+- `cache/`
+- `historial/`
+- `dist/`
+- `vendor/python/`
