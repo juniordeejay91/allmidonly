@@ -1,7 +1,11 @@
 {
   "name": "amo",
-  "version": "0.260507.2",
+  "version": "0.260508.1",
   "description": "ALL MID ONLY - Helper para ARAM",
+  "author": {
+    "name": "juniordeejay91",
+    "email": "juniordjmadrid@gmail.com"
+  },
   "main": "src/electron/main.js",
   "scripts": {
     "start": "electron .",
@@ -28,7 +32,7 @@
   "build": {
     "appId": "com.allmidonly.app",
     "productName": "ALL MID ONLY",
-    "artifactName": "ALL MID ONLY Setup.${ext}",
+    "artifactName": "ALL-MID-ONLY-Setup.${ext}",
     "publish": {
       "provider": "github",
       "owner": "juniordeejay91",

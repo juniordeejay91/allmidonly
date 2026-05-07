@@ -1,89 +1,112 @@
-# ALL MID ONLY
+<div align="center">
 
-Aplicacion de escritorio creada con Electron para apoyar partidas de ARAM con utilidades visuales, integracion con el cliente de League of Legends y build para Windows.
+<img src="assets/images/logoicon.ico" width="120" alt="ALL MID ONLY Logo"/>
 
-## Caracteristicas
+# ALLMIDONLY
 
-- Aplicacion de escritorio con Electron
-- Integracion con LCU
-- Recursos locales para overlays, imagenes y datos
-- Build para Windows con `electron-builder`
-- Preparada para publicar releases en GitHub
+### Tu ARAM Caos Helper — tiers, aumentos y estadísticas en tiempo real
 
-## Stack
+[![Version](https://img.shields.io/badge/version-0.260508.1-D4AF37?style=for-the-badge&labelColor=0D0D0D)](https://github.com/juniordeejay91/allmidonly/releases)
+[![Electron](https://img.shields.io/badge/Electron-28-47848F?style=for-the-badge&logo=electron&logoColor=white&labelColor=0D0D0D)](https://electronjs.org)
+[![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D4?style=for-the-badge&logo=windows&logoColor=white&labelColor=0D0D0D)](https://github.com/juniordeejay91/allmidonly/releases)
+[![League of Legends](https://img.shields.io/badge/League_of_Legends-ARAM_Caos-C89B3C?style=for-the-badge&labelColor=0D0D0D)](https://www.leagueoflegends.com)
 
-- Electron
-- Node.js
-- electron-builder
-- Supabase
-- Puppeteer
+</div>
 
-## Estructura
+---
 
-```text
-allmidonly/
-├── assets/
-├── img/
-├── objetos/
-├── public/
-├── scripts/
-├── src/
-├── package.json
-└── README.md
-```
+## ¿Qué es ALL MID ONLY?
 
-## Desarrollo
+**ALL MID ONLY** es una aplicación de escritorio para jugadores de **League of Legends** centrada en el modo **ARAM y ARAM: Caos**. Se integra directamente con el cliente de LoL para ofrecerte información útil en tiempo real: tiers de campeones, estadísticas de aumentos, historial de partidas y mucho más — sin salir del juego.
 
-Instalar dependencias:
+Construida con **Electron**, corre de forma nativa en Windows y se conecta al cliente de League of Legends mediante la **LCU API**.
 
-```bash
-npm install
-```
+---
 
-Arrancar la app:
+## ✨ Características principales
 
-```bash
-npm start
-```
+### 🏆 Tier List en tiempo real
+Consulta el tier de cada campeón en ARAM y ARAM: Caos actualizado automáticamente. Filtra por tier, modo de juego (5v5, ARAM, ARURF) y rol.
 
-Servidor web auxiliar:
+### 📊 Historial de partidas
+Revisa tus últimas batallas con estadísticas detalladas: KDA, daño, torres, win rate por campeón, rachas y multikills. Sincronización directa con tu cuenta.
 
-```bash
-npm run web:start
-```
+### 👤 Perfil completo
+Visualiza tu nivel, rango, campeones más jugados, rendimiento medio y estadísticas globales de las últimas 20 partidas.
 
-## Build
+### ⚡ Aumentos (ARAM Caos)
+Estadísticas detalladas de todos los aumentos disponibles en ARAM Caos — win rate, pick rate y sinergias entre aumentos.
 
-Generar instalador Windows:
+### 🎯 Overlay en partida
+Overlay transparente sobre el juego que muestra los tiers de los campeones durante la fase de selección, compatible con resoluciones ultrawide.
 
-```bash
-npm run build:release
-```
+### 🎖️ AMO Points
+Sistema de puntos por misiones diarias: juega campeones específicos, gana partidas y consigue rachas para acumular puntos.
 
-Build local con devtools:
+### 🔄 Actualizaciones automáticas
+La aplicación se actualiza sola en segundo plano. Sin interrupciones, sin instaladores.
 
-```bash
-npm run build:local
-```
+---
 
-El instalador generado queda en:
+## 📸 Capturas de pantalla
 
-```text
-dist/ALL MID ONLY Setup.exe
-```
+### Dashboard principal
+![Dashboard](https://raw.githubusercontent.com/juniordeejay91/allmidonly/main/assets/screenshots/dashboard.png)
 
-## GitHub
+### Perfil de jugador
+![Perfil](https://raw.githubusercontent.com/juniordeejay91/allmidonly/main/assets/screenshots/perfil.png)
 
-El proyecto publica sus releases en:
+### Historial de partidas
+![Historial](https://raw.githubusercontent.com/juniordeejay91/allmidonly/main/assets/screenshots/historial.png)
 
-`juniordeejay91/allmidonly`
+### Tier list de campeones
+![Campeones](https://raw.githubusercontent.com/juniordeejay91/allmidonly/main/assets/screenshots/campeones.png)
 
-## Archivos ignorados
+### Live Game
+![Campeones](https://raw.githubusercontent.com/juniordeejay91/allmidonly/main/assets/screenshots/livegame.png)
 
-Estos directorios no deben subirse al repo:
+---
 
-- `node_modules/`
-- `cache/`
-- `historial/`
-- `dist/`
-- `vendor/python/`
+## 🚀 Instalación
+
+1. Descarga el instalador desde [**Releases**](https://github.com/juniordeejay91/allmidonly/releases/latest)
+2. Ejecuta `ALL-MID-ONLY-Setup.exe`
+3. Abre League of Legends
+4. ¡Listo! La app se conecta automáticamente al cliente
+
+> **Requisitos:** Windows 10/11 · League of Legends instalado
+
+---
+
+## 🛠️ Tecnologías
+
+| Tecnología | Uso |
+|-----------|-----|
+| [Electron 28](https://electronjs.org) | Framework de escritorio |
+| [LCU API](https://developer.riotgames.com) | Integración con el cliente de LoL |
+| [electron-updater](https://www.electron.build/auto-update) | Actualizaciones automáticas |
+| [Supabase](https://supabase.com) | Autenticación y sincronización de datos |
+
+---
+
+## 📊 Fuentes de datos
+
+Los datos de tiers, win rates y estadísticas se nutren de las mejores fuentes de la comunidad:
+
+- 🔵 [**Blitz.gg**](https://blitz.gg) — Tiers y estadísticas de campeones
+- 🟣 [**MOBAlytics**](https://mobalytics.gg) — Análisis de rendimiento
+- 🟡 [**DeepLoL**](https://deeplol.gg) — Estadísticas avanzadas y aumentos
+
+---
+
+## ⚠️ Aviso legal
+
+ALL MID ONLY no está afiliado ni patrocinado por Riot Games. League of Legends es una marca registrada de Riot Games, Inc. Esta aplicación usa datos públicos de la LCU API con fines informativos.
+
+---
+
+<div align="center">
+
+Hecho con ❤️ para la comunidad ARAM · [Descargar última versión](https://github.com/juniordeejay91/allmidonly/releases/latest)
+
+</div>

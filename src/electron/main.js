@@ -879,7 +879,7 @@ function setupAutoUpdater() {
     console.log('[Updater] descarga completa — instalando...');
     if (win) win.webContents.send('update-downloaded');
     // Instalar y reiniciar
-    setTimeout(() => autoUpdater.quitAndInstall(), 1500);
+    setTimeout(() => autoUpdater.quitAndInstall(true, true), 1500);
   });
 
   autoUpdater.on('error', (e) => {
@@ -1328,9 +1328,9 @@ function createTray() {
     );
   }
   tray = new Tray(icon);
-  tray.setToolTip('ARAM CAOS');
+  tray.setToolTip('ALL MID ONLY');
   tray.setContextMenu(Menu.buildFromTemplate([
-    { label: 'Abrir ARAM CAOS', click: () => { win.show(); win.focus(); } },
+    { label: 'Abrir ALL MID ONLY', click: () => { win.show(); win.focus(); } },
     { type: 'separator' },
     { label: 'Salir', click: () => { app._quitting = true; app.quit(); } },
   ]));
@@ -2932,3 +2932,4 @@ ipcMain.handle('lcu-get-live-game', async (_, { summonerId, puuid: argPuuid }) =
     return { error: 'not_in_game' };
   }
 });
+
