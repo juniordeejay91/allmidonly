@@ -12,11 +12,13 @@ import requests
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from urllib.parse import urlparse
+from dotenv import load_dotenv
+load_dotenv()
 
 # ── CONFIGURACIÓN ─────────────────────────────────────────────
 # Pon aquí tu API key de https://developer.riotgames.com
 # Las development keys caducan cada 24h.
-RIOT_KEY   = os.environ.get("RIOT_KEY", "RGAPI-20381fc2-e930-4bc1-b9da-359a86b18262")
+RIOT_KEY   = os.environ.get("RIOT_KEY", "")
 PROXY_PORT = 5123
 
 ALLOWED_HOSTS = (
