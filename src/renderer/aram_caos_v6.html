@@ -11405,7 +11405,7 @@ async function restoreAccount(){
   saveAccounts(accounts);
   applyAccount(active);
   try {
-    const summ = await fetch(`http://127.0.0.1:5123/summoner-by-name?name=${encodeURIComponent(active.name)}&tag=${encodeURIComponent(active.tag)}`).then(r => r.json());
+    const summ = await fetch(`https://allmidonly-backend.onrender.com/summoner-by-name?name=${encodeURIComponent(active.name)}&tag=${encodeURIComponent(active.tag)}`).then(r => r.json());
     if(summ.error) throw new Error(summ.error);
     upsertAccount({ ...active, level: summ.summonerLevel, iconId: summ.profileIconId });
     updateProfile(active.name, active.tag, summ.summonerLevel, summ.profileIconId);
@@ -11479,7 +11479,7 @@ let riotSummonerId = null;
 let pendingAccount = null;
 let verifyIconId = null;
 
-const PROXY = 'http://127.0.0.1:5123/riot';
+const PROXY = 'https://allmidonly-backend.onrender.com/riot';
 
 async function riotFetch(url) {
   let lastError = null;
@@ -11859,7 +11859,7 @@ async function refreshProfile(){
 
   try {
     const [_rname, _rtag] = document.getElementById('prof-name').textContent.replace('#',' #').split(' #');
-    const summ = await fetch(`http://127.0.0.1:5123/summoner-by-name?name=${encodeURIComponent(_rname.trim())}&tag=${encodeURIComponent(_rtag?.trim()||'')}`).then(r => r.json());
+    const summ = await fetch(`https://allmidonly-backend.onrender.com/summoner-by-name?name=${encodeURIComponent(_rname.trim())}&tag=${encodeURIComponent(_rtag?.trim()||'')}`).then(r => r.json());
     if(summ.error) throw new Error(summ.error);
     const [name, tag] = document.getElementById('prof-name').textContent.replace('#',' #').split(' #');
     updateProfile(name.trim(), tag ? tag.trim() : '', summ.summonerLevel, summ.profileIconId);

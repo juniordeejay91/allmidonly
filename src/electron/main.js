@@ -880,18 +880,26 @@ function setupAutoUpdater() {
     if (win) win.webContents.send('update-downloaded');
 
     setTimeout(() => {
-      const { spawn } = require('child_process');
-      const installerPath = path.join(
-        app.getPath('appData'),
-        '..', 'Local', 'amo-updater', 'installer.exe'
-      );
+      // ── Matar procesos Python antes de instalar ──
+      try { if (ocrProc) { ocrProc.kill('SIGTERM'); ocrProc = null; } } catch(e) {}
+      try { if (pyProc)  { pyProc.kill('SIGTERM');  pyProc  = null; } } catch(e) {}
 
-      spawn(installerPath, ['/S'], {
-        detached: true,
-        stdio: 'ignore'
-      }).unref();
+      // Esperar un momento a que liberen los archivos
+      setTimeout(() => {
+        const { spawn } = require('child_process');
+        const installerPath = path.join(
+          app.getPath('appData'),
+          '..', 'Local', 'amo-updater', 'installer.exe'
+        );
 
-      app.quit();
+        spawn(installerPath, ['/S'], {
+          detached: true,
+          stdio: 'ignore'
+        }).unref();
+
+        app.quit();
+      }, 1000); // 1s para que los procesos terminen de cerrar
+
     }, 1500);
   });
 
@@ -2754,7 +2762,7 @@ ipcMain.handle('lcu-get-live-game', async (_, { summonerId, puuid: argPuuid }) =
     if (!game && mainPuuid) {
       try {
         const res = await fetch(
-          `http://127.0.0.1:5123/riot?url=https://euw1.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${mainPuuid}`,
+          `https://allmidonly-backend.onrender.com/riot?url=https://euw1.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${mainPuuid}`,
           { headers: { Accept: 'application/json' } }
         );
         const data = await res.json();
@@ -2773,7 +2781,7 @@ ipcMain.handle('lcu-get-live-game', async (_, { summonerId, puuid: argPuuid }) =
       if (!p.puuid) return;
       try {
         const res = await fetch(
-          `http://127.0.0.1:5123/riot?url=https://euw1.api.riotgames.com/lol/league/v4/entries/by-puuid/${p.puuid}`,
+          `https://allmidonly-backend.onrender.com/riot?url=https://euw1.api.riotgames.com/lol/league/v4/entries/by-puuid/${p.puuid}`,
           { headers: { Accept: 'application/json' } }
         );
         const entries = await res.json();
