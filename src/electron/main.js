@@ -878,8 +878,21 @@ function setupAutoUpdater() {
   autoUpdater.on('update-downloaded', () => {
     console.log('[Updater] descarga completa — instalando...');
     if (win) win.webContents.send('update-downloaded');
-    // Instalar y reiniciar
-    setTimeout(() => autoUpdater.quitAndInstall(true, true), 1500);
+
+    setTimeout(() => {
+      const { spawn } = require('child_process');
+      const installerPath = path.join(
+        app.getPath('appData'),
+        '..', 'Local', 'amo-updater', 'installer.exe'
+      );
+
+      spawn(installerPath, ['/S'], {
+        detached: true,
+        stdio: 'ignore'
+      }).unref();
+
+      app.quit();
+    }, 1500);
   });
 
   autoUpdater.on('error', (e) => {
