@@ -778,14 +778,20 @@ async function startChampSelectPolling(creds) {
   }, 200);
 }
 
+let _lcuKnownClosed = false;
+
 async function startLcuWebSocket() {
   if (lcuWs) return;
   const creds = await getLcuCredentials();
   if (!creds) {
-    if (win) win.webContents.send('lcu-phase', 'None');
-    lcuWsRetryTimer = setTimeout(startLcuWebSocket, 5000);
+    if (!_lcuKnownClosed) {
+      _lcuKnownClosed = true;
+      if (win) win.webContents.send('lcu-phase', 'closed');
+    }
+    lcuWsRetryTimer = setTimeout(startLcuWebSocket, 8000);
     return;
   }
+  _lcuKnownClosed = false;
 
   const auth = Buffer.from(`riot:${creds.token}`).toString('base64');
   const ws = new WebSocket(`wss://127.0.0.1:${creds.port}`, {
@@ -875,6 +881,7 @@ async function startLcuWebSocket() {
     lcuWs = null;
     _lcuCredsCache = null;
     _lcuCredsCacheTs = 0;
+    _lcuKnownClosed = false; // permitir un solo envío de 'closed'
     if (win) win.webContents.send('lcu-phase', 'closed');
     lcuWsRetryTimer = setTimeout(startLcuWebSocket, 5000);
   });
@@ -919,19 +926,8 @@ function setupAutoUpdater() {
 
       // Esperar un momento a que liberen los archivos
       setTimeout(() => {
-        const { spawn } = require('child_process');
-        const installerPath = path.join(
-          app.getPath('appData'),
-          '..', 'Local', 'amo-updater', 'installer.exe'
-        );
-
-        spawn(installerPath, ['/S'], {
-          detached: true,
-          stdio: 'ignore'
-        }).unref();
-
-        app.quit();
-      }, 1000); // 1s para que los procesos terminen de cerrar
+        autoUpdater.quitAndInstall(false, true); // isSilent=false, isForceRunAfter=true
+      }, 1000);
 
     }, 1500);
   });
