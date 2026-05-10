@@ -554,7 +554,7 @@ body.startup-pending #appWrap::before {
   margin-top: 8px;
   margin-bottom: 6px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.03), 0 2px 8px rgba(0,0,0,.3);
 }
 .hist-streak-row::before {
@@ -601,68 +601,45 @@ body.startup-pending #appWrap::before {
 }
 .hist-streak-dots {
   display: flex;
-  align-items: center;
-  gap: 4px;
+  align-items: flex-end;
+  gap: 3px;
   flex: 1;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow: visible;
+  height: 36px;
 }
 /* Dot individual */
 .hsd {
-  width: 12px; height: 12px;
-  border-radius: 50%;
+  height: 36px;
+  width: 10px;
+  border-radius: 6px;
   flex-shrink: 0;
   position: relative;
   cursor: default;
-  transition: transform .15s, box-shadow .15s;
-  border: 1px solid rgba(255,255,255,.1);
+  transition: transform .15s, box-shadow .15s, height .15s;
 }
-.hsd::after {
-  content: '';
-  position: absolute; inset: -2px;
-  border-radius: 50%;
-  background: inherit;
-  opacity: .2;
-  filter: blur(3px);
-  pointer-events: none;
-}
-.hsd:hover { transform: scale(1.5); z-index: 5; }
-/* Tooltip del dot */
-.hsd .hsd-tt {
-  display: none;
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%; transform: translateX(-50%);
-  background: linear-gradient(160deg, #0d1f46, #080f28);
-  border: 1px solid #2a4a8a;
-  border-radius: 8px;
-  padding: 8px 12px;
-  min-width: 150px;
-  max-width: 200px;
-  z-index: 999;
-  box-shadow: 0 8px 24px rgba(0,0,0,.7);
-  pointer-events: none;
-  white-space: nowrap;
-}
-.hsd:hover .hsd-tt { display: block; }
+.hsd-wrap:hover .hsd { transform: scaleY(1.25) translateY(-2px); }
+.hsd-wrap .hsd-tt { display: none; position: absolute; bottom: calc(100% + 10px); left: 50%; margin-left: -80px; width: 160px; background: linear-gradient(180deg,#111318,#0a0c11); border: 1px solid rgba(212,168,79,.28); border-radius: 10px; padding: 10px 12px; z-index: 9999; box-shadow: 0 16px 36px rgba(0,0,0,.85),inset 0 1px 0 rgba(212,168,79,.07); pointer-events: none; }
+.hsd-wrap:hover .hsd-tt { display: block; }
 .hsd-tt-champ {
   font-family: 'Ubuntu Condensed', sans-serif;
-  font-size: 14px; color: #c8d8ff; letter-spacing: .5px;
+  font-size: 15px; color: #f2ede4; letter-spacing: .4px; font-weight: 700;
   margin-bottom: 3px;
 }
 .hsd-tt-result {
   font-family: 'Ubuntu Condensed', sans-serif;
-  font-size: 12px; letter-spacing: 1px;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
 }
 .hsd-tt-kda {
-  font-size: 11px; color: #6a8ec8; margin-top: 2px;
+  font-size: 11px; color: #8a9ab8; margin-top: 6px;
+  border-top: 1px solid rgba(212,168,79,.15); padding-top: 6px;
 }
 .hsd-tt-arrow {
-  position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: -5px; left: 50%;
   width: 8px; height: 8px;
-  background: #0d1f46;
-  border-right: 1px solid #2a4a8a;
-  border-bottom: 1px solid #2a4a8a;
+  background: #111318;
+  border-right: 1px solid rgba(212,168,79,.28);
+  border-bottom: 1px solid rgba(212,168,79,.28);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -5471,16 +5448,7 @@ html, body { background:#07080b; }
   pointer-events: none;
   user-select: none;
 }
-.oe-slot .oe-resize {
-  position: absolute;
-  bottom: -5px; right: -5px;
-  width: 16px; height: 16px;
-  background: linear-gradient(180deg,#f0d080,#c19030);
-  border-radius: 5px;
-  cursor: se-resize;
-  z-index: 2;
-  box-shadow: 0 0 10px rgba(212,168,79,.5),0 8px 14px rgba(0,0,0,.24);
-}
+.oe-slot .oe-resize { display: none; }
 .oe-slot:hover { outline: 1px dashed rgba(212,168,79,.8); filter:drop-shadow(0 0 10px rgba(212,168,79,.16)); }
 
 .oe-exclusion {
@@ -6384,7 +6352,7 @@ html, body { background:#07080b; }
           <!-- Maestría -->
           <div style="padding:14px 16px;background:rgba(10,20,45,.7);border:1px solid #1e2e52;border-radius:8px;margin-bottom:16px;">
             <div style="font-family:'Ubuntu Condensed',sans-serif;font-size:11px;letter-spacing:2px;color:#2d4a7a;margin-bottom:12px;">MAESTRÍA DE CAMPEONES</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;" id="perfil-mastery-list"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;" id="perfil-mastery-list"></div>
           </div>
 
           <!-- Historial ARAM -->
@@ -6493,10 +6461,10 @@ html, body { background:#07080b; }
           <div id="hist-champ-stats-wrap" style="display:none;"></div>
 
           <!-- Gráfico de racha (últimas 20) -->
-          <div id="hist-streak-wrap" style="display:none;" class="hist-streak-row">
+          <div id="hist-streak-wrap" style="display:none;min-height:56px;" class="hist-streak-row">
             <span class="hist-streak-label-txt">ÚLTIMAS 20 PARTIDAS </span>
             <div class="hist-streak-dots" id="hist-streak-dots"></div>
-            <span id="hist-streak-label" style="font-size:11px;margin-left:4px;"></span>
+            <div style="flex:1;display:flex;justify-content:center;" id="hist-streak-label"></div>
             <button class="hist-refresh-btn" id="histRefreshBtn" onclick="refreshHistorial()" style="margin-left:auto;">
               <svg id="histRefreshIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
               Actualizar historial
@@ -6999,11 +6967,16 @@ html, body { background:#07080b; }
       <div class="overlay-editor-close" onclick="closeOverlayEditor()">✕</div>
     </div>
     <div class="overlay-editor-body">
-      <div class="overlay-editor-hint">Arrastra los indicadores · Esquina inferior-derecha para redimensionar</div>
+      <div class="overlay-editor-hint">Arrastra los indicadores para moverlos</div>
       <div class="oe-zoom-bar">
         <span class="oe-zoom-label">🔍 Zoom vista</span>
         <input class="oe-zoom-slider" type="range" id="oeZoomSlider" min="1" max="4" step="0.1" value="1">
         <span class="oe-zoom-value" id="oeZoomValue">1.0x</span>
+      </div>
+      <div class="oe-zoom-bar" style="margin-top:6px;">
+        <span class="oe-zoom-label">🖼️ Tamaño de iconos</span>
+        <input class="oe-zoom-slider" type="range" id="oeIconSizeSlider" min="5" max="22" step="0.5" value="14">
+        <span class="oe-zoom-value" id="oeIconSizeValue" style="min-width:36px;text-align:right;">14.0</span>
       </div>
       <div class="overlay-editor-canvas-viewport" id="oeViewport">
         <div class="overlay-editor-canvas-wrap" id="oeCanvas">
@@ -7013,6 +6986,7 @@ html, body { background:#07080b; }
           <div class="oe-slot" id="oe2"><img data-tier-src="img/tiers/tier3.png" draggable="false"><div class="oe-resize" id="oer2"></div></div>
         </div>
       </div>
+    
     </div>
     <div class="overlay-editor-footer">
       <button class="oe-btn oe-btn-reset"  onclick="resetOverlayEditor()">Resetear</button>
@@ -7181,27 +7155,29 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTransform(newZoom, oePanX, oePanY, originX, originY);
   }, { passive: false });
 
-  // Slots drag & resize
+  // Slots drag (solo mover, sin resize por handle)
   for (let i = 0; i < 3; i++) {
-    const slot   = document.getElementById('oe' + i);
-    const handle = document.getElementById('oer' + i);
-
+    const slot = document.getElementById('oe' + i);
     slot.addEventListener('mousedown', (e) => {
-      if (e.target === handle || e.target.parentElement === handle) return;
       e.preventDefault();
-      e.stopPropagation(); // no activar pan
+      e.stopPropagation();
       const coords = oeCanvasCoords(e);
       const p      = oePositions[i];
       oeDragging   = { i, startX: coords.x, startY: coords.y, origX: p.x, origY: p.y };
     });
-
-    handle.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const coords = oeCanvasCoords(e);
-      oeResizing   = { i, startX: coords.x, startY: coords.y, origW: oePositions[i].w };
-    });
   }
+
+  // Slider tamaño de iconos
+  document.getElementById('oeIconSizeSlider').addEventListener('input', (e) => {
+    const newW = parseFloat(e.target.value);
+    document.getElementById('oeIconSizeValue').textContent = newW.toFixed(1);
+    if (!oePositions) return;
+    oePositions.forEach((p, i) => {
+      oePositions[i].w = newW;
+      oePositions[i].h = calcH(newW);
+    });
+    applyOePositions();
+  });
 
   // Pan — click en fondo del canvas
   document.getElementById('oeCanvas').addEventListener('mousedown', (e) => {
@@ -7244,21 +7220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         applyOePositions();
       }
     }
-
-    // Resize slot
-    if (oeResizing !== null) {
-      const { i, startX, origW } = oeResizing;
-      const MAX_W = DEFAULT_W;
-      const MIN_W = DEFAULT_W / 2;
-      let newW    = Math.max(MIN_W, Math.min(MAX_W, origW + (coords.x - startX)));
-      const newH  = calcH(newW);
-      const p     = oePositions[i];
-      if (!colisionaConExclusion(p.x, p.y, newW, newH)) {
-        oePositions[i].w = newW;
-        oePositions[i].h = newH;
-        applyOePositions();
-      }
-    }
   });
 
   document.addEventListener('mouseup', () => {
@@ -7268,7 +7229,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('oeCanvas').style.cursor = 'grab';
     }
     oeDragging = null;
-    oeResizing = null;
   });
 });
 
@@ -7283,6 +7243,9 @@ function openOverlayEditor() {
     document.getElementById('oeCanvas').style.transform       = 'scale(1)';
     document.getElementById('oeCanvas').style.transformOrigin = '50% 62%';
     document.getElementById('oeCanvas').style.cursor          = 'grab';
+    oeZoom = 1; oePanX = 0; oePanY = 0;
+    document.getElementById('oeZoomSlider').value = 1;
+    document.getElementById('oeZoomValue').textContent = '1.0x';
     applyOePositions();
     renderExclusionZones();
   });
@@ -7304,6 +7267,10 @@ function openOverlayEditor() {
         });
       }
     } catch(e) {}
+    // Sincronizar slider de tamaño con el tamaño actual
+    const currentW = oePositions[0]?.w ?? DEFAULT_W;
+    document.getElementById('oeIconSizeSlider').value = currentW;
+    document.getElementById('oeIconSizeValue').textContent = currentW.toFixed(1);
   });
 }
 
@@ -7483,6 +7450,7 @@ function buildAugmentSetMapHtml(raw){
 })(); 
 
 const AUGMENTS_READY = (async function loadAugments(){
+  if(window.__INITIAL_PHASE__ === 'InProgress') return {};
   const URLS = [
     'https://utils.iesdev.com/static/json/lol/mayham/16.7/augments_es_es',
     'https://utils.iesdev.com/static/json/lol/mayham/16.6/augments_es_es',
@@ -7534,6 +7502,7 @@ const AUGMENTS_READY = (async function loadAugments(){
 })();
 
 const AUGMENT_SETS_READY = (async function loadAugmentSets(){
+  if(window.__INITIAL_PHASE__ === 'InProgress') return {};
   const URLS = [
     'https://utils.iesdev.com/static/json/lol/mayham/16.8/augment_sets_es_es',
     'https://utils.iesdev.com/static/json/lol/mayham/16.7/augment_sets_es_es',
@@ -7568,16 +7537,18 @@ const AUGMENT_SETS_READY = (async function loadAugmentSets(){
 let DD_VER = '14.24.1'; // fallback, se actualizará al arrancar
 const DD_BASE_FN = () => `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/champion/`;
 // Obtener versión actual de Data Dragon al arrancar
-fetch('https://ddragon.leagueoflegends.com/api/versions.json')
-  .then(r => r.json())
-  .then(versions => {
-    DD_VER = versions[0];
-    console.log('DD_VER:', DD_VER);
-    renderC(lastList);
-    const navPatch = document.getElementById('nav-patch-text');
-    if(navPatch) navPatch.textContent = 'v' + DD_VER;
-  })
-  .catch(() => console.warn('No se pudo obtener versión de DDragon, usando', DD_VER));
+if(window.__INITIAL_PHASE__ !== 'InProgress') {
+  fetch('https://ddragon.leagueoflegends.com/api/versions.json')
+    .then(r => r.json())
+    .then(versions => {
+      DD_VER = versions[0];
+      console.log('DD_VER:', DD_VER);
+      renderC(lastList);
+      const navPatch = document.getElementById('nav-patch-text');
+      if(navPatch) navPatch.textContent = 'v' + DD_VER;
+    })
+    .catch(() => console.warn('No se pudo obtener versión de DDragon, usando', DD_VER));
+}
 const DD_BASE = `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/champion/`;
 const DD_OVERRIDES={'Aurelion Sol':'AurelionSol','Dr. Mundo':'DrMundo',"Kai'Sa":'Kaisa',"Kog'Maw":'KogMaw',"Kha'Zix":'Khazix',"K'Sante":'KSante',"Bel'Veth":'Belveth',"Vel'Koz":'Velkoz',"Rek'Sai":'RekSai','LeBlanc':'Leblanc','Lee Sin':'LeeSin','Jarvan IV':'JarvanIV','Master Yi':'MasterYi','Miss Fortune':'MissFortune','Twisted Fate':'TwistedFate','Xin Zhao':'XinZhao','Tahm Kench':'TahmKench','Nunu & Willump':'Nunu','Renata Glasc':'Renata',"Cho'Gath":'Chogath','Wukong':'MonkeyKing','Mel':'Mel'};
 function ddKey(n){return DD_OVERRIDES[n]||(n.replace(/[^a-zA-Z]/g,''));}
@@ -8756,6 +8727,10 @@ async function _amoCheckLastMatchForQuests(){
 function playInit(){
   if(_playInitDone) return;
   _playInitDone = true;
+  if(window.__INITIAL_PHASE__ === 'InProgress') {
+    playSetState('ingame');
+    return;
+  }
   playStartLiveTicker();
   playStartPolling();
   window.electronAPI?.invoke('lcu-gameflow-phase').then(phase => {
@@ -8787,6 +8762,14 @@ function playSetState(state){
   if(state === 'connected' || state === 'offline') { _amoInit(); }
   if(state === 'postgame')               { _amoCheckLastMatchForQuests(); }
   if(state !== 'champselect')            { _stopChampSelectPoll(); _autoImportDoneForChamp = null; }
+
+  // Pausar ticker cuando no hace falta
+  const needsTicker = ['searching','readycheck','champselect','postgame'].includes(state);
+  if(!needsTicker){
+    if(_playLiveTick){ clearInterval(_playLiveTick); _playLiveTick = null; }
+  } else {
+    if(!_playLiveTick) playStartLiveTicker();
+  }
 }
 
 function playStartLiveTicker(){
@@ -9152,7 +9135,7 @@ function playStartPolling(){
       const p = (typeof phase === 'string') ? phase.replace(/"/g,'') : '';
       if(!p){
         playSetState('offline');
-        _playPollInterval = setTimeout(doPoll, 5000); // sin cliente: revisar cada 5s
+        _playPollInterval = setTimeout(doPoll, 10000); // sin cliente: revisar cada 10s
       } else {
         if(p === 'None' || p === 'Lobby')               playSetState('connected');
         else if(p === 'Matchmaking')                     playSetState('searching');
@@ -9161,7 +9144,7 @@ function playStartPolling(){
         else if(p === 'InProgress' || p === 'GameStart') playSetState('ingame');
         else if(p === 'EndOfGame'  || p === 'PreEndOfGame') playSetState('postgame');
         else                                             playSetState('connected');
-        _playPollInterval = setTimeout(doPoll, 3000); // con cliente: revisar cada 3s
+        _playPollInterval = setTimeout(doPoll, 5000); // con cliente: revisar cada 5s (el WS ya manda cambios al instante)
       }
     } catch {
       playSetState('offline');
@@ -10649,19 +10632,34 @@ function renderStreakChart(){
 
   const last20 = chaosParts.slice(0,20);
   wrap.style.display='flex';
-  dots.innerHTML = last20.map(p => {
+  // Calcular KDA ratio para altura de la barra (victorias más altas)
+  const kdaRatios = last20.map(p => {
+    const parts = (p.k||'0/1/0').split('/');
+    const k=parseInt(parts[0])||0, d=parseInt(parts[1])||1, a=parseInt(parts[2])||0;
+    return d===0 ? k+a : (k+a)/d;
+  });
+  const maxRatio = Math.max(...kdaRatios, 1);
+
+  dots.innerHTML = last20.map((p, i) => {
     const w = p.r==='Victoria';
-    const col = w ? '#27a84a' : '#e24b4a';
-    const colSoft = w ? '#4abf6a' : '#e24b4a';
-    const champ = p.c||'?';
-    const kda = p.k||'';
-    const dur = p.d||'';
+    const col     = w ? '#27c93f' : '#e24b4a';
+    const colGlow = w ? 'rgba(39,201,63,.5)' : 'rgba(226,75,74,.45)';
+    const colTop  = w ? '#4de866' : '#f07070';
+    const champ   = p.c||'?';
+    const kda     = p.k||'';
+    const dur     = p.d||'';
     const resultTxt = w ? 'VICTORIA' : 'DERROTA';
-    return `<div class="hsd" style="background:${col};box-shadow:0 0 6px ${col}bb,0 0 12px ${col}33;border-color:${col}66;">
+    const ratio   = kdaRatios[i];
+    // Altura: victorias entre 22-36px, derrotas entre 12-24px
+    const hMin = w ? 20 : 10;
+    const hMax = w ? 36 : 22;
+    const h = Math.round(hMin + (ratio / maxRatio) * (hMax - hMin));
+    return `<div style="position:relative;flex-shrink:0;" class="hsd-wrap">
+      <div class="hsd" style="height:${h}px;background:linear-gradient(180deg,${colTop},${col});box-shadow:0 0 8px ${colGlow},0 2px 6px rgba(0,0,0,.4);border-radius:4px;width:10px;cursor:default;transition:transform .15s;"></div>
       <div class="hsd-tt">
         <div class="hsd-tt-arrow"></div>
         <div class="hsd-tt-champ">${champ}</div>
-        <div class="hsd-tt-result" style="color:${colSoft};">${resultTxt}</div>
+        <div class="hsd-tt-result" style="color:${w?'#4abf6a':'#e24b4a'};">${resultTxt}</div>
         ${kda ? `<div class="hsd-tt-kda">${kda}${dur ? ' · '+dur : ''}</div>` : ''}
       </div>
     </div>`;
@@ -10678,7 +10676,27 @@ function renderStreakChart(){
     }
   }
   const streakCol = streakType==='V'?'#4abf6a':'#e24b4a';
-  label.innerHTML = streak>=2 ? `<span style="color:${streakCol};font-family:'Ubuntu Condensed',sans-serif;">Racha de ${streak}${streakType}</span>` : '';
+  if (streak >= 2) {
+    const isWin = streakType === 'V';
+    const fire = streak >= 5 ? (isWin ? ' 🔥' : ' 💀') : '';
+    const streakCol2 = isWin ? '#27c93f' : '#e24b4a';
+    const streakBorder = isWin ? 'rgba(39,201,63,.45)' : 'rgba(226,75,74,.45)';
+    const streakBg = isWin
+      ? 'linear-gradient(180deg,rgba(12,36,18,.97),rgba(6,20,10,.99))'
+      : 'linear-gradient(180deg,rgba(36,10,10,.97),rgba(20,6,6,.99))';
+    const streakGlow = isWin ? 'rgba(39,201,63,.18)' : 'rgba(226,75,74,.18)';
+    label.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <div style="font-family:'Ubuntu Condensed',sans-serif;font-size:28px;font-weight:700;color:${streakCol2};line-height:1;text-shadow:0 0 14px ${streakGlow};">${streak}${fire}</div>
+        <div style="width:1px;height:28px;background:${streakBorder};opacity:.7;"></div>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <div style="font-family:'Ubuntu Condensed',sans-serif;font-size:9px;color:rgba(179,179,179,.6);letter-spacing:2.5px;text-transform:uppercase;">RACHA</div>
+          <div style="font-family:'Ubuntu Condensed',sans-serif;font-size:11px;color:${streakCol2};letter-spacing:1.5px;text-transform:uppercase;font-weight:700;">${isWin ? 'VICTORIAS' : 'DERROTAS'}</div>
+        </div>
+      </div>`;
+  } else {
+    label.innerHTML = '';
+  }
 }
 
 function renderChampFilterStats(){
@@ -17356,40 +17374,57 @@ function _perfilRender(data, isOwn){
     if(_perfilViewingOwn){
       const ls = _perfilCalcLocalStats();
       if(ls){
+        const _augCardHtml = (aug, footerHtml, extraBottom) => {
+          const border = aug.rarityBorder || '#4b4339';
+          const color  = aug.rarityColor  || '#9a9287';
+          const isPrismatic = aug.r === 'LEGENDARIO';
+          const isGold      = aug.r === 'ÉPICO';
+          const bgGrad = isPrismatic
+            ? 'linear-gradient(180deg,rgba(38,18,58,.98),rgba(18,10,30,.99))'
+            : isGold
+              ? 'linear-gradient(180deg,rgba(38,28,10,.98),rgba(20,14,6,.99))'
+              : 'linear-gradient(180deg,rgba(18,22,34,.98),rgba(10,12,20,.99))';
+          const glow = isPrismatic ? 'rgba(180,120,255,.3)' : isGold ? 'rgba(212,168,79,.25)' : 'rgba(180,190,210,.12)';
+          const shimmer = isPrismatic
+            ? 'linear-gradient(135deg,rgba(180,120,255,.12),transparent 60%)'
+            : isGold
+              ? 'linear-gradient(135deg,rgba(212,168,79,.10),transparent 60%)'
+              : 'none';
+          const ttHtml = augTooltipHtml(aug.id, footerHtml);
+          return `<div class="tt-anchor" onmouseenter="positionTT(this)" onmouseleave="hideTT()" style="position:relative;">
+            <div style="width:120px;min-height:160px;background:${bgGrad};border:1px solid ${border};border-radius:14px;padding:12px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:transform .18s,box-shadow .18s;box-shadow:0 8px 20px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05);position:relative;overflow:hidden;"
+                 onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 28px rgba(0,0,0,.55),0 0 22px ${glow}'"
+                 onmouseout="this.style.transform='';this.style.boxShadow='0 8px 20px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05)'">
+              ${shimmer !== 'none' ? `<div style="position:absolute;inset:0;background:${shimmer};pointer-events:none;border-radius:14px;"></div>` : ''}
+              <div style="width:66px;height:66px;border-radius:14px;overflow:hidden;border:1px solid ${border};display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(0,0,0,.3);box-shadow:0 0 14px ${glow};">
+                ${aug?.i ? `<img src="${aug.i}" style="width:100%;height:100%;object-fit:contain;padding:5px;" onerror="this.style.display='none'">` : `<div style="font-size:9px;color:${color};">${aug.id}</div>`}
+              </div>
+              <div style="font-family:'Roboto Condensed',sans-serif;font-weight:900;font-style:italic;font-size:12px;color:#f7f2e8;text-align:center;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100%;flex:1;">${aug?.n || aug.id}</div>
+              <div style="margin-top:auto;width:100%;display:flex;flex-direction:column;align-items:center;gap:4px;">${extraBottom}</div>
+            </div>
+            ${ttHtml}
+          </div>`;
+        };
+
         const topAugsHtml = ls.topAugs.length ? ls.topAugs.map(([id, count]) => {
           const aug = augMeta(id);
-          const iconHtml = aug?.i
-            ? `<img src="${aug.i}" style="width:28px;height:28px;border-radius:5px;object-fit:cover;" onerror="this.style.display='none'">`
-            : `<div style="width:28px;height:28px;border-radius:5px;background:#1a2a4a;display:flex;align-items:center;justify-content:center;font-size:9px;color:#3a5a8a;">${id}</div>`;
-          const _augBorder = aug.rarityBorder || '#2a3a6a';
-          const ttHtml = augTooltipHtml(id, `<div style="font-size:13px;color:#4d8eff;margin-top:4px;">Usado ${count} veces</div>`);
-          return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-            <div class="tt-anchor" onmouseenter="positionTT(this)" onmouseleave="hideTT()">
-              <div style="width:38px;height:38px;border-radius:6px;border:2px solid ${_augBorder};background:#0a1428;overflow:hidden;cursor:pointer;transition:transform .15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
-                ${aug?.i ? `<img src="${aug.i}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#3a5a8a;">${id}</div>`}
-              </div>
-              ${ttHtml}
-            </div>
-            <div style="font-size:11px;color:#4a6a9a;">${count}x</div>
-          </div>`;
+          const ttFooter = `<div style="font-size:13px;color:#4d8eff;margin-top:4px;">Usado ${count} veces</div>`;
+          const bottom = `<div style="font-family:'Ubuntu Condensed',sans-serif;font-size:12px;color:${aug.rarityColor};letter-spacing:.5px;">Usado ${count}×</div>`;
+          return _augCardHtml(aug, ttFooter, bottom);
         }).join('') : '<span style="font-size:12px;color:#2d4a7a;">—</span>';
 
         const topAugsWrHtml = ls.topAugsWr?.length ? ls.topAugsWr.map(([id, s, wr]) => {
           const aug = augMeta(id);
           const wrCol = wr>=60?'#4abf6a':wr>=50?'#c8d8ff':'#e24b4a';
-          const _augBorder2 = aug.rarityBorder || '#2a3a6a';
-          const ttHtml = augTooltipHtml(id, `<div style="font-size:13px;color:${wrCol};margin-top:4px;font-weight:500;">${wr}% WR · ${s.total} usos</div>`);
-          return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-            <div class="tt-anchor" onmouseenter="positionTT(this)" onmouseleave="hideTT()">
-              <div style="width:38px;height:38px;border-radius:6px;border:2px solid ${_augBorder2};background:#0a1428;overflow:hidden;cursor:pointer;position:relative;transition:transform .15s;"
-                   onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
-                ${aug?.i ? `<img src="${aug.i}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#3a5a8a;">${id}</div>`}
-                <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:${wrCol};opacity:.8;"></div>
-              </div>
-              ${ttHtml}
+          const wrBarCol = wr>=60?'linear-gradient(90deg,#1a8a3a,#4abf6a)':wr>=50?'linear-gradient(90deg,#2a4a8a,#4d8eff)':'linear-gradient(90deg,#8a1a1a,#e24b4a)';
+          const ttFooter = `<div style="font-size:13px;color:${wrCol};margin-top:4px;font-weight:500;">${wr}% WR · ${s.total} usos</div>`;
+          const bottom = `
+            <div style="width:100%;height:3px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden;">
+              <div style="height:100%;width:${wr}%;background:${wrBarCol};border-radius:2px;"></div>
             </div>
-            <div style="font-size:11px;color:${wrCol};font-weight:500;">${wr}%</div>
-          </div>`;
+            <div style="font-family:'Ubuntu Condensed',sans-serif;font-size:13px;font-weight:700;color:${wrCol};letter-spacing:.5px;">${wr}% WR</div>
+            <div style="font-size:11px;color:#4a6a9a;">${s.total} usos</div>`;
+          return _augCardHtml(aug, ttFooter, bottom);
         }).join('') : '<span style="font-size:12px;color:#2d4a7a;">Necesitas al menos 3 usos por augmento</span>';
 
         localEl.innerHTML = `
@@ -17496,11 +17531,11 @@ function _perfilRender(data, isOwn){
               <div style="font-size:11px;color:#2d4a7a;margin-top:2px;">${modo.toUpperCase()}</div>
             </div>`).join('')}
           </div>
-          <div style="font-size:11px;color:#2d4a7a;margin-bottom:8px;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;">AUMENTOS MÁS USADOS</div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">${topAugsHtml}</div>
-          <div style="height:1px;background:linear-gradient(90deg,transparent,#1a2a4a,transparent);margin-bottom:14px;"></div>
-          <div style="font-size:11px;color:#2d4a7a;margin-bottom:10px;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;">AUMENTOS CON MEJOR WINRATE</div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">${topAugsWrHtml}</div>`;
+          <div style="font-size:11px;color:#2d4a7a;margin-bottom:12px;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;">AUMENTOS MÁS USADOS</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">${topAugsHtml}</div>
+          <div style="height:1px;background:linear-gradient(90deg,transparent,#1a2a4a,transparent);margin-bottom:16px;"></div>
+          <div style="font-size:11px;color:#2d4a7a;margin-bottom:12px;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;">AUMENTOS CON MEJOR WINRATE</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">${topAugsWrHtml}</div>`;
       } else {
         localEl.innerHTML = `<div style="font-size:13px;color:#2d4a7a;font-style:italic;">Sin datos locales. Actualiza tu historial en la pestaña HISTORIAL primero.</div>`;
       }
@@ -17650,7 +17685,6 @@ function _perfilCalcLocalStats(){
 }
 
 async function _perfilRenderMastery(masteryData, container){
-  // Cargar mapa id→nombre desde DDragon si no está cacheado
   if(!window._ddChampIdMap){
     try {
       const r = await fetch(`https://ddragon.leagueoflegends.com/cdn/${DD_VER}/data/es_ES/champion.json`);
@@ -17659,20 +17693,46 @@ async function _perfilRenderMastery(masteryData, container){
       Object.values(j.data).forEach(c => { window._ddChampIdMap[c.key] = c.id; });
     } catch(e){ window._ddChampIdMap = {}; }
   }
-  container.innerHTML = masteryData.map(m => {
-    const key  = window._ddChampIdMap[String(m.championId)] || String(m.championId);
-    const pts  = m.championPoints >= 1000
-      ? (m.championPoints / 1000).toFixed(0) + 'k'
-      : m.championPoints;
+  container.innerHTML = masteryData.map((m, idx) => {
+    const key      = window._ddChampIdMap[String(m.championId)] || String(m.championId);
+    const pts      = m.championPoints >= 1000 ? (m.championPoints/1000).toFixed(0)+'k' : m.championPoints;
+    const grade    = m.highestGrade || null;
+    const iconUrl  = `https://ddragon.leagueoflegends.com/cdn/${DD_VER_FULL()}/img/champion/${key}.png`;
+    const medals   = ['🥇','🥈','🥉'];
+    const isTop    = idx < 3;
+    const cardW    = idx===0 ? '150px' : idx<3 ? '130px' : '104px';
+    const iconSize = idx===0 ? '88px'  : idx<3 ? '74px'  : '60px';
+    const nameSize = idx===0 ? '14px'  : idx<3 ? '13px'  : '11px';
+    const ptsSize  = idx===0 ? '15px'  : idx<3 ? '13px'  : '11px';
+    const borderCol = idx===0 ? 'rgba(212,168,79,.75)' : idx<3 ? 'rgba(160,170,190,.45)' : 'rgba(30,46,82,.55)';
+    const glowCol   = idx===0 ? 'rgba(212,168,79,.2)'  : 'rgba(0,0,0,0)';
+    const bgGrad    = idx===0
+      ? 'linear-gradient(180deg,rgba(26,20,8,.98),rgba(14,10,4,.99))'
+      : idx<3
+        ? 'linear-gradient(180deg,rgba(16,18,28,.98),rgba(8,10,18,.99))'
+        : 'linear-gradient(180deg,rgba(12,16,26,.97),rgba(7,9,16,.99))';
+
     return `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:64px;">
-        <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #8b6a28;background:#0a1530;">
-          <img src="https://ddragon.leagueoflegends.com/cdn/${DD_VER_FULL()}/img/champion/${key}.png"
-               style="width:100%;height:100%;object-fit:cover;object-position:center top;"
-               onerror="this.style.display='none'">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:${cardW};flex-shrink:0;">
+        ${isTop ? `<div style="font-size:${idx===0?'20px':'16px'};line-height:1;margin-bottom:2px;">${medals[idx]}</div>` : ''}
+        <div style="width:100%;background:${bgGrad};border:1px solid ${borderCol};border-radius:${idx===0?'18px':'14px'};overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.5),0 0 18px ${glowCol},inset 0 1px 0 rgba(255,255,255,.05);display:flex;flex-direction:column;align-items:center;gap:0;">
+          <!-- icono centrado con padding, sin recorte -->
+          <div style="width:100%;padding:14px 0 10px;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.2);">
+            <div style="width:${iconSize};height:${iconSize};border-radius:50%;overflow:hidden;border:2px solid ${borderCol};background:#060a14;box-shadow:0 4px 16px rgba(0,0,0,.6),0 0 12px ${glowCol};flex-shrink:0;">
+              <img src="${iconUrl}" style="width:100%;height:100%;object-fit:cover;object-position:center top;" onerror="this.style.display='none'">
+            </div>
+          </div>
+          <!-- info -->
+          <div style="padding:8px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;">
+            <div style="font-family:'Roboto Condensed',sans-serif;font-weight:900;font-style:italic;font-size:${nameSize};color:#f4f1eb;text-transform:uppercase;letter-spacing:.4px;text-align:center;line-height:1.1;">${key.replace(/([A-Z])/g,' $1').trim()}</div>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#d4a84f" stroke-width="2.2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span style="font-family:'Ubuntu Condensed',sans-serif;font-size:${idx===0?'12px':'10px'};color:#d4a84f;letter-spacing:.4px;">Maestría ${m.championLevel}</span>
+            </div>
+            <div style="font-family:'Ubuntu Condensed',sans-serif;font-size:${ptsSize};color:#c8b87a;font-weight:700;">${pts}</div>
+            ${grade ? `<div style="font-size:10px;color:#8aa8e8;background:rgba(20,40,90,.5);border:1px solid rgba(40,80,160,.35);border-radius:4px;padding:1px 7px;letter-spacing:.4px;">Mejor: ${grade}</div>` : ''}
+          </div>
         </div>
-        <div style="font-size:12px;color:#e8c040;font-family:'Ubuntu Condensed',sans-serif;letter-spacing:.5px;">M${m.championLevel}</div>
-        <div style="font-size:12px;color:#f0d89a;font-weight:500;">${pts}</div>
       </div>`;
   }).join('');
 }
@@ -17950,6 +18010,35 @@ function _perfilRenderMatches(matches, puuid){
   } else {
     setTimeout(finishStartup, 3000);
   }
+
+  // Escuchar cambios de fase desde el WebSocket (tiempo real, sin polling)
+  if(window.electronAPI?.onLcuPhase){
+    window.electronAPI.onLcuPhase((phase) => {
+      const p = (typeof phase === 'string') ? phase.replace(/\"/g,'') : '';
+      if(!p) return;
+
+      // Si veníamos de modo ligero (arrancamos en partida), reanudar al salir
+      if(window.__INITIAL_PHASE__ === 'InProgress' && p !== 'InProgress' && p !== 'GameStart') {
+        window.__INITIAL_PHASE__ = null;
+        if(!_amoTickInterval) _amoInit();
+        if(!window.__DD_VER_LOADED__) {
+          window.__DD_VER_LOADED__ = true;
+          fetch('https://ddragon.leagueoflegends.com/api/versions.json')
+            .then(r => r.json()).then(v => { DD_VER = v[0]; renderC(lastList); })
+            .catch(()=>{});
+        }
+        playStartPolling();
+      }
+
+      if(p === 'None' || p === 'Lobby')                  playSetState('connected');
+      else if(p === 'Matchmaking')                        playSetState('searching');
+      else if(p === 'ReadyCheck')                         playSetState('readycheck');
+      else if(p === 'ChampSelect')                        playSetState('champselect');
+      else if(p === 'InProgress' || p === 'GameStart')    playSetState('ingame');
+      else if(p === 'EndOfGame'  || p === 'PreEndOfGame') playSetState('postgame');
+      else if(p === 'closed')                             playSetState('offline');
+    });
+  }
 })();
 
 // ── SELECTOR DE PACKS DE TIER ──────────────────────────────────
@@ -18097,7 +18186,7 @@ function showAppliedFeedback(displayName) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  _amoInit();
+  if(window.__INITIAL_PHASE__ !== 'InProgress') _amoInit();
   // Aplicar tema guardado
   const temaGuardado = getSetting('tema', 'oscuro');
   if(temaGuardado && temaGuardado !== 'oscuro'){

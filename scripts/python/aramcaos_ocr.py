@@ -7,7 +7,6 @@ import os
 import time
 import threading
 import unicodedata
-from concurrent.futures import ThreadPoolExecutor
 from difflib import SequenceMatcher
 from pathlib import Path
 
@@ -25,17 +24,23 @@ CHAMPION_CACHE = CACHE_DIR / "champions"
 AUGMENTS_ES = CACHE_DIR / "augments_es.json"
 ICONS_DIR = IMG_DIR / "aumentos"
 
-POLL_IDLE = 0.10
-POLL_ACTIVE = 0.03
+POLL_IDLE   = 0.15   # poll del botón cuando no hay aumentos
+POLL_ACTIVE = 0.08   # poll entre confirmaciones cuando hay aumentos
+
+# Botón azul de selección — coordenadas relativas al área 16:9
+BOTON_REL = {"x": 0.445, "y": 0.7625, "w": 0.1105, "h": 0.0625}
+
+# Rango HSV del azul turquesa del botón
+BOTON_HSV_LOW  = np.array([91,  170, 60])
+BOTON_HSV_HIGH = np.array([106, 255, 255])
+BOTON_MIN_PIXELS = 30  # mínimo de píxeles azules para considerar visible
+
 UMBRAL_TEXTO = 3
-CONFIRM_NEEDED = 2
+CONFIRM_NEEDED = 1
 ICON_SIZE = 64
 ICON_SHORTLIST = 12
 REUSE_ICON_SIMILARITY = 0.992
-FAST_CONFIRM_CONFIDENCE = 0.90
-
-executor = ThreadPoolExecutor(max_workers=3)
-sct_instance = mss.mss()
+FAST_CONFIRM_CONFIDENCE = 0.75
 
 champion_id = None
 augment_tiers = {}
@@ -205,13 +210,13 @@ def calcular_zonas_carta(zonas_texto, zonas_icono):
     return zonas
 
 
-def get_monitor():
-    m = sct_instance.monitors[1]
+def get_monitor(sct):
+    m = sct.monitors[1]
     return m["width"], m["height"]
 
 
-def capture_bgr(zona, sct=None):
-    sc = (sct or sct_instance).grab(zona)
+def capture_bgr(zona, sct):
+    sc = sct.grab(zona)
     return np.frombuffer(sc.raw, dtype=np.uint8).reshape(sc.height, sc.width, 4)[:, :, :3].copy()
 
 
@@ -331,6 +336,26 @@ def get_tier(aug_id):
         return int(tier)
     return None
 
+def hay_boton(sct, W, H):
+    """Detecta si el botón azul de selección de aumentos está visible."""
+    cx = W // 2
+    zona = {
+        "left":   cx + int(H * (BOTON_REL["x"] - 0.5)),
+        "top":    int(H * BOTON_REL["y"]),
+        "width":  int(H * BOTON_REL["w"] * (16/9)),
+        "height": int(H * BOTON_REL["h"]),
+    }
+    # Clamp para no salirse de pantalla
+    zona["left"] = max(0, zona["left"])
+    zona["top"]  = max(0, zona["top"])
+
+    try:
+        bgr = capture_bgr(zona, sct)
+        hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, BOTON_HSV_LOW, BOTON_HSV_HIGH)
+        return int(mask.sum() // 255) >= BOTON_MIN_PIXELS
+    except Exception:
+        return False
 
 def main_loop():
     global champion_id
@@ -338,8 +363,23 @@ def main_loop():
     load_augments_es()
     load_augments_general()
     load_icon_templates()
+    icon_templates.clear()  # liberar memoria, ya tenemos icon_template_list
 
-    W, H = get_monitor()
+    sct = mss.mss()
+    W, H = get_monitor(sct)
+
+    rapid = RapidOCR()
+
+    # Pre-calentar modelo ONNX durante la carga de partida
+    try:
+        _dummy = np.zeros((int(H * 0.0611) + 20, int(H * 0.2368) + 20, 3), dtype=np.uint8)
+        rapid(_dummy)
+        print("[OCR] RapidOCR precalentado OK", flush=True)
+    except Exception:
+        pass
+
+    sct   = mss.mss()
+
     zonas_texto = calcular_zonas_texto(W, H)
     zonas_icono = calcular_zonas_icono(W, H)
     zonas_carta = calcular_zonas_carta(zonas_texto, zonas_icono)
@@ -351,9 +391,10 @@ def main_loop():
         print(f"[OCR] icono zona {i+1}: x={z['left']} y={z['top']} {z['width']}x{z['height']}", flush=True)
     for i, z in enumerate(zonas_carta):
         print(f"[OCR] carta zona {i+1}: x={z['left']} y={z['top']} {z['width']}x{z['height']}", flush=True)
-    print("[OCR] RapidOCR iniciado - esperando aumentos...", flush=True)
+    print("[OCR] RapidOCR iniciado - esperando boton...", flush=True)
 
-    cards_were_visible = False
+    boton_visible = False
+    tiempo_sin_texto = None
     last_ids = None
     stable_ids = None
     stable_count = 0
@@ -362,143 +403,147 @@ def main_loop():
         for _ in range(3)
     ]
 
-    local = threading.local()
-
-    def analizar_carta(payload):
-        idx, zona_carta, zona_texto, zona_icono, cache_entry = payload
-        if not hasattr(local, "sct"):
-            local.sct = mss.mss()
-        if not hasattr(local, "rapid"):
-            local.rapid = RapidOCR()
-        try:
-            card_bgr = capture_bgr(zona_carta, local.sct)
-            icon_crop = crop_relative(card_bgr, zona_carta, zona_icono)
-            text_crop = crop_relative(card_bgr, zona_carta, zona_texto)
-            visible = hay_carta_en_crop(icon_crop)
-            texto = ""
-            candidatos = []
-            icon_fp = None
-            analysis_reused = False
-            if visible:
-                icon_small = cv2.resize(icon_crop, (ICON_SIZE, ICON_SIZE))
-                icon_fp = fingerprint_icon(icon_small)
-                if cache_entry["visible"]:
-                    similarity = cosine_similarity(icon_fp, cache_entry["icon_fp"])
-                    if similarity >= REUSE_ICON_SIMILARITY:
-                        texto = cache_entry["texto"]
-                        candidatos = cache_entry["candidatos"]
-                        analysis_reused = True
-                if not analysis_reused:
-                    texto = leer_texto_desde_bgr(text_crop, local.rapid)
-                    candidatos = candidatos_por_icono(icon_crop)
-            return {
-                "idx": idx,
-                "visible": visible,
-                "icon_fp": icon_fp,
-                "texto": texto,
-                "candidatos": candidatos,
-                "analysis_reused": analysis_reused,
-            }
-        except Exception as e:
-            print(f"[OCR] error carta {idx+1}: {e}", flush=True)
-            return {
-                "idx": idx,
-                "visible": False,
-                "icon_fp": None,
-                "texto": "",
-                "candidatos": [],
-                "analysis_reused": False,
-            }
-
     while True:
-        payloads = [
-            (idx, zonas_carta[idx], zonas_texto[idx], zonas_icono[idx], slot_cache[idx])
-            for idx in range(3)
-        ]
-        cards = list(executor.map(analizar_carta, payloads))
-        cards.sort(key=lambda c: c["idx"])
+        # ── Fase idle: esperar al botón ──────────────────────────
+        if not hay_boton(sct, W, H):
+            if not boton_visible:
+                time.sleep(POLL_IDLE)
+                continue
+            else:
+                boton_visible = True
+            # Botón no visible pero estábamos leyendo — seguir en fase activa
+            # El ocultado lo decide la lógica de texto más abajo
 
-        for idx, card in enumerate(cards):
-            slot_cache[idx] = {
-                "visible": card["visible"],
-                "icon_fp": card["icon_fp"],
-                "texto": card["texto"],
-                "candidatos": card["candidatos"],
-                "analysis_reused": card["analysis_reused"],
-            }
+        # ── Fase activa: analizar las 3 cartas ──────────────────
+        cards = []
+        cartas_reales = 0  # ← cartas visibles en pantalla sin cache
+        for idx in range(3):
+            cache_entry = slot_cache[idx]
+            try:
+                card_bgr  = capture_bgr(zonas_carta[idx], sct)
+                icon_crop = crop_relative(card_bgr, zonas_carta[idx], zonas_icono[idx])
+                text_crop = crop_relative(card_bgr, zonas_carta[idx], zonas_texto[idx])
+                visible   = hay_carta_en_crop(icon_crop)
 
-        if not any(card["visible"] for card in cards):
-            if cards_were_visible:
+                if visible:
+                    cartas_reales += 1  # ← contar solo las reales
+
+                texto         = ""
+                candidatos    = []
+                icon_fp       = None
+                analysis_reused = False
+
+                # Si el icono está tapado pero teníamos datos del slot, los reutilizamos
+                if not visible and cache_entry["visible"] and cache_entry["texto"]:
+                    texto           = cache_entry["texto"]
+                    candidatos      = cache_entry["candidatos"]
+                    icon_fp         = cache_entry["icon_fp"]
+                    analysis_reused = True
+                    visible         = True  # tratar como visible para no romper el flujo
+
+                if visible:
+                    icon_small = cv2.resize(icon_crop, (ICON_SIZE, ICON_SIZE)) if icon_fp is None else None
+                    if icon_fp is None and icon_small is not None:
+                        icon_fp = fingerprint_icon(icon_small)
+                    if not analysis_reused and cache_entry["visible"] and cache_entry["icon_fp"] is not None:
+                        similarity = cosine_similarity(icon_fp, cache_entry["icon_fp"])
+                        if similarity >= REUSE_ICON_SIMILARITY:
+                            texto           = cache_entry["texto"]
+                            candidatos      = cache_entry["candidatos"]
+                            analysis_reused = True
+                    if not analysis_reused:
+                        texto      = leer_texto_desde_bgr(text_crop, rapid)
+                        candidatos = candidatos_por_icono(icon_crop)
+
+                cards.append({
+                    "idx": idx, "visible": visible, "icon_fp": icon_fp,
+                    "texto": texto, "candidatos": candidatos,
+                    "analysis_reused": analysis_reused,
+                })
+                slot_cache[idx] = {
+                    "visible": visible, "icon_fp": icon_fp,
+                    "texto": texto, "candidatos": candidatos,
+                    "analysis_reused": analysis_reused,
+                }
+            except Exception as e:
+                print(f"[OCR] error carta {idx+1}: {e}", flush=True)
+                cards.append({
+                    "idx": idx, "visible": False, "icon_fp": None,
+                    "texto": "", "candidatos": [], "analysis_reused": False,
+                })
+
+        # Sin cartas reales en pantalla durante 1s → ocultar
+        if cartas_reales == 0:
+            if tiempo_sin_texto is None:
+                tiempo_sin_texto = time.time()
+            elif time.time() - tiempo_sin_texto >= 1.0:
                 print(json.dumps({"type": "ocultar"}), flush=True)
-                cards_were_visible = False
-                last_ids = None
-                stable_ids = None
-                stable_count = 0
+                boton_visible    = False
+                tiempo_sin_texto = None
+                last_ids         = None
+                stable_ids       = None
+                stable_count     = 0
                 slot_cache = [
                     {"visible": False, "icon_fp": None, "texto": "", "candidatos": [], "analysis_reused": False}
                     for _ in range(3)
                 ]
-            time.sleep(POLL_IDLE)
+            time.sleep(POLL_ACTIVE)
             continue
 
-        textos = [card["texto"] for card in cards]
-        hay_texto = any(len(t) >= UMBRAL_TEXTO for t in textos)
-        if not hay_texto:
-            time.sleep(POLL_IDLE)
-            continue
+        tiempo_sin_texto = None
 
-        cards_were_visible = True
-        matches = []
-        result_ids = []
+        # Sin texto suficiente todavía (cartas visibles pero OCR no leyó aún)
+        if not any(len(c["texto"]) >= UMBRAL_TEXTO for c in cards):
+            time.sleep(POLL_ACTIVE)
+            continue
+        
+        # ── Fusión de scores (igual que antes) ──────────────────
+        matches       = []
+        result_ids    = []
         combined_scores = []
-        reused_slots = 0
+        reused_slots  = 0
 
         for i, card in enumerate(cards):
-            texto = card["texto"]
+            texto      = card["texto"]
             candidatos = card["candidatos"]
             if card["analysis_reused"]:
                 reused_slots += 1
+
             id_ocr, score_ocr = buscar_augment_por_texto(texto)
-            score_ocr_norm = score_ocr / 100.0
+            score_ocr_norm    = score_ocr / 100.0
 
             if not candidatos:
-                aug_id = id_ocr
-                sc_icon = 0.0
+                aug_id      = id_ocr
+                sc_icon     = 0.0
                 sc_combined = round(score_ocr_norm * 0.8, 2)
             else:
-                mejor_score_icon = candidatos[0][1]
+                mejor_score_icon    = candidatos[0][1]
                 score_icon_para_ocr = next((sc for aid, sc in candidatos if aid == id_ocr), 0.0)
                 if id_ocr and score_icon_para_ocr > 0:
-                    aug_id = id_ocr
-                    sc_icon = score_icon_para_ocr
+                    aug_id      = id_ocr
+                    sc_icon     = score_icon_para_ocr
                     sc_combined = round(sc_icon * 0.5 + score_ocr_norm * 0.5, 2)
                 elif id_ocr and score_ocr >= 70:
-                    aug_id = id_ocr
-                    sc_icon = mejor_score_icon
+                    aug_id      = id_ocr
+                    sc_icon     = mejor_score_icon
                     sc_combined = round(mejor_score_icon * 0.3 + score_ocr_norm * 0.7, 2)
                 else:
-                    aug_id = candidatos[0][0]
-                    sc_icon = mejor_score_icon
+                    aug_id      = candidatos[0][0]
+                    sc_icon     = mejor_score_icon
                     sc_combined = round(mejor_score_icon * 0.7 + score_ocr_norm * 0.3, 2)
 
-            tier = get_tier(aug_id)
+            tier   = get_tier(aug_id)
             nombre = augments_id_name.get(str(aug_id), "") if aug_id else ""
             result_ids.append(aug_id)
             matches.append({
-                "id": aug_id,
-                "name": nombre,
-                "tier": tier,
-                "recognizedText": texto,
-                "reused": card["analysis_reused"],
-                "score": {
-                    "icon": round(sc_icon, 2),
-                    "ocr": round(score_ocr_norm, 2),
-                    "combined": sc_combined,
-                }
+                "id": aug_id, "name": nombre, "tier": tier,
+                "recognizedText": texto, "reused": card["analysis_reused"],
+                "score": {"icon": round(sc_icon, 2), "ocr": round(score_ocr_norm, 2), "combined": sc_combined},
             })
             combined_scores.append(sc_combined)
             print(
-                f"[OCR] zona {i+1}: '{texto}' icon={sc_icon:.2f} ocr={score_ocr_norm:.2f} combined={sc_combined} reused={card['analysis_reused']} -> id={aug_id} tier={tier}",
+                f"[OCR] zona {i+1}: '{texto}' icon={sc_icon:.2f} ocr={score_ocr_norm:.2f} "
+                f"combined={sc_combined} reused={card['analysis_reused']} -> id={aug_id} tier={tier}",
                 flush=True,
             )
 
@@ -507,7 +552,7 @@ def main_loop():
         if result_ids == stable_ids:
             stable_count += 1
         else:
-            stable_ids = result_ids
+            stable_ids   = result_ids
             stable_count = 1
 
         required_confirmations = CONFIRM_NEEDED
@@ -522,18 +567,16 @@ def main_loop():
                 time.sleep(0.5)
                 continue
             msg = {
-                "type": "tiers",
-                "tiers": result_tiers,
-                "ids": result_ids,
-                "campeon": champion_id,
-                "matches": matches,
+                "type": "tiers", "tiers": result_tiers,
+                "ids": result_ids, "campeon": champion_id, "matches": matches,
             }
             print(json.dumps(msg), flush=True)
             print(f"[OCR] enviado al overlay: tiers={result_tiers} ids={result_ids}", flush=True)
-            last_ids = result_ids
+            last_ids     = result_ids
             stable_count = 0
 
         time.sleep(POLL_ACTIVE)
+
 
 
 def stdin_reader():

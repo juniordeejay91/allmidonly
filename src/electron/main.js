@@ -81,6 +81,7 @@ function readJsonFile(filePath, fallback = null) {
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
+  process.exit(0);
 } else {
   app.on('second-instance', async (event, commandLine) => {
     // Traer la ventana al frente
@@ -108,11 +109,26 @@ if (!gotLock) {
   });
 }
 
+process.on('uncaughtException', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log('[Auth] puerto ya en uso, instancia secundaria bloqueada correctamente');
+    return;
+  }
+  console.error('[uncaughtException]', err);
+});
+
 // ══════════════════════════════════════════════════════════════
 //  LCU: detectar puerto y token del cliente de League
 //  Prueba tres métodos en orden hasta que uno funcione
 // ══════════════════════════════════════════════════════════════
+let _lcuCredsCache = null;
+let _lcuCredsCacheTs = 0;
+
 function getLcuCredentials() {
+  const now = Date.now();
+  if (_lcuCredsCache && (now - _lcuCredsCacheTs) < 30000) {
+    return Promise.resolve(_lcuCredsCache);
+  }
   return new Promise((resolve) => {
 
     // Método 1: wmic (Windows 10/11 clásico)
@@ -122,7 +138,7 @@ function getLcuCredentials() {
     ], { timeout: 6000 }, (err, stdout) => {
       if (!err && stdout) {
         const creds = parseLeagueArgs(stdout);
-        if (creds) { console.log('[LCU] detectado via wmic'); return resolve(creds); }
+        if (creds) { console.log('[LCU] detectado via wmic'); _lcuCredsCache = creds; _lcuCredsCacheTs = Date.now(); return resolve(creds); }
       }
 
       // Método 2: PowerShell LeagueClient.exe
@@ -132,7 +148,7 @@ function getLcuCredentials() {
         (err2, stdout2) => {
           if (!err2 && stdout2) {
             const creds2 = parseLeagueArgs(stdout2);
-            if (creds2) { console.log('[LCU] detectado via PowerShell'); return resolve(creds2); }
+            if (creds2) { console.log('[LCU] detectado via PowerShell'); _lcuCredsCache = creds2; _lcuCredsCacheTs = Date.now(); return resolve(creds2); }
           }
 
           // Método 3: PowerShell LeagueClientUx.exe
@@ -142,7 +158,7 @@ function getLcuCredentials() {
             (err3, stdout3) => {
               if (!err3 && stdout3) {
                 const creds3 = parseLeagueArgs(stdout3);
-                if (creds3) { console.log('[LCU] detectado via LeagueClientUx'); return resolve(creds3); }
+                if (creds3) { console.log('[LCU] detectado via LeagueClientUx'); _lcuCredsCache = creds3; _lcuCredsCacheTs = Date.now(); return resolve(creds3); }
               }
               console.log('[LCU] cliente no encontrado');
               resolve(null);
@@ -759,7 +775,7 @@ async function startChampSelectPolling(creds) {
     } catch (e) {
       console.warn('[ChampPoll] error:', e.message);
     }
-  }, 1000);
+  }, 200);
 }
 
 async function startLcuWebSocket() {
@@ -824,8 +840,16 @@ async function startLcuWebSocket() {
             .catch(() => { lastQueueId = 0; });
         } else if (phase === 'InProgress' || phase === 'GameStart') {
           stopChampSelectPolling();
+          if (win) {
+            win.webContents.send('lcu-phase', phase);
+            win.webContents.setBackgroundThrottling(true);
+            setTimeout(() => {
+              if (win && !win.isDestroyed()) win.minimize();
+            }, 600);
+          }
           if (CHAOS_QUEUE_IDS.has(lastQueueId)) {
             console.log('[OCR] cola es ARAM Caos (' + lastQueueId + '), arrancando OCR');
+            if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
             startOCR();
           } else {
             console.log('[OCR] cola ' + lastQueueId + ' no es ARAM Caos, OCR no arranca');
@@ -833,6 +857,14 @@ async function startLcuWebSocket() {
         } else {
           stopChampSelectPolling();
           stopOCR();
+          if (overlayWin && !overlayWin.isDestroyed()) {
+            overlayWin.close();
+            overlayWin = null;
+          }
+          if (win) {
+            win.webContents.setBackgroundThrottling(false);
+            win.restore();
+          }
           lastQueueId = 0;
         }
       }
@@ -840,8 +872,9 @@ async function startLcuWebSocket() {
   });
 
   ws.on('close', () => {
-    // console.log('[LCU-WS] desconectado — reintentando en 5s');
     lcuWs = null;
+    _lcuCredsCache = null;
+    _lcuCredsCacheTs = 0;
     if (win) win.webContents.send('lcu-phase', 'closed');
     lcuWsRetryTimer = setTimeout(startLcuWebSocket, 5000);
   });
@@ -964,62 +997,71 @@ const callbackServer = http.createServer(async (req, res) => {
   // Página bonita que se cierra sola
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   res.end(`<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>AllMidOnly</title>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background:#0c1b3a;
-      color:#c8bfb0;
-      font-family:'Segoe UI',sans-serif;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:100vh;
-      flex-direction:column;
-      gap:20px;
-    }
-    .logo { font-size:13px; font-weight:700; letter-spacing:3px; color:#4a5060; text-transform:uppercase; }
-    .logo span { color:#4d8eff; }
-    .check {
-      width:72px; height:72px; border-radius:50%;
-      background:rgba(39,201,63,.1); border:2px solid #27c93f;
-      display:flex; align-items:center; justify-content:center;
-    }
-    .title { font-size:20px; color:#c8bfb0; font-weight:600; }
-    .sub { font-size:13px; color:#4a5060; }
-  </style>
-  <script>
-    const hash   = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const at     = params.get('access_token');
-    const rt     = params.get('refresh_token') || '';
-    if (at) {
-      fetch('http://localhost:3000/callback?access_token=' + encodeURIComponent(at) + '&refresh_token=' + encodeURIComponent(rt))
-        .finally(() => setTimeout(() => window.close(), 800));
-    } else {
-      setTimeout(() => window.close(), 1500);
-    }
-  </script>
-</head>
-<body>
-  <div class="logo">ALL <span>MID</span> ONLY</div>
-  <div class="check">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#27c93f" stroke-width="2.5" stroke-linecap="round">
-      <path d="M5 13l4 4L19 7"/>
-    </svg>
-  </div>
-  <div class="title">Sesión iniciada correctamente</div>
-  <div class="sub">Cerrando esta ventana...</div>
-</body>
-</html>`);
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>AllMidOnly</title>
+    <style>
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body {
+        background:#0c1b3a;
+        color:#c8bfb0;
+        font-family:'Segoe UI',sans-serif;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        height:100vh;
+        flex-direction:column;
+        gap:20px;
+      }
+      .logo { font-size:13px; font-weight:700; letter-spacing:3px; color:#4a5060; text-transform:uppercase; }
+      .logo span { color:#4d8eff; }
+      .check {
+        width:72px; height:72px; border-radius:50%;
+        background:rgba(39,201,63,.1); border:2px solid #27c93f;
+        display:flex; align-items:center; justify-content:center;
+      }
+      .title { font-size:20px; color:#c8bfb0; font-weight:600; }
+      .sub { font-size:13px; color:#4a5060; }
+    </style>
+    <script>
+      const hash   = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const at     = params.get('access_token');
+      const rt     = params.get('refresh_token') || '';
+      if (at) {
+        fetch('http://localhost:3000/callback?access_token=' + encodeURIComponent(at) + '&refresh_token=' + encodeURIComponent(rt))
+        .  finally(() => setTimeout(() => window.close(), 800));
+      } else {
+        setTimeout(() => window.close(), 1500);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="logo">ALL <span>MID</span> ONLY</div>
+    <div class="check">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#27c93f" stroke-width="2.5" stroke-linecap="round">
+        <path d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <div class="title">Sesión iniciada correctamente</div>
+    <div class="sub">Cerrando esta ventana...</div>
+  </body>
+  </html>`);
 });
 
-callbackServer.listen(3000, '127.0.0.1', () => {
-  console.log('[Auth] servidor callback escuchando en localhost:3000');
+callbackServer.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log('[Auth] puerto 3000 ya en uso (otra instancia), ignorando');
+  } else {
+    console.error('[Auth] error servidor callback:', err.message);
+  }
 });
+if (gotLock) {
+  callbackServer.listen(3000, '127.0.0.1', () => {
+    console.log('[Auth] servidor callback escuchando en localhost:3000');
+  });
+}
 
 app.whenReady().then(() => {
   // ya tienes createWindow, createTray etc — solo añade esto al final:
@@ -1304,7 +1346,18 @@ function createWindow() {
   win.loadFile(path.join(RENDERER_DIR, 'aram_caos_v6.html'));
 
   // ── Inicializar settings al cargar ──────────────────────────
-  win.webContents.on('did-finish-load', () => {
+  win.webContents.on('did-finish-load', async () => {
+    // Inyectar fase actual antes de que el renderer inicialice nada
+    try {
+      const creds = await getLcuCredentials();
+      if (creds) {
+        const phaseRaw = await lcuRequest(creds.port, creds.token, '/lol-gameflow/v1/gameflow-phase');
+        const phase = typeof phaseRaw === 'string' ? phaseRaw.replace(/"/g,'') : '';
+        if (phase === 'InProgress' || phase === 'GameStart') {
+          win.webContents.executeJavaScript('window.__INITIAL_PHASE__ = "InProgress";');
+        }
+      }
+    } catch(e) {}
     try {
       const settings = readJsonFile(APP_SETTINGS_FILE, readJsonFile(path.join(ROOT_CACHE_DIR, 'settings.json'), null));
       if (settings) {
@@ -1732,7 +1785,7 @@ function startOCR() {
     } catch(e) {
       console.error('[OCR] error enviando champion_id:', e.message);
     }
-  }, 1500);
+  }, 300);
 
   ocrProc.stdout.on('data', d => {
     ocrStdoutBuffer += d;
@@ -1777,8 +1830,7 @@ app.whenReady().then(async () => {
   createWindow();
   createTray();
   startPython();
-  createOverlayWindow();
-  setTimeout(startLcuWebSocket, 2000); // ← añade esta línea
+  setTimeout(startLcuWebSocket, 2000);
 
   // ── Sync imágenes de aumentos al arrancar ──────────────────
   // Espera 3s a que el proxy Python esté listo antes de llamarlo
