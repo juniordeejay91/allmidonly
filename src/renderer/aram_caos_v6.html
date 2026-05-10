@@ -18239,8 +18239,19 @@ document.addEventListener('DOMContentLoaded', () => {
     setUpdateState({
       visible: true,
       title: 'Actualización lista. Instalando y reiniciando...',
-      label: 'OK',
+      label: '⚙️ OK',
       ready: true
+    });
+  });
+
+  window.electronAPI.onUpdateInstalling(() => {
+    setUpdateState({
+      visible: true,
+      title: 'Instalando actualización...',
+      label: '⚙️ INSTALANDO',
+      progress: true,
+      ready: false,
+      downloading: false
     });
   });
 });

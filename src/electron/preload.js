@@ -55,6 +55,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateAvailable: (cb) => ipcRenderer.on('update-available',  (_, v) => cb(v)),
   onUpdateProgress:  (cb) => ipcRenderer.on('update-progress',   (_, p) => cb(p)),
   onUpdateDownloaded:(cb) => ipcRenderer.on('update-downloaded',  ()    => cb()),
+  onUpdateInstalling:(cb) => ipcRenderer.on('update-installing',  ()    => cb()),
   downloadUpdate:    ()   => ipcRenderer.invoke('download-update'),
   getVersion: () => ipcRenderer.invoke('get-version'),
   assetUrl: (relativePath) => resolveAssetUrl(relativePath),

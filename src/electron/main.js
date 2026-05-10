@@ -920,15 +920,14 @@ function setupAutoUpdater() {
     if (win) win.webContents.send('update-downloaded');
 
     setTimeout(() => {
-      // ── Matar procesos Python antes de instalar ──
       try { if (ocrProc) { ocrProc.kill('SIGTERM'); ocrProc = null; } } catch(e) {}
       try { if (pyProc)  { pyProc.kill('SIGTERM');  pyProc  = null; } } catch(e) {}
-
-      // Esperar un momento a que liberen los archivos
       setTimeout(() => {
-        autoUpdater.quitAndInstall(false, true); // isSilent=false, isForceRunAfter=true
+        if (win) win.webContents.send('update-installing');
+        setTimeout(() => {
+          autoUpdater.quitAndInstall(true, true);
+        }, 800);
       }, 1000);
-
     }, 1500);
   });
 
