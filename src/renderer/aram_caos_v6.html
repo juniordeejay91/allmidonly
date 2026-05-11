@@ -7174,7 +7174,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-tier-src]').forEach((img) => {
     try {
       const rel = img.getAttribute('data-tier-src');
-      if (rel && window.electronAPI?.assetUrl) img.src = window.electronAPI.assetUrl(rel);
+      if (rel && window.electronAPI?.assetUrl) {
+        img.src = window.electronAPI.assetUrl(rel);
+        img.onerror = () => { img.src = ''; img.onerror = null; };
+      }
     } catch {}
   });
 
@@ -8811,7 +8814,7 @@ function playSetState(state){
   if(state !== 'champselect')            { _stopChampSelectPoll(); _autoImportDoneForChamp = null; }
 
   // Pausar ticker cuando no hace falta
-  const needsTicker = ['searching','readycheck','champselect','postgame'].includes(state);
+  const needsTicker = ['searching','readycheck','champselect','postgame','ingame'].includes(state);
   if(!needsTicker){
     if(_playLiveTick){ clearInterval(_playLiveTick); _playLiveTick = null; }
   } else {
@@ -9072,6 +9075,7 @@ function playRenderIngameLive(live){
   const modeMeta = playResolveLiveModeMeta(live);
 
   _playLastChampionName = champName;
+  if(champName && champName !== 'Tu campeón') localStorage.setItem('last_champ_name', champName);
   _playLastModeMeta = modeMeta;
 
   titleEl.textContent = champName;
@@ -9744,7 +9748,10 @@ async function playRenderChampSelectSession(session){
   const detectedRole = playResolveAssignedRole(session, mySlot);
   const myChampId   = mySlot?.championId || mySlot?.championPickIntent || 0;
   const myChampName = myChampId ? _champIdToName(myChampId) : null;
-  if(myChampName) _playLastChampionName = myChampName;
+  if(myChampName) {
+    _playLastChampionName = myChampName;
+    localStorage.setItem('last_champ_name', myChampName);
+  }
   if(modeNoteEl){
     modeNoteEl.textContent = playIsSummonerRiftSession(session)
       ? `Builds de Grieta${detectedRole !== 'UNKNOWN' ? ` · ${bcRoleLabel(detectedRole)}` : ''}`
@@ -10079,11 +10086,44 @@ function playRenderBuild(champName, build){
   }
 
   // Runas
+  const CDRAGON_BASE = 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default';
+
+  async function getRuneIconUrl(id) {
+    if (!window._runeIconMap) {
+      try {
+        const res = await fetch(`${CDRAGON_BASE}/v1/perks.json`);
+        const perks = await res.json();
+        window._runeIconMap = {};
+        perks.forEach(p => {
+          if (p.iconPath) {
+            const path = p.iconPath
+              .toLowerCase()
+              .replace('/lol-game-data/assets', CDRAGON_BASE);
+            window._runeIconMap[p.id] = path;
+          }
+        });
+      } catch(e) {
+        window._runeIconMap = {};
+      }
+    }
+    return window._runeIconMap[id] || null;
+  }
+
   const runesEl = document.getElementById('play-build-runes');
   if(runesEl && build.runes?.ids?.length){
     runesEl.innerHTML = build.runes.ids.slice(0,6).map(id =>
-      `<div class="play-rune-box"><img src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/${id}.png" onerror="this.style.display='none'"></div>`
+      `<div class="play-rune-box"><img id="rune-img-${id}" src="" style="display:none"></div>`
     ).join('');
+
+    build.runes.ids.slice(0,6).forEach(async id => {
+      const url = await getRuneIconUrl(id);
+      const img = document.getElementById(`rune-img-${id}`);
+      if (img && url) {
+        img.src = url;
+        img.style.display = '';
+        img.onerror = () => { img.style.display = 'none'; };
+      }
+    });
   } else if(runesEl){
     runesEl.innerHTML = '';
   }

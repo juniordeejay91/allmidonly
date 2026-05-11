@@ -7,9 +7,11 @@ const { pathToFileURL } = require('url');
 const isPackaged = !process.defaultApp;
 
 function resolveAssetUrl(relativePath) {
+  console.log('[assetUrl] isPackaged:', isPackaged, '| app.isPackaged:', app.isPackaged);
   const assetBase = isPackaged
     ? path.join(process.resourcesPath, 'app_runtime')
-    : path.resolve(__dirname, '..', '..');
+    : path.resolve(__dirname, '..', '..', '..');
+  console.log('[assetUrl] __dirname:', __dirname, '| assetBase:', assetBase);
   return pathToFileURL(path.join(assetBase, relativePath)).href;
 }
 

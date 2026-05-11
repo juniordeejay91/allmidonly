@@ -6,7 +6,7 @@ const isPackaged = !process.defaultApp;
 function resolveAssetUrl(relativePath) {
   const assetBase = isPackaged
     ? path.join(process.resourcesPath, 'app_runtime')
-    : path.resolve(__dirname, '..', '..');
+    : path.resolve(__dirname, '..', '..', '..');
   return pathToFileURL(path.join(assetBase, relativePath)).href;
 }
 

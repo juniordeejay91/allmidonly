@@ -883,15 +883,49 @@ async function startLcuWebSocket() {
               try {
                 const s = JSON.parse(localStorage.getItem('amo_settings')||'{}');
                 const order = JSON.parse(localStorage.getItem('last_skill_order')||'null');
+                const lastChamp = localStorage.getItem('last_champ_name') || null;
                 return {
-                  skillEnabled: s.skillOverlay === true,
-                  augEnabled:   s.overlay === true,
-                  order
+                  skillEnabled: s.skillOverlay !== false,
+                  augEnabled:   s.overlay !== false,
+                  order,
+                  lastChamp
                 };
-              } catch(e) { return { skillEnabled: false, augEnabled: false, order: null }; }
+              } catch(e) { return { skillEnabled: false, augEnabled: false, order: null, lastChamp: null }; }
             })()
-          `).then(({ skillEnabled, augEnabled, order }) => {
+          `).then(async ({ skillEnabled, augEnabled, order, lastChamp }) => {
             console.log('[Overlay] InProgress — skillEnabled:', skillEnabled, '| augEnabled:', augEnabled);
+
+            // Si no tenemos campeón, intentar obtenerlo de la Live Client API
+            if (!lastChampionId && (skillEnabled || augEnabled)) {
+              try {
+                const playerData = await liveClientRequest('/liveclientdata/activeplayer');
+                if (playerData?.summonerName) {
+                  const allPlayers = await liveClientRequest('/liveclientdata/playerlist');
+                  if (Array.isArray(allPlayers)) {
+                    const me = allPlayers.find(p =>
+                      (p.summonerName || p.riotIdGameName || '').toLowerCase() === playerData.summonerName.toLowerCase()
+                    );
+                    if (me?.championName) {
+                      console.log('[Overlay] campeón obtenido de LiveClient:', me.championName);
+                      // Notificar al renderer para que actualice su estado
+                      win.webContents.executeJavaScript(`
+                        window._playLastChampionName = '${me.championName.replace(/'/g,"\\'")}';
+                        localStorage.setItem('last_champ_name', '${me.championName.replace(/'/g,"\\'")}');
+                      `).catch(() => {});
+                      if (ocrProc) {
+                        ocrProc.stdin.write(JSON.stringify({ campeon: me.championName }) + '\n');
+                      }
+                    }
+                  }
+                }
+              } catch(e) {
+                console.warn('[Overlay] no se pudo obtener campeón de LiveClient:', e.message);
+                // Usar el último conocido del renderer
+                if (lastChamp && ocrProc) {
+                  ocrProc.stdin.write(JSON.stringify({ campeon: lastChamp }) + '\n');
+                }
+              }
+            }
 
             const isAramCaos = CHAOS_QUEUE_IDS.has(lastQueueId);
 
