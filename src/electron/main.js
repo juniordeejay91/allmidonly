@@ -30,6 +30,7 @@ const path   = require('path');
 const fs     = require('fs');  // ← añadir esta línea
 const { spawn, execFile, exec, spawnSync } = require('child_process');
 const https  = require('https');
+const os     = require('os');
 const { pathToFileURL } = require('url');
 
 let win           = null;
@@ -415,6 +416,9 @@ ipcMain.handle('lcu-get-current-account', async () => {
     }
 
     console.log(`[LCU] cuenta: ${gameName}#${tagLine} nivel ${summoner.summonerLevel}`);
+
+    // Guardar WindowMode original la primera vez que conecta cuenta
+    saveOriginalWindowModeIfNeeded();
 
     return {
       puuid:      summoner.puuid,
@@ -834,10 +838,9 @@ async function startLcuWebSocket() {
       const msg = JSON.parse(data);
       if (msg[0] === 8 && msg[1] === 'OnJsonApiEvent_lol-gameflow_v1_gameflow-phase') {
         const phase = msg[2]?.data || 'None';
-        // console.log('[LCU-WS] fase:', phase);
         if (win) win.webContents.send('lcu-phase', phase);
 
-        // Alerta al encontrar partida si el setting está activado
+        // Alerta al encontrar partida
         if (phase === 'ReadyCheck') {
           win.webContents.executeJavaScript(
             `(() => { try { const s=JSON.parse(localStorage.getItem('amo_settings')||'{}'); return s.alertFound !== false; } catch(e){ return true; } })()`
@@ -848,7 +851,7 @@ async function startLcuWebSocket() {
           }).catch(() => {});
         }
 
-        // Al entrar en ChampSelect → iniciar polling de campeón y guardar queueId
+        // ChampSelect → iniciar polling de campeón y guardar queueId
         if (phase === 'ChampSelect') {
           startChampSelectPolling(creds);
           lcuRequest(creds.port, creds.token, '/lol-gameflow/v1/session')
@@ -857,12 +860,12 @@ async function startLcuWebSocket() {
               console.log('[LCU] queueId detectado en ChampSelect:', lastQueueId);
             })
             .catch(() => { lastQueueId = 0; });
+
         } else if (phase === 'InProgress' || phase === 'GameStart') {
           stopChampSelectPolling();
           if (win) {
             win.webContents.send('lcu-phase', phase);
             win.webContents.setBackgroundThrottling(true);
-            // Leer preferencia del renderer
             win.webContents.executeJavaScript(`
               (() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimizeIngame === true; } catch(e){ return false; } })()
             `).then(shouldMinimize => {
@@ -873,46 +876,54 @@ async function startLcuWebSocket() {
               setTimeout(() => { if (win && !win.isDestroyed()) win.minimize(); }, 600);
             });
           }
-          // ── Skill order overlay (independiente del OCR) ──
+
+          // Leer ambos settings de una vez
           win.webContents.executeJavaScript(`
             (() => {
               try {
                 const s = JSON.parse(localStorage.getItem('amo_settings')||'{}');
                 const order = JSON.parse(localStorage.getItem('last_skill_order')||'null');
-                return { enabled: s.skillOverlay !== false, order };
-              } catch(e){ return { enabled: true, order: null }; }
+                return {
+                  skillEnabled: s.skillOverlay === true,
+                  augEnabled:   s.overlay === true,
+                  order
+                };
+              } catch(e) { return { skillEnabled: false, augEnabled: false, order: null }; }
             })()
-          `).then(({ enabled, order }) => {
-            console.log('[SkillOverlay] InProgress check — enabled:', enabled, '| order:', order);
-            if (enabled) {
+          `).then(({ skillEnabled, augEnabled, order }) => {
+            console.log('[Overlay] InProgress — skillEnabled:', skillEnabled, '| augEnabled:', augEnabled);
+
+            const isAramCaos = CHAOS_QUEUE_IDS.has(lastQueueId);
+
+            // WindowMode: forzar sin bordes si cualquiera está activo
+            applyWindowModeForOverlay(augEnabled && isAramCaos, skillEnabled);
+
+            // ── Skill overlay ──
+            if (skillEnabled) {
               if (order?.length) currentSkillOrder = order;
-              console.log('[SkillOverlay] currentSkillOrder length:', currentSkillOrder?.length, '| overlayWin:', !!overlayWin, '| destroyed:', overlayWin?.isDestroyed());
+              console.log('[SkillOverlay] currentSkillOrder length:', currentSkillOrder?.length);
               if (currentSkillOrder?.length) {
                 console.log('[SkillOverlay] arrancando, next:', currentSkillOrder[0]);
                 if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
                 startSkillPolling();
               }
             }
-          }).catch(() => {});
 
-          if (CHAOS_QUEUE_IDS.has(lastQueueId)) {
-            win.webContents.executeJavaScript(`
-              (() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').overlay !== false; } catch(e){ return true; } })()
-            `).then(overlayEnabled => {
-              if (overlayEnabled) {
+            // ── OCR aumentos (solo ARAM Caos) ──
+            if (isAramCaos) {
+              if (augEnabled) {
                 console.log('[OCR] cola es ARAM Caos (' + lastQueueId + '), arrancando OCR');
                 if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
                 startOCR();
               } else {
-                console.log('[OCR] overlay desactivado por el usuario, OCR no arranca');
+                console.log('[OCR] overlay de aumentos desactivado, OCR no arranca');
               }
-            }).catch(() => {
-              if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
-              startOCR();
-            });
-          } else {
-            console.log('[OCR] cola ' + lastQueueId + ' no es ARAM Caos, OCR no arranca');
-          }
+            } else {
+              console.log('[OCR] cola ' + lastQueueId + ' no es ARAM Caos, OCR no arranca');
+            }
+
+          }).catch(() => {});
+
         } else {
           stopChampSelectPolling();
           stopOCR();
@@ -921,6 +932,11 @@ async function startLcuWebSocket() {
             overlayWin.close();
             overlayWin = null;
           }
+          // Restaurar WindowMode original al salir de partida
+          try {
+            const s = readJsonFile(APP_SETTINGS_FILE, {});
+            applyWindowModeForOverlay(s.overlay === true, s.skillOverlay === true);
+          } catch(e) {}
           if (win) {
             win.webContents.setBackgroundThrottling(false);
             win.restore();
@@ -935,7 +951,7 @@ async function startLcuWebSocket() {
     lcuWs = null;
     _lcuCredsCache = null;
     _lcuCredsCacheTs = 0;
-    _lcuKnownClosed = false; // permitir un solo envío de 'closed'
+    _lcuKnownClosed = false;
     if (win) win.webContents.send('lcu-phase', 'closed');
     lcuWsRetryTimer = setTimeout(startLcuWebSocket, 5000);
   });
@@ -1708,16 +1724,73 @@ function startPython() {
 }
 
 console.log('[DEBUG] __dirname:', __dirname);
+// ── WindowMode helper (overlay sobre fullscreen) ──────────────
+const GAME_CFG_PATHS = [
+  path.join(os.homedir(), 'AppData', 'Local', 'Riot Games', 'League of Legends', 'Config', 'game.cfg'),
+  'C:\\Riot Games\\League of Legends\\Config\\game.cfg',
+];
+const ORIGINAL_WINDOW_MODE_FILE = path.join(APP_CACHE_DIR, 'original_window_mode.json');
+
+function getGameCfgPath() {
+  return GAME_CFG_PATHS.find(p => fs.existsSync(p)) || null;
+}
+
+function saveOriginalWindowModeIfNeeded() {
+  if (fs.existsSync(ORIGINAL_WINDOW_MODE_FILE)) return;
+  const cfgPath = getGameCfgPath();
+  if (!cfgPath) return;
+  const m = fs.readFileSync(cfgPath, 'utf-8').match(/WindowMode\s*=\s*(\d)/i);
+  if (!m) return;
+  fs.writeFileSync(ORIGINAL_WINDOW_MODE_FILE, JSON.stringify({ windowMode: parseInt(m[1]) }), 'utf-8');
+  console.log('[WindowMode] original guardado:', m[1]);
+}
+
+function setWindowMode(mode) {
+  const cfgPath = getGameCfgPath();
+  if (!cfgPath) return;
+  let content = fs.readFileSync(cfgPath, 'utf-8');
+  if (/WindowMode\s*=\s*\d/i.test(content)) {
+    content = content.replace(/WindowMode\s*=\s*\d/i, `WindowMode=${mode}`);
+  } else {
+    content += `\nWindowMode=${mode}`;
+  }
+  fs.writeFileSync(cfgPath, content, 'utf-8');
+  console.log('[WindowMode] escrito:', mode);
+}
+
+function applyWindowModeForOverlay(overlayEnabled, skillOverlayEnabled) {
+  try {
+    saveOriginalWindowModeIfNeeded();
+    if (overlayEnabled || skillOverlayEnabled) {
+      setWindowMode(2);
+    } else {
+      const saved = readJsonFile(ORIGINAL_WINDOW_MODE_FILE, null);
+      setWindowMode(saved?.windowMode ?? 2);
+    }
+  } catch(e) {
+    console.error('[WindowMode] error:', e.message);
+  }
+}
+
 console.log('[DEBUG] preload path:', path.join(__dirname, 'overlay_preload.js'));
 
 function createOverlayWindow() {
+  const { screen } = require('electron');
+  const { width, height } = screen.getPrimaryDisplay().bounds;
+
   overlayWin = new BrowserWindow({
-    fullscreen:  true,
+    x:           0,
+    y:           0,
+    width:       width,
+    height:      height,
     transparent: true,
     frame:       false,
     alwaysOnTop: true,
     skipTaskbar: true,
     focusable:   false,
+    resizable:   false,
+    fullscreen:  false,
+    type:        'toolbar',
     webPreferences: {
       preload:          path.join(__dirname, 'overlay_preload.js'),
       contextIsolation: true,
@@ -1725,9 +1798,9 @@ function createOverlayWindow() {
     },
   });
   overlayWin.setIgnoreMouseEvents(true);
-  overlayWin.setAlwaysOnTop(true, 'screen-saver'); // nivel maximo, pasa sobre el juego
+  overlayWin.setAlwaysOnTop(true, 'screen-saver');
   overlayWin.loadFile(path.join(RENDERER_DIR, 'overlay.html'));
-  overlayWin.webContents.openDevTools({ mode: 'detach' });
+  // overlayWin.webContents.openDevTools({ mode: 'detach' });
   overlayWin.webContents.on('did-finish-load', () => {
     setTimeout(async () => {
       try {
@@ -2550,8 +2623,6 @@ ipcMain.on('close-loading', () => {
   app.quit();
 });
 
-const os = require('os');
-
 // ── Escribir item sets como archivos JSON en carpeta del cliente ──
 ipcMain.handle('write-amo-item-sets', async (_, { sets }) => {
   try {
@@ -2787,6 +2858,13 @@ ipcMain.handle('save-setting', (_, { key, value }) => {
     settings[key] = value;
     fs.writeFileSync(settingsPath, JSON.stringify(settings), 'utf-8');
     console.log(`[Settings] ${key} = ${value}`);
+
+    // Si cambia overlay o skillOverlay, ajustar WindowMode inmediatamente
+    if (key === 'overlay' || key === 'skillOverlay') {
+      const overlayOn      = key === 'overlay'      ? value : (settings.overlay      !== false);
+      const skillOverlayOn = key === 'skillOverlay' ? value : (settings.skillOverlay !== false);
+      applyWindowModeForOverlay(overlayOn, skillOverlayOn);
+    }
   } catch(e) {
     console.error('[Settings] error:', e.message);
   }

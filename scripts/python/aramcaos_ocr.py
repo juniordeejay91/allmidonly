@@ -176,22 +176,50 @@ def load_champion_tiers(champ_id):
         augment_tiers = {}
 
 
+# Posiciones de referencia calibradas en 2560x1440 (21:9, área de juego 16:9)
+# Igual que SKILL_POS en el overlay: píxeles absolutos en resolución de referencia
+REF_W = 2560
+REF_H = 1440
+
+TEXTO_REF = [
+    {"cx": 1280 + int(REF_H * -0.3271), "top": int(REF_H * 0.3549), "width": int(REF_H * 0.2333), "height": int(REF_H * 0.0597)},
+    {"cx": 1280 + int(REF_H * -0.0014), "top": int(REF_H * 0.3514), "width": int(REF_H * 0.2368), "height": int(REF_H * 0.0611)},
+    {"cx": 1280 + int(REF_H *  0.3299), "top": int(REF_H * 0.3549), "width": int(REF_H * 0.2403), "height": int(REF_H * 0.0563)},
+]
+
+ICONO_REF = [
+    {"cx": 1280 + int(REF_H * -0.3271), "top": int(REF_H * 0.2007), "width": int(REF_H * 0.1757), "height": int(REF_H * 0.1521)},
+    {"cx": 1280 + int(REF_H * -0.0007), "top": int(REF_H * 0.1993), "width": int(REF_H * 0.1771), "height": int(REF_H * 0.1500)},
+    {"cx": 1280 + int(REF_H *  0.3299), "top": int(REF_H * 0.1993), "width": int(REF_H * 0.1792), "height": int(REF_H * 0.1535)},
+]
+
+
+def _escalar_zonas(ref_zonas, W, H):
+    # Igual que calcSkillPos en overlay.html:
+    # GAME_W = SCREEN_H * 16/9, scaleX = GAME_W/2560, scaleY = GAME_H/1440
+    game_w   = round(H * 16 / 9)
+    offset_x = (W - game_w) // 2
+    scale_x  = game_w / REF_W
+    scale_y  = H      / REF_H
+    zonas = []
+    for z in ref_zonas:
+        w = round(z["width"]  * scale_x)
+        h = round(z["height"] * scale_y)
+        zonas.append({
+            "left":   offset_x + round(z["cx"] * scale_x) - w // 2,
+            "top":    round(z["top"] * scale_y),
+            "width":  w,
+            "height": h,
+        })
+    return zonas
+
+
 def calcular_zonas_texto(W, H):
-    cx = W // 2
-    return [
-        {"left": cx + int(H * -0.3271) - int(H * 0.2333) // 2, "top": int(H * 0.3549), "width": int(H * 0.2333), "height": int(H * 0.0597)},
-        {"left": cx + int(H * -0.0014) - int(H * 0.2368) // 2, "top": int(H * 0.3514), "width": int(H * 0.2368), "height": int(H * 0.0611)},
-        {"left": cx + int(H * 0.3299) - int(H * 0.2403) // 2, "top": int(H * 0.3549), "width": int(H * 0.2403), "height": int(H * 0.0563)},
-    ]
+    return _escalar_zonas(TEXTO_REF, W, H)
 
 
 def calcular_zonas_icono(W, H):
-    cx = W // 2
-    return [
-        {"left": cx + int(H * -0.3271) - int(H * 0.1757) // 2, "top": int(H * 0.2007), "width": int(H * 0.1757), "height": int(H * 0.1521)},
-        {"left": cx + int(H * -0.0007) - int(H * 0.1771) // 2, "top": int(H * 0.1993), "width": int(H * 0.1771), "height": int(H * 0.1500)},
-        {"left": cx + int(H * 0.3299) - int(H * 0.1792) // 2, "top": int(H * 0.1993), "width": int(H * 0.1792), "height": int(H * 0.1535)},
-    ]
+    return _escalar_zonas(ICONO_REF, W, H)
 
 
 def calcular_zonas_carta(zonas_texto, zonas_icono):
@@ -338,12 +366,16 @@ def get_tier(aug_id):
 
 def hay_boton(sct, W, H):
     """Detecta si el botón azul de selección de aumentos está visible."""
-    cx = W // 2
+    game_w   = round(H * 16 / 9)
+    offset_x = (W - game_w) // 2
+    scale_x  = game_w / REF_W
+    scale_y  = H      / REF_H
+    bw = round(REF_W * BOTON_REL["w"] * scale_x)
     zona = {
-        "left":   cx + int(H * (BOTON_REL["x"] - 0.5)),
-        "top":    int(H * BOTON_REL["y"]),
-        "width":  int(H * BOTON_REL["w"] * (16/9)),
-        "height": int(H * BOTON_REL["h"]),
+        "left":   offset_x + round(REF_W * BOTON_REL["x"] * scale_x) - bw // 2,
+        "top":    round(REF_H * BOTON_REL["y"] * scale_y),
+        "width":  bw,
+        "height": round(REF_H * BOTON_REL["h"] * scale_y),
     }
     # Clamp para no salirse de pantalla
     zona["left"] = max(0, zona["left"])
