@@ -328,6 +328,7 @@ body.startup-pending #appWrap::before {
 .toggle.off .tknob{left:2px;background:#2d4a7a;}
 .ovbtn{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(12,24,55,.6);border:1px solid #1e3566;border-radius:7px;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:8px;}
 .ovbtn:hover{border-color:#4d8eff;background:rgba(12,26,65,.7);}
+.ovbtn.disabled{opacity:.35;cursor:not-allowed;pointer-events:none;}
 .ovbtn-ico{width:32px;height:32px;border-radius:6px;background:rgba(16,40,100,.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .ovbtn-txt{font-size:17px;color:#8aa8e8;font-weight:500;}
 .ovbtn-sub{font-size:14px;color:#2d4a7a;margin-top:2px;}
@@ -339,6 +340,33 @@ body.startup-pending #appWrap::before {
 .tiersize-preview{flex-shrink:0;width:110px;height:70px;background:rgba(8,16,36,.8);border:1px solid #1e2e52;border-radius:7px;display:flex;align-items:center;justify-content:center;}
 .tier-vis{display:flex;align-items:center;justify-content:center;background:#1a3080;border:2px solid #4d8eff;border-radius:4px;font-family:'Ubuntu Condensed',sans-serif;color:#c8d8ff;font-weight:400;letter-spacing:1px;transition:width .15s,height .15s,font-size .15s;}
 .hidden{display:none!important;}
+
+.setting-tip {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  cursor: default;
+  vertical-align: middle;
+}
+.setting-tip svg { opacity: .4; transition: opacity .15s; }
+.setting-tip:hover svg { opacity: .85; }
+.setting-tip .stip-box {
+  display: none;
+  position: fixed;
+  width: 240px;
+  background: #111214;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 12px;
+  color: #8a9ab0;
+  line-height: 1.5;
+  z-index: 99999;
+  box-shadow: 0 8px 24px rgba(0,0,0,.7);
+  pointer-events: none;
+  white-space: normal;
+}
 
 .startup-overlay {
   position: fixed;
@@ -6843,16 +6871,16 @@ html, body { background:#07080b; }
           <div class="acc-body">
 
             <div class="toggle-row" style="margin-bottom:12px;">
-              <span class="toggle-txt">Mostrar overlay de aumentos</span>
-              <div class="toggle on" id="tog-overlay" onclick="toggleSetting('tog-overlay','overlay')"><div class="tknob"></div></div>
+              <span class="toggle-txt">Mostrar overlay de aumentos <span class="setting-tip" data-stip="Mostrar información de tier de aumentos en partida."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
+              <div class="toggle on" id="tog-overlay" onclick="toggleOverlaySetting()"><div class="tknob"></div></div>
             </div>
 
-            <div class="ovbtn" onclick="openOverlayEditor()" style="margin-bottom:8px;">
+            <div class="ovbtn" id="ovbtn-editor" onclick="openOverlayEditor()" style="margin-bottom:8px;">
               <div class="ovbtn-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4d8eff" stroke-width="2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg></div>
               <div><div class="ovbtn-txt">Ajustar posición y tamaño de aumentos</div><div class="ovbtn-sub">Arrastra y redimensiona los indicadores en pantalla</div></div>
               <div class="ovbtn-arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4d8eff" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
             </div>
-            <div class="ovbtn" style="margin-bottom:16px;" onclick="openTierPackSelector()">
+            <div class="ovbtn" id="ovbtn-pack" style="margin-bottom:16px;" onclick="openTierPackSelector()">
               <div class="ovbtn-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
               <div>
                 <div class="ovbtn-txt">Tipos de aumentos</div>
@@ -6860,9 +6888,13 @@ html, body { background:#07080b; }
               </div>
               <div class="ovbtn-arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
             </div>
+
             <div style="border-top:1px solid #262626;padding-top:14px;margin-bottom:14px;">
-              <div style="font-size:13px;color:#4a6a9a;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;text-transform:uppercase;margin-bottom:10px;">Posición preferida del flash</div>
-              <div style="display:flex;gap:8px;">
+              <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4a6a9a;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;text-transform:uppercase;margin-bottom:10px;">
+                Posición preferida del flash
+                <span class="setting-tip" data-stip="Lugar donde se priorizará el hechizo de invocador &quot;Destello&quot;. No interfiere si lo tienes en otra tecla, solo es la posición visual."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+              </div>
+              <div style="display:flex;gap:8px;" id="flash-selector">
                 <div id="flash-left" onclick="setFlashSide('left')" class="flash-btn" style="flex:1;height:34px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:7px;cursor:pointer;transition:border-color .2s,background .2s,color .2s;font-family:'Ubuntu Condensed',sans-serif;font-size:13px;letter-spacing:1px;">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
                   IZQUIERDA
@@ -6876,26 +6908,28 @@ html, body { background:#07080b; }
 
             <div style="border-top:1px solid #262626;padding-top:14px;">
               <div style="font-size:13px;color:#4a6a9a;letter-spacing:1px;font-family:'Ubuntu Condensed',sans-serif;text-transform:uppercase;margin-bottom:10px;">Importación automática</div>
+              <div class="toggle-row" style="margin-bottom:12px;">
+                <span class="toggle-txt">Mostrar orden de habilidades <span class="setting-tip" data-stip="Muestra una flecha encima de la habilidad que toca subir, según el orden de la build recomendada."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
+                <div class="toggle on" id="tog-skill-overlay" onclick="toggleSetting('tog-skill-overlay','skillOverlay')"><div class="tknob"></div></div>
+              </div>              
               <div class="toggle-row" style="margin-bottom:10px;">
-                <span class="toggle-txt">Auto importar objetos</span>
+                <span class="toggle-txt">Auto importar objetos <span class="setting-tip" data-stip="Importar builds in game del campeón con el cual estés jugando."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
                 <div class="toggle on" id="tog-autoitems" onclick="toggleSetting('tog-autoitems','autoItems')"><div class="tknob"></div></div>
               </div>
               <div class="toggle-row" style="margin-bottom:10px;">
-                <span class="toggle-txt">Auto importar runas</span>
+                <span class="toggle-txt">Auto importar runas <span class="setting-tip" data-stip="Importar la página de runas del campeón con el cual estés jugando."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
                 <div class="toggle on" id="tog-autorunes" onclick="toggleSetting('tog-autorunes','autoRunes')"><div class="tknob"></div></div>
               </div>
               <div class="toggle-row" style="margin-bottom:10px;">
-                <span class="toggle-txt">Auto importar hechizos</span>
-                <div class="toggle on" id="tog-autospells" onclick="toggleSetting('tog-autospells','autoSpells')"><div class="tknob"></div></div>
+                <span class="toggle-txt">Auto importar hechizos <span class="setting-tip" data-stip="Importar los hechizos de invocador del campeón con el cual estés jugando."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
+                <div class="toggle on" id="tog-autospells" onclick="updateSpellsToggle(toggleSetting('tog-autospells','autoSpells'))"><div class="tknob"></div></div>
+              </div>
+              <div class="toggle-row" style="margin-bottom:10px;">
+                <span class="toggle-txt">Alerta de partida encontrada <span class="setting-tip" data-stip="Superponer ALL MID ONLY cuando se encuentre una partida."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
+                <div class="toggle on" id="tog-alert" onclick="toggleSetting('tog-alert','alertFound')"><div class="tknob"></div></div>
               </div>
               <div class="toggle-row">
-                <span class="toggle-txt">Alerta de partida encontrada</span>
-                <div class="toggle off" id="tog-alert" onclick="toggleSetting('tog-alert','alertFound')"><div class="tknob"></div></div>
-              </div>
-              <div class="toggle-row">
-                <span class="toggle-txt" id="tog-local-history-label" style="position:relative;cursor:default;">Guardar historial de forma local
-                  <span id="local-history-tooltip" style="display:none;position:absolute;left:0;bottom:calc(100% + 6px);background:#0d1728;border:1px solid #2a4a7a;color:#a8c0e8;font-size:11px;padding:7px 10px;border-radius:7px;width:280px;z-index:999;line-height:1.5;font-family:'Ubuntu',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.5);">Si activas esta opción podrás ver el desglose de las partidas de tu historial sin abrir el cliente de League of Legends.</span>
-                </span>
+                <span class="toggle-txt">Guardar historial de forma local <span class="setting-tip" data-stip="Podrás ver el desglose de las partidas de tu historial sin abrir el cliente de League of Legends."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
                 <div class="toggle off" id="tog-local-history" onclick="toggleLocalHistory()"><div class="tknob"></div></div>
               </div>
             </div>
@@ -6915,19 +6949,23 @@ html, body { background:#07080b; }
           <div class="acc-body">
 
             <div class="toggle-row" style="margin-bottom:10px;">
-              <span class="toggle-txt">Iniciar AMO al arrancar el equipo</span>
+              <span class="toggle-txt">Iniciar AMO al arrancar el equipo <span class="setting-tip" data-stip="Iniciar ALL MID ONLY automáticamente cuando arranques el equipo."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
               <div class="toggle on" id="tog-autostart" onclick="const v=toggleSetting('tog-autostart','autostart');if(window.electronAPI?.invoke)window.electronAPI.invoke('set-autostart',v).catch(()=>{});"><div class="tknob"></div></div>
             </div>
             <div class="toggle-row" style="margin-bottom:10px;">
-              <span class="toggle-txt">Habilitar animaciones del launcher</span>
+              <span class="toggle-txt">Habilitar animaciones del launcher <span class="setting-tip" data-stip="Animaciones relacionadas con mayor consumo de CPU. Desactívalas si notas lentitud."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
               <div class="toggle on" id="tog-animations" onclick="toggleSetting('tog-animations','animations')"><div class="tknob"></div></div>
             </div>
             <div class="toggle-row" style="margin-bottom:10px;">
-              <span class="toggle-txt">Botón cerrar minimiza AMO en área de notificaciones</span>
+              <span class="toggle-txt">Minimizar AMO en área de notificaciones <span class="setting-tip" data-stip="El botón de cerrar mandará ALL MID ONLY al área de notificaciones en vez de cerrarlo."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
               <div class="toggle on" id="tog-minimize" onclick="toggleSetting('tog-minimize','minimize')"><div class="tknob"></div></div>
             </div>
+            <div class="toggle-row" style="margin-bottom:10px;">
+              <span class="toggle-txt">Minimizar al entrar en partida <span class="setting-tip" data-stip="Al entrar en partida ALL MID ONLY pasará a un estado latente de bajo consumo en el área de notificaciones. Al terminar volverá a aparecer."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
+              <div class="toggle off" id="tog-minimize-ingame" onclick="toggleSetting('tog-minimize-ingame','minimizeIngame')"><div class="tknob"></div></div>
+            </div>
             <div class="toggle-row" style="margin-bottom:20px;">
-              <span class="toggle-txt">Habilitar aceleración por hardware</span>
+              <span class="toggle-txt">Habilitar aceleración por hardware <span class="setting-tip" data-stip="Mejora el rendimiento de ALL MID ONLY. Si notas consumo alto de CPU, tirones o crasheos, desactívala."><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a8ec8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span></span>
               <div class="toggle on" id="tog-hwaccel" onclick="toggleSetting('tog-hwaccel','hwaccel')"><div class="tknob"></div></div>
             </div>
 
@@ -6952,6 +6990,8 @@ html, body { background:#07080b; }
             </div>
 
           </div>
+
+          </div>
         </div>
 
       </div>
@@ -6959,6 +6999,7 @@ html, body { background:#07080b; }
     <!-- Modal selección de modo -->
   <div id="perfil-notif"></div>
 </div><!-- /app -->
+</div><!-- /appWrap -->
 <!-- ── MODAL EDITOR DE OVERLAY ── -->
 <div class="overlay-editor-backdrop" id="overlayEditorBackdrop">
   <div class="overlay-editor-modal">
@@ -7015,7 +7056,6 @@ html, body { background:#07080b; }
         disabled onclick="applySelectedPack()">Aplicar seleccion</button>
     </div>
   </div>
-</div>
 </div>
 
 <!-- Tooltip global -->
@@ -7229,6 +7269,32 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('oeCanvas').style.cursor = 'grab';
     }
     oeDragging = null;
+  });
+
+  document.querySelectorAll('.setting-tip').forEach(tip => {
+    tip.addEventListener('mouseenter', () => {
+      const box = tip.querySelector('.stip-box');
+      if (!box) return;
+      box.style.visibility = 'hidden';
+      box.style.display = 'block';
+      const rect = tip.getBoundingClientRect();
+      const bh = box.offsetHeight;
+      const bw = box.offsetWidth;
+      // Intentar arriba
+      let top = rect.top - bh - 8;
+      let left = rect.left;
+      // Si se sale por arriba, ir abajo
+      if (top < 8) top = rect.bottom + 8;
+      // Si se sale por la derecha
+      if (left + bw > window.innerWidth - 8) left = window.innerWidth - bw - 8;
+      box.style.top = top + 'px';
+      box.style.left = left + 'px';
+      box.style.visibility = 'visible';
+    });
+    tip.addEventListener('mouseleave', () => {
+      const box = tip.querySelector('.stip-box');
+      if (box) box.style.display = 'none';
+    });
   });
 });
 
@@ -7688,88 +7754,70 @@ function _amoWeekKey(){
   return `W${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}`;
 }
 
-function _amoStorageKey(){
-  return riotPuuid ? ('amo_quests_' + riotPuuid) : null;
-}
-
-function _amoSave(data){
-  const key = _amoStorageKey();
-  if(!key) return;
-  try { localStorage.setItem(key, JSON.stringify(data)); } catch{}
-}
-function _amoLoad(){
-  const key = _amoStorageKey();
-  if(!key) return null;
-  try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch{ return null; }
-}
 function _amoCanTrack(){
   return !!riotPuuid;
 }
-function _amoResetAllStorage(){
-  try {
-    const prefixes = ['amo_quests_', 'amo_points_'];
-    for(let i = localStorage.length - 1; i >= 0; i--){
-      const key = localStorage.key(i);
-      if(key && prefixes.some(prefix => key.startsWith(prefix))){
-        localStorage.removeItem(key);
-      }
-    }
-  } catch(e){
-    console.warn('[AMO] no se pudo resetear storage:', e);
-  }
+
+// ══ AMO — cache en memoria para la sesión ══
+let _amoSessionCache = null;
+let _amoCachePuuid = null;
+
+async function _amoGetAll(){
+  if(!_amoCanTrack()) return null;
+  if(_amoSessionCache && _amoCachePuuid === riotPuuid) return _amoSessionCache;
+  const row = await window.electronAPI.invoke('amo-get', { puuid: riotPuuid });
+  _amoSessionCache = row || { points: 0, reward_ledger: {}, unlocked_themes: ['oscuro'], unlocked_packs: [''], quests_data: null };
+  _amoCachePuuid = riotPuuid;
+  return _amoSessionCache;
 }
-function _amoEnsureStoragePolicy(){
-  const marker = 'amo_storage_policy_v2';
-  try {
-    if(localStorage.getItem(marker) === '1') return;
-    _amoResetAllStorage();
-    localStorage.setItem(marker, '1');
-  } catch(e){
-    console.warn('[AMO] no se pudo aplicar politica de storage:', e);
-  }
+
+async function _amoPatchAll(patch){
+  if(!_amoCanTrack()) return;
+  const cur = await _amoGetAll();
+  const next = Object.assign({}, cur, patch);
+  _amoSessionCache = next;
+  await window.electronAPI.invoke('amo-upsert', { puuid: riotPuuid, data: next });
 }
-_amoEnsureStoragePolicy();
-function _amoPtsSave(pts){
+
+async function _amoSave(data){
+  if(!_amoCanTrack()) return;
+  await _amoPatchAll({ quests_data: data });
+}
+async function _amoLoad(){
+  if(!_amoCanTrack()) return null;
+  const d = await _amoGetAll();
+  return d?.quests_data || null;
+}
+async function _amoPtsSave(pts){
   if(!_amoCanTrack() || !Number.isFinite(Number(pts)) || Number(pts) <= 0) return;
-  try {
-    const key = 'amo_points_' + riotPuuid;
-    const cur = parseInt(localStorage.getItem(key) || '0', 10);
-    localStorage.setItem(key, String(cur + pts));
-    _amoRefreshPointsUI();
-  } catch{}
+  const cur = await _amoGetAll();
+  await _amoPatchAll({ points: (cur?.points || 0) + pts });
+  _amoRefreshPointsUI();
 }
-function _amoGetPoints(){
+async function _amoGetPoints(){
   if(!_amoCanTrack()) return 0;
-  try { return parseInt(localStorage.getItem('amo_points_' + riotPuuid) || '0', 10); } catch{ return 0; }
+  const d = await _amoGetAll();
+  return d?.points || 0;
 }
-function _amoRewardLedgerKey(){
-  return _amoCanTrack() ? ('amo_reward_ledger_' + riotPuuid) : null;
+async function _amoLoadRewardLedger(){
+  if(!_amoCanTrack()) return {};
+  const d = await _amoGetAll();
+  return d?.reward_ledger || {};
 }
-function _amoLoadRewardLedger(){
-  const key = _amoRewardLedgerKey();
-  if(!key) return {};
-  try {
-    const parsed = JSON.parse(localStorage.getItem(key) || '{}');
-    return parsed && typeof parsed === 'object' ? parsed : {};
-  } catch {
-    return {};
-  }
+async function _amoSaveRewardLedger(ledger){
+  if(!_amoCanTrack()) return;
+  await _amoPatchAll({ reward_ledger: ledger || {} });
 }
-function _amoSaveRewardLedger(ledger){
-  const key = _amoRewardLedgerKey();
-  if(!key) return;
-  try { localStorage.setItem(key, JSON.stringify(ledger || {})); } catch{}
-}
-function _amoTrackRewardOnce(rewardId, pts){
+async function _amoTrackRewardOnce(rewardId, pts){
   if(!_amoCanTrack() || !rewardId) return 0;
-  const ledger = _amoLoadRewardLedger();
+  const ledger = await _amoLoadRewardLedger();
   if(ledger[rewardId]) return 0;
   ledger[rewardId] = Date.now();
-  _amoSaveRewardLedger(ledger);
+  await _amoSaveRewardLedger(ledger);
   return pts;
 }
-function _amoRefreshPointsUI(){
-  const pts = _amoGetPoints();
+async function _amoRefreshPointsUI(){
+  const pts = await _amoGetPoints();
   const val    = document.getElementById('amo-points-value');
   const ttVal  = document.getElementById('amo-pts-tt-val');
   if(val)   val.textContent   = pts.toLocaleString('es');
@@ -8099,7 +8147,7 @@ async function _amoSyncDailyQuestFromHistory(){
     _normalizeMatchChampionPools(_partidasCache);
     _saveCache();
 
-    const currentData = _amoEnsureDataShape(_amoLoad());
+    const currentData = _amoEnsureDataShape(await _amoLoad());
     const todayParts = _amoGetTodayParts().filter(p => p._gameId);
     let cacheChanged = false;
 
@@ -8121,12 +8169,12 @@ async function _amoSyncDailyQuestFromHistory(){
 
     if(cacheChanged) _saveCache();
 
-    const fresh = _amoEnsureDataShape(_amoLoad());
-    const ptsGained = _amoApplyHistory(fresh);
-    _amoSave(fresh);
-    if(ptsGained > 0) _amoPtsSave(ptsGained);
+    const fresh = _amoEnsureDataShape(await _amoLoad());
+    const ptsGained = await _amoApplyHistory(fresh);
+    await _amoSave(fresh);
+    if(ptsGained > 0) await _amoPtsSave(ptsGained);
     _amoRenderBoth(fresh);
-    _amoRefreshPointsUI();
+    await _amoRefreshPointsUI();
   })();
 
   try {
@@ -8136,7 +8184,7 @@ async function _amoSyncDailyQuestFromHistory(){
   }
 }
 
-function _amoApplyHistory(data){
+async function _amoApplyHistory(data){
   if(!_amoCanTrack()) return 0;
   let ptsGained = 0;
   const dayKey = data.dayKey || _amoDayKey();
@@ -8159,9 +8207,9 @@ function _amoApplyHistory(data){
   data.q2.wins = q2State.wins;
   data.q2.completed = q2State.completed;
   if(data.q2.completed){
-    if(!data.q2._rewarded) data.q2._rewarded = !!_amoLoadRewardLedger()[`q2_${data.dayKey}`];
+    if(!data.q2._rewarded) data.q2._rewarded = !!(await _amoLoadRewardLedger())[`q2_${data.dayKey}`];
     const reward = _amoTrackReward(data.q2, 25);
-    if(reward > 0) ptsGained += _amoTrackRewardOnce(`q2_${data.dayKey}`, reward);
+    if(reward > 0) ptsGained += await _amoTrackRewardOnce(`q2_${data.dayKey}`, reward);
   }
 
   let bestDailyDmg = null;
@@ -8175,9 +8223,9 @@ function _amoApplyHistory(data){
   data.q3.match = _amoBestDamageMatch(currentQ3Match, bestDailyDmg);
   data.q3.completed = !!(data.q3.match && data.q3.match._dmgPos === 1);
   if(data.q3.completed){
-    if(!data.q3._rewarded) data.q3._rewarded = !!_amoLoadRewardLedger()[`q3_${data.dayKey}`];
+    if(!data.q3._rewarded) data.q3._rewarded = !!(await _amoLoadRewardLedger())[`q3_${data.dayKey}`];
     const reward = _amoTrackReward(data.q3, 10);
-    if(reward > 0) ptsGained += _amoTrackRewardOnce(`q3_${data.dayKey}`, reward);
+    if(reward > 0) ptsGained += await _amoTrackRewardOnce(`q3_${data.dayKey}`, reward);
   }
 
   const weekCards = weekParts.map(_amoCardFromMatch);
@@ -8197,18 +8245,18 @@ function _amoApplyHistory(data){
   data.q4.completed = !!completedStreak;
   data.q4.wins = completedStreak ? completedStreak : data.q4.recent;
   if(data.q4.completed){
-    if(!data.q4._rewarded) data.q4._rewarded = !!_amoLoadRewardLedger()[`q4_${data.weekKey}`];
+    if(!data.q4._rewarded) data.q4._rewarded = !!(await _amoLoadRewardLedger())[`q4_${data.weekKey}`];
     const reward = _amoTrackReward(data.q4, 30);
-    if(reward > 0) ptsGained += _amoTrackRewardOnce(`q4_${data.weekKey}`, reward);
+    if(reward > 0) ptsGained += await _amoTrackRewardOnce(`q4_${data.weekKey}`, reward);
   }
 
   data.q5.winMatches = weekCards.filter(card => card.r === 'Victoria').slice(0, 10);
   data.q5.wins = weekCards.filter(card => card.r === 'Victoria').length;
   data.q5.completed = data.q5.wins >= 10;
   if(data.q5.completed){
-    if(!data.q5._rewarded) data.q5._rewarded = !!_amoLoadRewardLedger()[`q5_${data.weekKey}`];
+    if(!data.q5._rewarded) data.q5._rewarded = !!(await _amoLoadRewardLedger())[`q5_${data.weekKey}`];
     const reward = _amoTrackReward(data.q5, 50);
-    if(reward > 0) ptsGained += _amoTrackRewardOnce(`q5_${data.weekKey}`, reward);
+    if(reward > 0) ptsGained += await _amoTrackRewardOnce(`q5_${data.weekKey}`, reward);
   }
 
   const noDeathWeekly = weekParts
@@ -8221,16 +8269,15 @@ function _amoApplyHistory(data){
   data.q6.match = noDeathWeekly || currentQ6Match || null;
   data.q6.completed = !!data.q6.match;
   if(data.q6.completed){
-    if(!data.q6._rewarded) data.q6._rewarded = !!_amoLoadRewardLedger()[`q6_${data.weekKey}`];
+    if(!data.q6._rewarded) data.q6._rewarded = !!(await _amoLoadRewardLedger())[`q6_${data.weekKey}`];
     const reward = _amoTrackReward(data.q6, 35);
-    if(reward > 0) ptsGained += _amoTrackRewardOnce(`q6_${data.weekKey}`, reward);
+    if(reward > 0) ptsGained += await _amoTrackRewardOnce(`q6_${data.weekKey}`, reward);
   }
 
   return ptsGained;
 }
 
-function _amoInit(){
-  _amoEnsureStoragePolicy();
+async function _amoInit(){
   if(!_amoCanTrack()){
     _amoRefreshPointsUI();
     _amoRenderBoth(null);
@@ -8240,16 +8287,16 @@ function _amoInit(){
   }
   const dayKey  = _amoDayKey();
   const weekKey = _amoWeekKey();
-  let data = _amoEnsureDataShape(_amoLoad(), dayKey, weekKey);
-  const ptsGained = _amoApplyHistory(data);
-  _amoSave(data);
-  if(ptsGained > 0) _amoPtsSave(ptsGained);
-  _amoRefreshPointsUI();
+  let data = _amoEnsureDataShape(await _amoLoad(), dayKey, weekKey);
+  const ptsGained = await _amoApplyHistory(data);
+  await _amoSave(data);
+  if(ptsGained > 0) await _amoPtsSave(ptsGained);
+  await _amoRefreshPointsUI();
   _amoRenderBoth(data);
   _amoUpdateResetHint();
   if(!_amoTickInterval){
-    _amoTickInterval = setInterval(() => {
-      const current = _amoLoad();
+    _amoTickInterval = setInterval(async () => {
+      const current = await _amoLoad();
       const nextDayKey = _amoDayKey();
       const nextWeekKey = _amoWeekKey();
       const needsReset = !current || current.dayKey !== nextDayKey || current.weekKey !== nextWeekKey;
@@ -8264,13 +8311,13 @@ function _amoInit(){
 }
 
 // Escanea el caché de partidas para poblar misiones diarias/semanales al arrancar
-function _amoScanFromHistory(data){
+async function _amoScanFromHistory(data){
   if(!_amoCanTrack()) return;
   const shaped = _amoEnsureDataShape(data);
-  const ptsGained = _amoApplyHistory(shaped);
-  if(ptsGained > 0) _amoPtsSave(ptsGained);
+  const ptsGained = await _amoApplyHistory(shaped);
+  if(ptsGained > 0) await _amoPtsSave(ptsGained);
   Object.assign(data, shaped);
-  _amoSave(data);
+  await _amoSave(data);
 }
 
 function _amoUpdateResetHint(){
@@ -8547,10 +8594,10 @@ function _amoRenderBoth(data){
 
 // Llama esto al terminar cada partida de ARAM Caos
 // matchData: { c, r, k, _queueId, _modo, _dmg, _deaths, champs_in_match[] }
-function amoProcessMatch(matchData){
+async function amoProcessMatch(matchData){
   if(!_amoCanTrack()) return;
-  _amoInit();
-  const fresh = _amoEnsureDataShape(_amoLoad());
+  await _amoInit();
+  const fresh = _amoEnsureDataShape(await _amoLoad());
   const gameId = matchData._gameId ? String(matchData._gameId) : null;
   if(gameId && fresh._processedGames.includes(gameId)) return;
 
@@ -8581,9 +8628,9 @@ function amoProcessMatch(matchData){
     fresh.q2.wins = q2State.wins;
     fresh.q2.completed = q2State.completed;
     if(fresh.q2.completed){
-      if(!fresh.q2._rewarded) fresh.q2._rewarded = !!_amoLoadRewardLedger()[`q2_${fresh.dayKey}`];
+      if(!fresh.q2._rewarded) fresh.q2._rewarded = !!(await _amoLoadRewardLedger())[`q2_${fresh.dayKey}`];
       const reward = _amoTrackReward(fresh.q2, 25);
-      if(reward > 0) ptsGained += _amoTrackRewardOnce(`q2_${fresh.dayKey}`, reward);
+      if(reward > 0) ptsGained += await _amoTrackRewardOnce(`q2_${fresh.dayKey}`, reward);
     }
 
     if(!fresh.q3.completed){
@@ -8662,10 +8709,10 @@ function amoProcessMatch(matchData){
       _saveCache();
     }
   }
-  _amoSave(fresh);
-  if(ptsGained > 0) _amoPtsSave(ptsGained);
+  await _amoSave(fresh);
+  if(ptsGained > 0) await _amoPtsSave(ptsGained);
   _amoRenderBoth(fresh);
-  _amoRefreshPointsUI();
+  await _amoRefreshPointsUI();
 }
 
 async function _amoCheckLastMatchForQuests(){
@@ -10060,6 +10107,15 @@ function playRenderBuild(champName, build){
     skillsEl.innerHTML = build.skills.slice(0,18).map(s =>
       `<div class="play-skill-badge" style="background:${skillColor[s]||'#1e2e52'};color:#fff;">${s}</div>`
     ).join('');
+    // Mandar skill order al overlay — solo si cambió
+    const skillKey = build.skills.slice(0,18).join(',');
+    if(window._lastSentSkillOrder !== skillKey){
+      window._lastSentSkillOrder = skillKey;
+      localStorage.setItem('last_skill_order', JSON.stringify(build.skills.slice(0,18)));
+      if(window.electronAPI?.invoke){
+        window.electronAPI.invoke('set-skill-order', build.skills.slice(0,18));
+      }
+    }
   } else if(skillsEl){
     skillsEl.innerHTML = '';
   }
@@ -10919,6 +10975,22 @@ function setFlashSide(side, silent = false){
   }
 }
 
+function updateSpellsToggle(isOn) {
+  const flashSelector = document.getElementById('flash-selector');
+  if (!flashSelector) return;
+  flashSelector.style.opacity = isOn ? '1' : '0.35';
+  flashSelector.style.pointerEvents = isOn ? '' : 'none';
+  if (!isOn) {
+    // Quitar selección visual del flash
+    document.getElementById('flash-left')?.classList.remove('flash-sel');
+    document.getElementById('flash-right')?.classList.remove('flash-sel');
+  } else {
+    // Restaurar selección guardada
+    const saved = getSetting('flashSide', 'left');
+    setFlashSide(saved, true);
+  }
+}
+
 function initSettings(){
   // Launcher toggles
   const autostart  = getSetting('autostart', true);
@@ -10930,7 +11002,7 @@ function initSettings(){
   const autoItems  = getSetting('autoItems', true);
   const autoRunes  = getSetting('autoRunes', true);
   const autoSpells = getSetting('autoSpells', true);
-  const alertFound = getSetting('alertFound', false);
+  const alertFound = getSetting('alertFound', true);
   // Flash
   const flash      = getSetting('flashSide', 'left');
 
@@ -10940,11 +11012,15 @@ function initSettings(){
     el.classList.toggle('on', on);
     el.classList.toggle('off', !on);
   };
+  const minimizeIngame = getSetting('minimizeIngame', false);
   setTog('tog-autostart', autostart);
   setTog('tog-animations', animations);
   setTog('tog-minimize', minimize);
   setTog('tog-hwaccel', hwaccel);
+  setTog('tog-minimize-ingame', minimizeIngame);
   setTog('tog-overlay', overlay);
+  setTog('tog-skill-overlay', getSetting('skillOverlay', true));
+  updateOverlayBtns(overlay);
   setTog('tog-autoitems', autoItems);
   setTog('tog-autorunes', autoRunes);
   setTog('tog-autospells', autoSpells);
@@ -10954,6 +11030,7 @@ function initSettings(){
   updateLocalHistoryIndicator();
   renderTemaSelector();
   setFlashSide(flash, true);
+  updateSpellsToggle(getSetting('autoSpells', true));
 
   // Autostart real via Electron
   if(autostart && window.electronAPI?.invoke)
@@ -11137,7 +11214,7 @@ async function _ensureChampIdMap(){
       _saveCache();
       renderParts();
       if(typeof _amoLoad === 'function' && typeof _amoRenderBoth === 'function'){
-        _amoRenderBoth(_amoLoad() || {});
+        _amoLoad().then(d => _amoRenderBoth(d || {}));
       }
     }
   } catch(e){
@@ -12084,17 +12161,22 @@ const AMO_THEMES = {
   },
 };
 
-function _amoGetUnlockedThemes(){
-  try { return JSON.parse(localStorage.getItem('amo_unlocked_themes') || '["oscuro"]'); } catch { return ['oscuro']; }
+async function _amoGetUnlockedThemes(){
+  const d = await _amoGetAll();
+  return d?.unlocked_themes || ['oscuro'];
 }
-function _amoSetUnlockedThemes(arr){
-  try { localStorage.setItem('amo_unlocked_themes', JSON.stringify(arr)); } catch{}
+async function _amoSetUnlockedThemes(arr){
+  await _amoPatchAll({ unlocked_themes: arr });
 }
-function _amoIsThemeUnlocked(id){ return AMO_THEMES[id]?.free || _amoGetUnlockedThemes().includes(id); }
+async function _amoIsThemeUnlocked(id){
+  if(AMO_THEMES[id]?.free) return true;
+  const unlocked = await _amoGetUnlockedThemes();
+  return unlocked.includes(id);
+}
 
-function setTema(id){
+async function setTema(id){
   if(!AMO_THEMES[id]) return;
-  if(!_amoIsThemeUnlocked(id)){ return; }
+  if(!await _amoIsThemeUnlocked(id)){ return; }
   const root = document.documentElement;
   // Quitar todos los temas
   Object.keys(AMO_THEMES).forEach(t => root.classList.remove('tema-' + t));
@@ -12106,12 +12188,13 @@ function setTema(id){
   showAppliedFeedback(`${t.emoji} Tema ${t.name} activado`);
 }
 
-function renderTemaSelector(){
+async function renderTemaSelector(){
   const grid = document.getElementById('tema-selector-grid');
   if(!grid) return;
   const current = getSetting('tema', 'oscuro');
+  const unlockedThemes = await _amoGetUnlockedThemes();
   grid.innerHTML = Object.values(AMO_THEMES).map(t => {
-    const unlocked = _amoIsThemeUnlocked(t.id);
+    const unlocked = AMO_THEMES[t.id]?.free || unlockedThemes.includes(t.id);
     const active = current === t.id;
     const [c1,c2,c3,c4] = t.preview;
     const swatches = `<div style="display:flex;gap:3px;margin-top:8px;">${[c1,c2,c3,c4].map(c=>`<div style="width:18px;height:18px;border-radius:4px;background:${c};border:1px solid rgba(255,255,255,.1);"></div>`).join('')}</div>`;
@@ -12155,13 +12238,14 @@ function amoToggleThemeShop(){
   }
 }
 
-function amoRenderThemeShop(){
+async function amoRenderThemeShop(){
   const container = document.getElementById('amo-theme-packs');
   if(!container) return;
-  const pts = _amoGetPoints();
+  const pts = await _amoGetPoints();
   const paidThemes = Object.values(AMO_THEMES).filter(t => !t.free);
+  const unlockedThemes = await _amoGetUnlockedThemes();
   container.innerHTML = paidThemes.map(t => {
-    const unlocked = _amoIsThemeUnlocked(t.id);
+    const unlocked = AMO_THEMES[t.id]?.free || unlockedThemes.includes(t.id);
     const canAfford = pts >= (t.cost || 0);
     const [c1,c2,c3,c4] = t.preview;
     const swatches = [c1,c2,c3,c4].map(c =>
@@ -12184,19 +12268,16 @@ function amoRenderThemeShop(){
   }).join('');
 }
 
-function amoBuyTheme(id){
+async function amoBuyTheme(id){
   const t = AMO_THEMES[id];
   if(!t || t.free) return;
-  const pts = _amoGetPoints();
+  const pts = await _amoGetPoints();
   if(pts < t.cost) return;
-  try {
-    const key = 'amo_points_' + riotPuuid;
-    localStorage.setItem(key, String(pts - t.cost));
-    _amoRefreshPointsUI();
-  } catch{}
-  const unlocked = _amoGetUnlockedThemes();
+  await _amoPatchAll({ points: pts - t.cost });
+  _amoRefreshPointsUI();
+  const unlocked = await _amoGetUnlockedThemes();
   if(!unlocked.includes(id)) unlocked.push(id);
-  _amoSetUnlockedThemes(unlocked);
+  await _amoSetUnlockedThemes(unlocked);
   amoRenderThemeShop();
   const toast = document.createElement('div');
   toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0d1220;border:1px solid rgba(212,168,79,.5);color:#c8d8ff;font-family:'Ubuntu',sans-serif;font-size:13px;padding:10px 20px;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.5);z-index:99999;display:flex;align-items:center;gap:8px;animation:fadeInUp .25s ease;`;
@@ -18074,7 +18155,7 @@ function updateApplyBtn() {
   }
 }
 
-function renderTierPackGrid() {
+async function renderTierPackGrid() {
   const grid = document.getElementById('tier-pack-grid');
   grid.innerHTML = '';
 
@@ -18083,7 +18164,8 @@ function renderTierPackGrid() {
     return;
   }
 
-  Object.entries(tierPacks).forEach(([name, tiers]) => {
+  const unlockedPacks = await _amoGetUnlockedPacks();
+  for(const [name, tiers] of Object.entries(tierPacks)){
     const isSelected = name === selectedPackName;
     const isApplied  = name === appliedPackName;
     const displayName = name === '' ? 'Default' : name.charAt(0).toUpperCase() + name.slice(1);
@@ -18092,7 +18174,7 @@ function renderTierPackGrid() {
     card.className = 'tier-pack-card' + (isSelected ? ' selected' : '') + (isApplied ? ' applied' : '');
     card.id = 'pack-card-' + name;
     const isDefault = name === '' || name.toLowerCase() === 'default';
-    const isUnlocked = isDefault || _amoIsPackUnlocked(name);
+    const isUnlocked = isDefault || unlockedPacks.includes(name);
     card.className = 'tier-pack-card' + (isSelected && isUnlocked ? ' selected' : '') + (isApplied ? ' applied' : '') + (!isUnlocked ? ' locked' : '');
 
     card.innerHTML = `
@@ -18116,7 +18198,7 @@ function renderTierPackGrid() {
       </div>
     `;
     grid.appendChild(card);
-  });
+  };
 }
 
 function preSelectPack(name) {
@@ -18264,13 +18346,17 @@ function amoOpenModal(type) {
 // ── AMO SHOP · Tienda de packs ────────────────────────────────
 const AMO_PACK_COST = 150;
 
-function _amoGetUnlockedPacks(){
-  try { return JSON.parse(localStorage.getItem('amo_unlocked_packs') || '[""]'); } catch { return ['']; }
+async function _amoGetUnlockedPacks(){
+  const d = await _amoGetAll();
+  return d?.unlocked_packs || [''];
 }
-function _amoSetUnlockedPacks(arr){
-  try { localStorage.setItem('amo_unlocked_packs', JSON.stringify(arr)); } catch{}
+async function _amoSetUnlockedPacks(arr){
+  await _amoPatchAll({ unlocked_packs: arr });
 }
-function _amoIsPackUnlocked(name){ return _amoGetUnlockedPacks().includes(name); }
+async function _amoIsPackUnlocked(name){
+  const unlocked = await _amoGetUnlockedPacks();
+  return unlocked.includes(name);
+}
 
 let _amoShopOpen = false;
 let _amoShopPacks = {};
@@ -18296,7 +18382,7 @@ async function amoLoadShop(){
   amoRenderShop();
 }
 
-function amoRenderShop(){
+async function amoRenderShop(){
   const container = document.getElementById('amo-shop-packs');
   if(!container) return;
 
@@ -18308,9 +18394,10 @@ function amoRenderShop(){
     return;
   }
 
-  const pts = _amoGetPoints();
+  const pts = await _amoGetPoints();
+  const unlockedPacks = await _amoGetUnlockedPacks();
   container.innerHTML = packs.map(([name, tiers]) => {
-    const unlocked = _amoIsPackUnlocked(name);
+    const unlocked = unlockedPacks.includes(name);
     const displayName = name.charAt(0).toUpperCase() + name.slice(1);
     const previews = [1,2,3,4,5].map(n =>
       `<img src="${tiers[n]}" title="Tier ${n}" onerror="this.style.opacity='.15'" ${unlocked ? '' : 'style="opacity:.45;filter:grayscale(.7)"'}>`
@@ -18341,21 +18428,18 @@ function amoRenderShop(){
   }).join('');
 }
 
-function amoBuyPack(name){
-  const pts = _amoGetPoints();
+async function amoBuyPack(name){
+  const pts = await _amoGetPoints();
   if(pts < AMO_PACK_COST) return;
 
   // Descontar puntos
-  try {
-    const key = 'amo_points_' + riotPuuid;
-    localStorage.setItem(key, String(pts - AMO_PACK_COST));
-    _amoRefreshPointsUI();
-  } catch{}
+  await _amoPatchAll({ points: pts - AMO_PACK_COST });
+  _amoRefreshPointsUI();
 
   // Desbloquear pack
-  const unlocked = _amoGetUnlockedPacks();
+  const unlocked = await _amoGetUnlockedPacks();
   if(!unlocked.includes(name)) unlocked.push(name);
-  _amoSetUnlockedPacks(unlocked);
+  await _amoSetUnlockedPacks(unlocked);
 
   // Re-render tienda
   amoRenderShop();
@@ -18531,7 +18615,64 @@ async function supabaseLogout() {
   console.log('[Supabase] sesión cerrada');
 }
 
+function toggleOverlaySetting() {
+  const newVal = toggleSetting('tog-overlay', 'overlay');
+  updateOverlayBtns(newVal);
+  if(window.electronAPI?.ocrSetCampeon) {
+    // Notificar al proceso principal del nuevo estado
+    window.electronAPI.invoke('save-setting', { key: 'overlay', value: newVal });
+  }
+}
+
+function updateOverlayBtns(enabled) {
+  const e = document.getElementById('ovbtn-editor');
+  const p = document.getElementById('ovbtn-pack');
+  if(e) e.classList.toggle('disabled', !enabled);
+  if(p) p.classList.toggle('disabled', !enabled);
+}
+
 supabaseInit();
+
+// ── Tooltips de ajustes ───────────────────────────────────
+(function(){
+  const el = document.createElement('div');
+  el.id = 'stip-global';
+  el.style.cssText = 'position:fixed;z-index:99999;width:240px;background:#111214;border:1px solid #2a2a2a;border-radius:8px;padding:9px 12px;font-family:Ubuntu,sans-serif;font-size:12px;color:#8a9ab0;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.8);pointer-events:none;display:none;';
+  document.body.appendChild(el);
+
+  let currentTip = null;
+
+  function reposition(mx, my) {
+    const bh = el.offsetHeight, bw = el.offsetWidth;
+    let top  = my - bh - 12;
+    let left = mx + 14;
+    if (top < 8) top = my + 18;
+    if (left + bw > window.innerWidth - 8) left = mx - bw - 14;
+    el.style.top  = top  + 'px';
+    el.style.left = left + 'px';
+  }
+
+  document.addEventListener('mouseover', e => {
+    const tip = e.target.closest('[data-stip]');
+    if (!tip) return;
+    currentTip = tip;
+    el.textContent = tip.dataset.stip;
+    el.style.display = 'block';
+    reposition(e.clientX, e.clientY);
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!currentTip) return;
+    reposition(e.clientX, e.clientY);
+  });
+
+  document.addEventListener('mouseout', e => {
+    if (!e.target.closest('[data-stip]')) return;
+    currentTip = null;
+    el.style.display = 'none';
+  });
+})();
+
 
 </script>
 </body>

@@ -18,4 +18,9 @@ contextBridge.exposeInMainWorld('overlayAPI', {
   onPositions:(cb) => ipcRenderer.on('overlay-positions', (_, p) => cb(p)),
   onPack:     (cb) => ipcRenderer.on('overlay-pack', (_, p) => cb(p)),
   assetUrl:   (relativePath) => resolveAssetUrl(relativePath),
+  getHudScale: () => ipcRenderer.invoke('get-hud-scale'),
+  onSkillUp: (cb) => {
+    ipcRenderer.removeAllListeners('overlay-skill-up');
+    ipcRenderer.on('overlay-skill-up', (_, data) => cb(data));
+  },
 });

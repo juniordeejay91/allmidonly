@@ -41,6 +41,8 @@ let overlayWin    = null;
 let lastQueueId   = 0;
 let lastChampionId = null;
 let pythonLaunchConfig = null;
+let skillPollTimer = null;
+let currentSkillOrder = null;
 
 const ROOT_DIR = path.resolve(__dirname, '..', '..');
 const RUNTIME_ROOT_DIR = app.isPackaged
@@ -835,6 +837,17 @@ async function startLcuWebSocket() {
         // console.log('[LCU-WS] fase:', phase);
         if (win) win.webContents.send('lcu-phase', phase);
 
+        // Alerta al encontrar partida si el setting está activado
+        if (phase === 'ReadyCheck') {
+          win.webContents.executeJavaScript(
+            `(() => { try { const s=JSON.parse(localStorage.getItem('amo_settings')||'{}'); return s.alertFound !== false; } catch(e){ return true; } })()`
+          ).then(alertEnabled => {
+            if (!alertEnabled) return;
+            if (win && !win.isDestroyed()) { win.show(); win.focus(); }
+            if (tray) tray.displayBalloon({ title: 'ALL MID ONLY', content: '¡Partida encontrada! Acepta para continuar.', iconType: 'info' });
+          }).catch(() => {});
+        }
+
         // Al entrar en ChampSelect → iniciar polling de campeón y guardar queueId
         if (phase === 'ChampSelect') {
           startChampSelectPolling(creds);
@@ -849,20 +862,61 @@ async function startLcuWebSocket() {
           if (win) {
             win.webContents.send('lcu-phase', phase);
             win.webContents.setBackgroundThrottling(true);
-            setTimeout(() => {
-              if (win && !win.isDestroyed()) win.minimize();
-            }, 600);
+            // Leer preferencia del renderer
+            win.webContents.executeJavaScript(`
+              (() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimizeIngame === true; } catch(e){ return false; } })()
+            `).then(shouldMinimize => {
+              if (shouldMinimize && win && !win.isDestroyed()) {
+                setTimeout(() => { win.minimize(); }, 600);
+              }
+            }).catch(() => {
+              setTimeout(() => { if (win && !win.isDestroyed()) win.minimize(); }, 600);
+            });
           }
+          // ── Skill order overlay (independiente del OCR) ──
+          win.webContents.executeJavaScript(`
+            (() => {
+              try {
+                const s = JSON.parse(localStorage.getItem('amo_settings')||'{}');
+                const order = JSON.parse(localStorage.getItem('last_skill_order')||'null');
+                return { enabled: s.skillOverlay !== false, order };
+              } catch(e){ return { enabled: true, order: null }; }
+            })()
+          `).then(({ enabled, order }) => {
+            console.log('[SkillOverlay] InProgress check — enabled:', enabled, '| order:', order);
+            if (enabled) {
+              if (order?.length) currentSkillOrder = order;
+              console.log('[SkillOverlay] currentSkillOrder length:', currentSkillOrder?.length, '| overlayWin:', !!overlayWin, '| destroyed:', overlayWin?.isDestroyed());
+              if (currentSkillOrder?.length) {
+                console.log('[SkillOverlay] arrancando, next:', currentSkillOrder[0]);
+                if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
+                startSkillPolling();
+              }
+            }
+          }).catch(() => {});
+
           if (CHAOS_QUEUE_IDS.has(lastQueueId)) {
-            console.log('[OCR] cola es ARAM Caos (' + lastQueueId + '), arrancando OCR');
-            if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
-            startOCR();
+            win.webContents.executeJavaScript(`
+              (() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').overlay !== false; } catch(e){ return true; } })()
+            `).then(overlayEnabled => {
+              if (overlayEnabled) {
+                console.log('[OCR] cola es ARAM Caos (' + lastQueueId + '), arrancando OCR');
+                if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
+                startOCR();
+              } else {
+                console.log('[OCR] overlay desactivado por el usuario, OCR no arranca');
+              }
+            }).catch(() => {
+              if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
+              startOCR();
+            });
           } else {
             console.log('[OCR] cola ' + lastQueueId + ' no es ARAM Caos, OCR no arranca');
           }
         } else {
           stopChampSelectPolling();
           stopOCR();
+          stopSkillPolling();
           if (overlayWin && !overlayWin.isDestroyed()) {
             overlayWin.close();
             overlayWin = null;
@@ -1673,9 +1727,9 @@ function createOverlayWindow() {
   overlayWin.setIgnoreMouseEvents(true);
   overlayWin.setAlwaysOnTop(true, 'screen-saver'); // nivel maximo, pasa sobre el juego
   overlayWin.loadFile(path.join(RENDERER_DIR, 'overlay.html'));
-  if (ENABLE_DEVTOOLS) overlayWin.webContents.openDevTools({ mode: 'detach' });
+  overlayWin.webContents.openDevTools({ mode: 'detach' });
   overlayWin.webContents.on('did-finish-load', () => {
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         if (fs.existsSync(OVERLAY_POSITIONS_FILE)) {
           const positions = JSON.parse(fs.readFileSync(OVERLAY_POSITIONS_FILE, 'utf-8'));
@@ -1698,11 +1752,124 @@ function createOverlayWindow() {
           console.log('[overlay] pack enviado OK');
         }
       } catch(e) { console.error('[overlay] error pack:', e.message); }
+
+      // Skill order — mandar al overlay recién cargado si hay uno activo
+      try {
+        if (currentSkillOrder?.length) {
+          // Verificar que ya estamos ingame antes de mostrar
+          const gameStats = await liveClientRequest('/liveclientdata/gamestats');
+          if (gameStats && (gameStats.gameTime ?? 0) >= 3) {
+            const nextSkill = currentSkillOrder[0] || null;
+            overlayWin.webContents.send('overlay-skill-up', { nextSkill, levels: {Q:0,W:0,E:0,R:0} });
+            console.log('[SkillOverlay] enviado tras carga overlay:', nextSkill);
+          }
+        }
+      } catch(e) {}
     }, 500);
   });
 }
 
+function startSkillPolling() {
+  stopSkillPolling();
+  let _lastTotalLevels = -1;
+  let _lastHasPoint = false;
+  let _hudScaleCache = null;
+  let _lastScaleRead = 0;
+
+  function readHudScale() {
+    try {
+      const cfgPaths = [
+        path.join(os.homedir(), 'AppData', 'Local', 'Riot Games', 'League of Legends', 'Config', 'game.cfg'),
+        'C:\\Riot Games\\League of Legends\\Config\\game.cfg',
+      ];
+      for (const cp of cfgPaths) {
+        if (fs.existsSync(cp)) {
+          const m = fs.readFileSync(cp, 'utf-8').match(/GlobalScale\s*=\s*([\d.]+)/i);
+          if (m) return Math.round(parseFloat(m[1]) * 100);
+        }
+      }
+    } catch {}
+    return _hudScaleCache;
+  }
+
+  skillPollTimer = setInterval(async () => {
+    if (!overlayWin || overlayWin.isDestroyed()) return;
+    if (!currentSkillOrder || currentSkillOrder.length === 0) return;
+    try {
+      const gameStats = await liveClientRequest('/liveclientdata/gamestats');
+      if (!gameStats || (gameStats.gameTime ?? 0) < 3) {
+        if (_lastHasPoint) {
+          _lastHasPoint = false;
+          _lastTotalLevels = -1;
+          overlayWin.webContents.send('overlay-skill-up', { nextSkill: null, levels: null });
+        }
+        return;
+      }
+
+      const playerData = await liveClientRequest('/liveclientdata/activeplayer');
+      if (!playerData) return;
+
+      const abilities = playerData.abilities || {};
+      const levels = {
+        Q: abilities.Q?.abilityLevel ?? 0,
+        W: abilities.W?.abilityLevel ?? 0,
+        E: abilities.E?.abilityLevel ?? 0,
+        R: abilities.R?.abilityLevel ?? 0,
+      };
+      const totalLevels = levels.Q + levels.W + levels.E + levels.R;
+      const champLevel  = playerData.level ?? totalLevels;
+      const hasPoint    = champLevel > totalLevels;
+      const nextSkill   = hasPoint ? (currentSkillOrder[totalLevels] || null) : null;
+
+      // Si hay punto pendiente, releer scale cada 3 segundos
+      if (hasPoint) {
+        const now = Date.now();
+        if (!_lastScaleRead || now - _lastScaleRead > 3000) {
+          _lastScaleRead = now;
+          const newScale = readHudScale();
+          if (newScale !== _hudScaleCache) {
+            _hudScaleCache = newScale;
+            overlayWin.webContents.send('overlay-skill-up', { nextSkill, levels, hudScale: _hudScaleCache });
+          }
+        }
+      }
+
+      if (totalLevels !== _lastTotalLevels || hasPoint !== _lastHasPoint) {
+        console.log(`[SkillPoll] total:${totalLevels} champ:${champLevel} hasPoint:${hasPoint} next:${nextSkill}`);
+        _lastTotalLevels = totalLevels;
+        _lastHasPoint    = hasPoint;
+        if (!hasPoint) _hudScaleCache = readHudScale();
+        overlayWin.webContents.send('overlay-skill-up', { nextSkill, levels, hudScale: _hudScaleCache });
+      }
+
+      const targetMs = hasPoint ? 500 : 1500;
+      if (skillPollTimer._idleTimeout !== targetMs) {
+        clearInterval(skillPollTimer);
+        skillPollTimer = setInterval(arguments.callee, targetMs);
+      }
+    } catch(e) {
+      if (e.message?.includes('ECONNREFUSED')) {
+        if (_lastHasPoint) {
+          _lastHasPoint = false;
+          _lastTotalLevels = -1;
+          overlayWin.webContents.send('overlay-skill-up', { nextSkill: null, levels: null });
+        }
+      } else {
+        console.log('[SkillPoll] error:', e.message);
+      }
+    }
+  }, 500);
+}
+
+function stopSkillPolling() {
+  if (skillPollTimer) { clearInterval(skillPollTimer); skillPollTimer = null; }
+  if (overlayWin && !overlayWin.isDestroyed()) {
+    overlayWin.webContents.send('overlay-skill-up', { nextSkill: null, levels: null });
+  }
+}
+
 function stopOCR() {
+  stopSkillPolling();
   if (ocrProc) {
     const pid = ocrProc.pid;
     ocrProc = null;
@@ -1816,7 +1983,15 @@ function startOCR() {
 // ── IPC: ventana ─────────────────────────────────────────────
 ipcMain.on('win-minimize',     () => win?.minimize());
 ipcMain.on('win-maximize',     () => { win?.isMaximized() ? win.unmaximize() : win?.maximize(); });
-ipcMain.on('win-close',        () => win?.hide());
+ipcMain.on('win-close', () => {
+  if (!win || win.isDestroyed()) return;
+  win.webContents.executeJavaScript(
+    `(() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimize !== false; } catch(e){ return true; } })()`
+  ).then(shouldHide => {
+    if (shouldHide) { win.hide(); }
+    else { app._quitting = true; app.quit(); }
+  }).catch(() => { win.hide(); });
+});
 ipcMain.on('win-quit',         () => { app._quitting = true; app.quit(); });
 ipcMain.on('win-is-maximized', (e) => { e.returnValue = win?.isMaximized() ?? false; });
 
@@ -1904,6 +2079,11 @@ process.on('SIGINT', () => {
   app.quit();
 });
 app.on('activate',    () => { if (!win) createWindow(); else win.show(); });
+
+ipcMain.handle('set-skill-order', (_, skillOrder) => {
+  currentSkillOrder = skillOrder;
+  console.log('[SkillOverlay] skill order recibido:', skillOrder);
+});
 
 ipcMain.handle('ocr-set-campeon', (_, nombre) => {
   if (ocrProc?.stdin) {
@@ -2651,6 +2831,37 @@ ipcMain.handle('supabase-logout', async () => {
   return { ok: true };
 });
 
+// ══ AMO POINTS — Supabase ══
+ipcMain.handle('amo-get', async (_, { puuid }) => {
+  try {
+    const { data, error } = await supabase
+      .from('amo_data')
+      .select('*')
+      .eq('riot_puuid', puuid)
+      .maybeSingle();
+    if (error) { console.error('[AMO] get error:', error); return null; }
+    return data;
+  } catch(e) { console.error('[AMO] get exception:', e); return null; }
+});
+
+ipcMain.handle('amo-upsert', async (_, { puuid, data }) => {
+  try {
+    const { error } = await supabase
+      .from('amo_data')
+      .upsert({
+        riot_puuid:      puuid,
+        points:          data.points,
+        reward_ledger:   data.reward_ledger,
+        unlocked_themes: data.unlocked_themes,
+        unlocked_packs:  data.unlocked_packs,
+        quests_data:     data.quests_data,
+        updated_at:      new Date().toISOString()
+      }, { onConflict: 'riot_puuid' });
+    if (error) { console.error('[AMO] upsert error:', error); return false; }
+    return true;
+  } catch(e) { console.error('[AMO] upsert exception:', e); return false; }
+});
+
 // Sincronizar cuentas LoL a Supabase
 ipcMain.handle('supabase-sync-accounts', async (_, { userId, accounts }) => {
   for (const acc of accounts) {
@@ -3001,3 +3212,47 @@ ipcMain.handle('lcu-get-live-game', async (_, { summonerId, puuid: argPuuid }) =
   }
 });
 
+// ── Leer HUD scale del juego ──────────────────────────────────
+ipcMain.handle('get-hud-scale', async () => {
+  try {
+    // Obtener ruta real del juego via LCU
+    let gameRoot = 'C:\\Riot Games\\League of Legends';
+    try {
+      const creds = await getLcuCredentials();
+      if (creds) {
+        const gamePath = await lcuRequest(creds.port, creds.token, '/lol-patch/v1/game-path');
+        if (gamePath && typeof gamePath === 'string') {
+          gameRoot = gamePath.replace(/"/g, '').replace(/\//g, '\\');
+        }
+      }
+    } catch {}
+
+    // Rutas candidatas del game.cfg
+    const cfgCandidates = [
+      path.join(gameRoot, 'Config', 'game.cfg'),
+      path.join(os.homedir(), 'AppData', 'Local', 'Riot Games', 'League of Legends', 'Config', 'game.cfg'),
+      'C:\\Riot Games\\League of Legends\\Config\\game.cfg',
+    ];
+
+    let cfgContent = null;
+    for (const p of cfgCandidates) {
+      if (fs.existsSync(p)) {
+        cfgContent = fs.readFileSync(p, 'utf-8');
+        console.log('[HudScale] cfg encontrado en:', p);
+        break;
+      }
+    }
+
+    if (!cfgContent) return { error: 'cfg_not_found' };
+
+    // Parsear HudScale
+    const match = cfgContent.match(/GlobalScale\s*=\s*([\d.]+)/i);
+    const hudScale = match ? parseFloat(match[1]) : 0.11;
+    console.log('[HudScale] GlobalScale:', hudScale, '→ slider:', Math.round(hudScale * 100));
+    return { hudScale, sliderValue: Math.round(hudScale * 100) };
+
+  } catch (e) {
+    console.error('[HudScale] error:', e.message);
+    return { error: e.message };
+  }
+});

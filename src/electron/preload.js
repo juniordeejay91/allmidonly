@@ -77,4 +77,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   perfilCdSet: (key) => ipcRenderer.invoke('perfil-cd-set', key),
 
   lcuGetLiveGame: (opts) => ipcRenderer.invoke('lcu-get-live-game', opts),
+  getHudScale: () => ipcRenderer.invoke('get-hud-scale'),
+  setSkillOrder: (order) => ipcRenderer.invoke('set-skill-order', order),
+  onSkillUp: (cb) => {
+    ipcRenderer.removeAllListeners('overlay-skill-up');
+    ipcRenderer.on('overlay-skill-up', (_, data) => cb(data));
+  },
 });

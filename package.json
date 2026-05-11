@@ -1,6 +1,6 @@
 {
   "name": "amo",
-  "version": "0.260510.4",
+  "version": "0.260511.1",
   "description": "ALL MID ONLY - Helper para ARAM",
   "author": {
     "name": "juniordeejay91",
@@ -85,9 +85,9 @@
       "icon": "assets/images/logoicon.ico"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
+      "allowToChangeInstallationDirectory": true,
       "uninstallDisplayName": "ALL MID ONLY",
       "installerIcon": "assets/images/logoicon.ico",
       "uninstallerIcon": "assets/images/logoicon.ico",

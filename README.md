@@ -6,7 +6,7 @@
 
 ### Tu ARAM Caos Helper — tiers, aumentos y estadísticas en tiempo real
 
-[![Version](https://img.shields.io/badge/version-0.260510.5-D4AF37?style=for-the-badge&labelColor=0D0D0D)](https://github.com/juniordeejay91/allmidonly/releases)
+[![Version](https://img.shields.io/badge/version-0.260511.1-D4AF37?style=for-the-badge&labelColor=0D0D0D)](https://github.com/juniordeejay91/allmidonly/releases)
 [![Electron](https://img.shields.io/badge/Electron-28-47848F?style=for-the-badge&logo=electron&logoColor=white&labelColor=0D0D0D)](https://electronjs.org)
 [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D4?style=for-the-badge&logo=windows&logoColor=white&labelColor=0D0D0D)](https://github.com/juniordeejay91/allmidonly/releases)
 [![League of Legends](https://img.shields.io/badge/League_of_Legends-ARAM_Caos-C89B3C?style=for-the-badge&labelColor=0D0D0D)](https://www.leagueoflegends.com)

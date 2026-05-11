@@ -19,6 +19,52 @@
   }
   .slot.visible { opacity: 1; }
   .slot img { display: block; width: 100%; height: 100%; pointer-events: none; }
+
+  /* ── Skill indicator ── */
+  .skill-indicator {
+    position: fixed;
+    pointer-events: none;
+    user-select: none;
+    display: none;
+    z-index: 999;
+  }
+  .skill-indicator.visible { display: block; }
+
+  /* Flecha animada */
+  .skill-arrow {
+    animation: arrowBounce 0.55s ease-in-out infinite alternate;
+    display: block;
+  }
+  @keyframes arrowBounce {
+    from { transform: translateY(0px);  filter: drop-shadow(0 0 5px #ffe066) drop-shadow(0 0 10px #ffa500); }
+    to   { transform: translateY(-8px); filter: drop-shadow(0 0 10px #fff9b0) drop-shadow(0 0 20px #ffcc00) drop-shadow(0 0 30px #ff8800); }
+  }
+
+  /* Marco brillante del botón activo */
+  .skill-border {
+    position: fixed;
+    pointer-events: none;
+    z-index: 998;
+    display: none;
+    animation: borderGlow 0.8s ease-in-out infinite alternate;
+  }
+  .skill-border.visible { display: block; }
+  @keyframes borderGlow {
+    from { filter: drop-shadow(0 0 3px #d4a84f) drop-shadow(0 0 6px #ffe066); opacity: 0.8; }
+    to   { filter: drop-shadow(0 0 8px #fff4a0) drop-shadow(0 0 16px #ffcc00) drop-shadow(0 0 24px #ffa500); opacity: 1; }
+  }
+
+  /* Overlay oscuro sobre botones inactivos */
+  .skill-dim {
+    position: fixed;
+    pointer-events: none;
+    z-index: 997;
+    display: none;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 4px;
+    backdrop-filter: blur(1px);
+  }
+  .skill-dim.visible { display: block; }
 </style>
 </head>
 <body>
@@ -26,18 +72,35 @@
   <div class="slot" id="slot1"><img id="img1" src=""></div>
   <div class="slot" id="slot2"><img id="img2" src=""></div>
 
+  <!-- Flechas -->
+  <div class="skill-indicator" id="skill-Q"></div>
+  <div class="skill-indicator" id="skill-W"></div>
+  <div class="skill-indicator" id="skill-E"></div>
+  <div class="skill-indicator" id="skill-R"></div>
+
+  <!-- Marcos brillantes -->
+  <div class="skill-border" id="border-Q"></div>
+  <div class="skill-border" id="border-W"></div>
+  <div class="skill-border" id="border-E"></div>
+  <div class="skill-border" id="border-R"></div>
+
+  <!-- Overlays oscuros para botones inactivos -->
+  <div class="skill-dim" id="dim-Q"></div>
+  <div class="skill-dim" id="dim-W"></div>
+  <div class="skill-dim" id="dim-E"></div>
+  <div class="skill-dim" id="dim-R"></div>
+
 <script>
-  // Pack activo — se carga desde localStorage o Default
-let TIER_IMGS = {
-  1: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier1.png') : 'img/tiers/tier1.png',
-  2: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier2.png') : 'img/tiers/tier2.png',
-  3: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier3.png') : 'img/tiers/tier3.png',
-  4: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier4.png') : 'img/tiers/tier4.png',
-  5: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier5.png') : 'img/tiers/tier5.png'
-};
+  // Pack activo
+  let TIER_IMGS = {
+    1: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier1.png') : 'img/tiers/tier1.png',
+    2: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier2.png') : 'img/tiers/tier2.png',
+    3: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier3.png') : 'img/tiers/tier3.png',
+    4: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier4.png') : 'img/tiers/tier4.png',
+    5: window.overlayAPI?.assetUrl ? window.overlayAPI.assetUrl('img/tiers/tier5.png') : 'img/tiers/tier5.png'
+  };
 
   function loadPack(pack) {
-    // pack = { "1": "img/tiers/tier1poro.png", ... }
     TIER_IMGS = {};
     Object.entries(pack).forEach(([num, path]) => {
       TIER_IMGS[parseInt(num)] = path;
@@ -54,26 +117,22 @@ let TIER_IMGS = {
 
   loadSavedPack();
 
-  // ── Resolución real de pantalla ────────────────────────────
-  const SCREEN_W = window.screen.width;   // ej: 3440 (ultrawide)
-  const SCREEN_H = window.screen.height;  // ej: 1440
-
-  // Base 16:9 centrada — el juego siempre usa 16:9 centrado
-  const GAME_W    = Math.round(SCREEN_H * 16 / 9);  // 2560
-  const GAME_H    = SCREEN_H;                        // 1440
-  const OFFSET_X  = Math.round((SCREEN_W - GAME_W) / 2); // 440 en 3440
+  // ── Resolución ─────────────────────────────────────────────
+  const SCREEN_W = window.screen.width;
+  const SCREEN_H = window.screen.height;
+  const GAME_W   = Math.round(SCREEN_H * 16 / 9);
+  const GAME_H   = SCREEN_H;
+  const OFFSET_X = Math.round((SCREEN_W - GAME_W) / 2);
 
   console.log(`[overlay] pantalla: ${SCREEN_W}x${SCREEN_H} | juego 16:9: ${GAME_W}x${GAME_H} | offset: ${OFFSET_X}`);
 
-  // ── Posiciones por defecto en % (relativas al área 16:9) ──
-  // { x: %, y: %, w: %, h: % } — se escalan a cualquier resolución
+  // ── Posiciones aumentos ────────────────────────────────────
   const DEFAULT_POSITIONS = [
     { x: 18, y: 62, w: 14, h: 8 },
     { x: 43, y: 62, w: 14, h: 8 },
     { x: 68, y: 62, w: 14, h: 8 },
   ];
 
-  // ── Cargar/guardar posiciones ──────────────────────────────
   function loadPositions() {
     try {
       const s = localStorage.getItem('oe_positions');
@@ -86,7 +145,6 @@ let TIER_IMGS = {
     localStorage.setItem('oe_positions', JSON.stringify(pos));
   }
 
-  // ── Aplicar posiciones (% → px reales con offset ultrawide) 
   function applyPositions(pos) {
     pos.forEach((p, i) => {
       const slot = document.getElementById('slot' + i);
@@ -97,12 +155,10 @@ let TIER_IMGS = {
     });
   }
 
-  // Aplicar al arrancar
   applyPositions(loadPositions());
 
-  // ── Mostrar tiers desde matches ───────────────────────────
+  // ── Tiers ──────────────────────────────────────────────────
   function mostrarTiers(data) {
-    // Soporta tanto el nuevo formato {matches} como el legacy {tiers}
     const matches = data.matches || data.tiers.map((tier, i) => ({
       tier, id: (data.ids || [])[i] || null, score: { combined: 1 }
     }));
@@ -110,23 +166,11 @@ let TIER_IMGS = {
     matches.forEach((match, i) => {
       const slot = document.getElementById('slot' + i);
       const img  = document.getElementById('img'  + i);
-
-      // Umbral minimo de confianza para mostrar
       const combined = match.score ? match.score.combined : 1;
-      if (combined < 0.4) {
-        slot.classList.remove('visible');
-        console.log(`[overlay] slot ${i} descartado por score bajo (${combined})`);
-        return;
-      }
-
+      if (combined < 0.4) { slot.classList.remove('visible'); return; }
       const src = TIER_IMGS[match.tier];
-      if (src) {
-        img.src = src;
-        slot.classList.add('visible');
-        console.log(`[overlay] slot ${i}: ${match.name || match.id} tier=${match.tier} score=${combined}`);
-      } else {
-        slot.classList.remove('visible');
-      }
+      if (src) { img.src = src; slot.classList.add('visible'); }
+      else { slot.classList.remove('visible'); }
     });
   }
 
@@ -134,33 +178,153 @@ let TIER_IMGS = {
     document.querySelectorAll('.slot').forEach(s => s.classList.remove('visible'));
   }
 
-  // ── API desde main.js ──────────────────────────────────────
+  // ── API ────────────────────────────────────────────────────
   if (window.overlayAPI) {
     window.overlayAPI.onPack(pack => {
-      console.log('[overlay] pack recibido:', pack);
       loadPack(pack);
       localStorage.setItem('tier_pack', JSON.stringify(pack));
     });
-
-    window.overlayAPI.onTiers(data => {
-      console.log('[overlay] datos recibidos:', data);
-      mostrarTiers(data);
-    });
-
-    // Ocultar overlay
-    window.overlayAPI.onOcultar(() => {
-      console.log('[overlay] ocultando');
-      ocultarOverlay();
-    });
-
-    // Recibir posiciones guardadas desde el editor
+    window.overlayAPI.onTiers(data => mostrarTiers(data));
+    window.overlayAPI.onOcultar(() => ocultarOverlay());
     window.overlayAPI.onPositions(newPositions => {
-      console.log('[overlay] posiciones actualizadas:', newPositions);
       savePositions(newPositions);
       applyPositions(newPositions);
     });
 
-    console.log('[overlay] overlayAPI conectado OK');
+    // ── Skill order ────────────────────────────────────────────
+    const SKILL_POS = {
+      Q: { s0: {x:1080, y:1279, w:43, h:40}, s100: {x: 979, y:1195, w:63, h:62} },
+      W: { s0: {x:1140, y:1279, w:41, h:40}, s100: {x:1067, y:1195, w:64, h:62} },
+      E: { s0: {x:1198, y:1279, w:43, h:40}, s100: {x:1156, y:1195, w:63, h:62} },
+      R: { s0: {x:1257, y:1279, w:39, h:40}, s100: {x:1242, y:1195, w:64, h:62} },
+    };
+
+    let hudScale = 50;
+
+    function calcSkillPos(skill, scale) {
+      const p = SKILL_POS[skill];
+      const t = Math.max(0, Math.min(100, scale)) / 100;
+      const scaleX = GAME_W / 2560;
+      const scaleY = GAME_H / 1440;
+      return {
+        px: OFFSET_X + (p.s0.x + (p.s100.x - p.s0.x) * t) * scaleX,
+        py:            (p.s0.y + (p.s100.y - p.s0.y) * t) * scaleY,
+        pw:            (p.s0.w + (p.s100.w - p.s0.w) * t) * scaleX,
+        ph:            (p.s0.h + (p.s100.h - p.s0.h) * t) * scaleY,
+      };
+    }
+
+    function makeArrowSVG(bw, skill) {
+      const aw = Math.round(bw * 1.0);
+      const ah = Math.round(aw * 0.55);
+      const id = 'a' + skill;
+      return `<svg class="skill-arrow" width="${aw}" height="${ah}" viewBox="0 0 ${aw} ${ah}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ag${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="20%" stop-color="#fffacc"/>
+            <stop offset="60%" stop-color="#ffe066"/>
+            <stop offset="100%" stop-color="#b06000"/>
+          </linearGradient>
+          <filter id="gf${id}">
+            <feGaussianBlur stdDeviation="1.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon points="${aw/2},${ah-1} 1,1 ${aw-1},1"
+          fill="rgba(200,100,0,0.4)" transform="translate(0,2)"/>
+        <polygon points="${aw/2},${ah-1} 1,1 ${aw-1},1"
+          fill="url(#ag${id})" stroke="#7a3a00" stroke-width="1.5" filter="url(#gf${id})"/>
+        <polygon points="${aw/2},${ah*0.7} ${aw*0.22},${ah*0.12} ${aw*0.78},${ah*0.12}"
+          fill="rgba(255,255,230,0.4)"/>
+        <line x1="${aw/2}" y1="${ah*0.1}" x2="${aw/2}" y2="${ah*0.6}"
+          stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    function makeBorderSVG(bw, bh, skill) {
+      const pad = 3;
+      const w = bw + pad * 2;
+      const h = bh + pad * 2;
+      const id = 'b' + skill;
+      return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#ffe066"/>
+            <stop offset="100%" stop-color="#d4a84f"/>
+          </linearGradient>
+        </defs>
+        <rect x="1.5" y="1.5" width="${w-3}" height="${h-3}" rx="3" ry="3"
+          fill="none" stroke="url(#bg${id})" stroke-width="2.5"/>
+      </svg>`;
+    }
+
+    function updateSkillIndicator({ nextSkill, levels }) {
+      const KEYS = ['Q','W','E','R'];
+
+      // Ocultar todo primero
+      KEYS.forEach(k => {
+        document.getElementById('skill-' + k).classList.remove('visible');
+        document.getElementById('border-' + k).classList.remove('visible');
+        document.getElementById('dim-'   + k).classList.remove('visible');
+      });
+
+      if (!nextSkill) return;
+
+      // Mostrar dim en los que NO son el siguiente
+      KEYS.forEach(k => {
+        const pos = calcSkillPos(k, hudScale);
+        const dim = document.getElementById('dim-' + k);
+        if (k !== nextSkill) {
+          dim.style.left   = Math.round(pos.px) + 'px';
+          dim.style.top    = Math.round(pos.py) + 'px';
+          dim.style.width  = Math.round(pos.pw) + 'px';
+          dim.style.height = Math.round(pos.ph) + 'px';
+          dim.classList.add('visible');
+        }
+      });
+
+      // Posición del botón activo
+      const { px, py, pw, ph } = calcSkillPos(nextSkill, hudScale);
+      const bw = Math.round(pw);
+      const bh = Math.round(ph);
+      const pad = 3;
+      const aw = bw;
+      const ah = Math.round(aw * 0.55);
+
+      // Flecha
+      const arrow = document.getElementById('skill-' + nextSkill);
+      arrow.innerHTML = makeArrowSVG(bw, nextSkill);
+      arrow.style.left = Math.round(px) + 'px';
+      arrow.style.top  = Math.round(py - ah - 5) + 'px';
+      arrow.classList.add('visible');
+
+      // Marco brillante
+      const border = document.getElementById('border-' + nextSkill);
+      border.innerHTML = makeBorderSVG(bw, bh, nextSkill);
+      border.style.left = Math.round(px - pad) + 'px';
+      border.style.top  = Math.round(py - pad) + 'px';
+      border.classList.add('visible');
+
+      console.log('[SkillOverlay] mostrando', nextSkill, '| px:', Math.round(px), 'py:', Math.round(py), '| hudScale:', hudScale);
+    }
+
+    // Cargar hudScale inicial
+    if (window.overlayAPI.getHudScale) {
+      window.overlayAPI.getHudScale().then(r => {
+        if (r && !r.error && typeof r.sliderValue === 'number') {
+          hudScale = r.sliderValue;
+          console.log('[SkillOverlay] hudScale cargado:', hudScale);
+        }
+      }).catch(() => {});
+    }
+
+    window.overlayAPI.onSkillUp(data => {
+      if (data.hudScale != null) hudScale = data.hudScale;
+      updateSkillIndicator(data);
+    });
+
   } else {
     console.error('[overlay] overlayAPI no disponible');
   }
