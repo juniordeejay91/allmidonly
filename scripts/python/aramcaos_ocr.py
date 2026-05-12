@@ -24,10 +24,10 @@ CHAMPION_CACHE = CACHE_DIR / "champions"
 AUGMENTS_ES = CACHE_DIR / "augments_es.json"
 ICONS_DIR = IMG_DIR / "aumentos"
 
-POLL_IDLE        = 0.15   # poll inicial del botón
-POLL_IDLE_MED    = 0.50   # tras 30s sin botón
-POLL_IDLE_SLOW   = 1.00   # tras 2min sin botón
-POLL_ACTIVE      = 0.08   # poll entre confirmaciones cuando hay aumentos
+POLL_IDLE        = 0.50   # poll inicial del botón
+POLL_IDLE_MED    = 1.00   # tras 30s sin botón
+POLL_IDLE_SLOW   = 2.00   # tras 2min sin botón
+POLL_ACTIVE      = 0.15   # poll entre confirmaciones cuando hay aumentos
 
 # Botón azul de selección — coordenadas relativas al área 16:9
 BOTON_REL = {"x": 0.445, "y": 0.7625, "w": 0.1105, "h": 0.0625}
@@ -469,9 +469,9 @@ def main_loop():
         if not hay_boton(sct, W, H):
             if not boton_visible:
                 elapsed = time.time() - tiempo_sin_boton
-                if elapsed > 120:
+                if elapsed > 30:
                     time.sleep(POLL_IDLE_SLOW)
-                elif elapsed > 30:
+                elif elapsed > 10:
                     time.sleep(POLL_IDLE_MED)
                 else:
                     time.sleep(POLL_IDLE)
@@ -486,6 +486,7 @@ def main_loop():
         cartas_reales = 0  # ← cartas visibles en pantalla sin cache
         for idx in range(3):
             cache_entry = slot_cache[idx]
+            time.sleep(0.005)  # ceder GIL entre capturas
             try:
                 card_bgr  = capture_bgr(zonas_carta[idx], sct)
                 icon_crop = crop_relative(card_bgr, zonas_carta[idx], zonas_icono[idx])
@@ -667,6 +668,13 @@ def stdin_reader():
 
 
 if __name__ == "__main__":
+    try:
+        import psutil
+        psutil.Process().nice(psutil.BELOW_NORMAL_PRIORITY_CLASS)
+        print("[OCR] prioridad reducida a BELOW_NORMAL", flush=True)
+    except Exception as e:
+        print(f"[OCR] no se pudo reducir prioridad: {e}", flush=True)
+
     t = threading.Thread(target=stdin_reader, daemon=True)
     t.start()
     main_loop()

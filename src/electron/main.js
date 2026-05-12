@@ -844,7 +844,7 @@ async function startLcuWebSocket() {
         // Alerta al encontrar partida
         if (phase === 'ReadyCheck') {
           win.webContents.executeJavaScript(
-            `(() => { try { const s=JSON.parse(localStorage.getItem('amo_settings')||'{}'); return s.alertFound !== false; } catch(e){ return true; } })()`
+            `(() => { try { const s=JSON.parse(localStorage.getItem('aramcaos_settings')||'{}'); return s.alertFound !== false; } catch(e){ return true; } })()`
           ).then(alertEnabled => {
             if (!alertEnabled) return;
             if (win && !win.isDestroyed()) { win.show(); win.focus(); }
@@ -868,7 +868,7 @@ async function startLcuWebSocket() {
             win.webContents.send('lcu-phase', phase);
             win.webContents.setBackgroundThrottling(true);
             win.webContents.executeJavaScript(`
-              (() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimizeIngame === true; } catch(e){ return false; } })()
+              (() => { try { return JSON.parse(localStorage.getItem('aramcaos_settings')||'{}').minimizeIngame === true; } catch(e){ return false; } })()
             `).then(shouldMinimize => {
               if (shouldMinimize && win && !win.isDestroyed()) {
                 setTimeout(() => { win.minimize(); }, 600);
@@ -882,7 +882,7 @@ async function startLcuWebSocket() {
           win.webContents.executeJavaScript(`
             (() => {
               try {
-                const s = JSON.parse(localStorage.getItem('amo_settings')||'{}');
+                const s = JSON.parse(localStorage.getItem('aramcaos_settings')||'{}');
                 const order = JSON.parse(localStorage.getItem('last_skill_order')||'null');
                 const lastChamp = localStorage.getItem('last_champ_name') || null;
                 return {
@@ -1490,7 +1490,7 @@ function createWindow() {
     if (app._quitting) return;
     e.preventDefault();
     win.webContents.executeJavaScript(
-      `(() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimize !== false; } catch(e){ return true; } })()`
+      `(() => { try { return JSON.parse(localStorage.getItem('aramcaos_settings')||'{}').minimize !== false; } catch(e){ return true; } })()`
     ).then(shouldHide => {
       if (shouldHide) { win.hide(); }
       else { app._quitting = true; app.quit(); }
@@ -2107,7 +2107,7 @@ ipcMain.on('win-maximize',     () => { win?.isMaximized() ? win.unmaximize() : w
 ipcMain.on('win-close', () => {
   if (!win || win.isDestroyed()) return;
   win.webContents.executeJavaScript(
-    `(() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimize !== false; } catch(e){ return true; } })()`
+    `(() => { try { return JSON.parse(localStorage.getItem('aramcaos_settings')||'{}').minimize !== false; } catch(e){ return true; } })()`
   ).then(shouldHide => {
     if (shouldHide) { win.hide(); }
     else { app._quitting = true; app.quit(); }
