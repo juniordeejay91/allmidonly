@@ -39,7 +39,8 @@ let tray          = null;
 let pyProc        = null;
 let ocrProc       = null;
 let overlayWin    = null;
-let lastQueueId   = 0;
+let lastQueueId    = 0;
+let initialHudScale = 50;
 let lastChampionId = null;
 let pythonLaunchConfig = null;
 let skillPollTimer = null;
@@ -938,6 +939,11 @@ async function startLcuWebSocket() {
               console.log('[SkillOverlay] currentSkillOrder length:', currentSkillOrder?.length);
               if (currentSkillOrder?.length) {
                 console.log('[SkillOverlay] arrancando, next:', currentSkillOrder[0]);
+                // Leer hudScale usando el handler existente
+                try {
+                  const hudData = await ipcMain.listeners('get-hud-scale')[0]?.({});
+                  if (hudData?.sliderValue) initialHudScale = hudData.sliderValue;
+                } catch {}
                 if (!overlayWin || overlayWin.isDestroyed()) createOverlayWindow();
                 startSkillPolling();
               }
@@ -1481,7 +1487,14 @@ function createWindow() {
   if (ENABLE_DEVTOOLS) win.webContents.openDevTools();
 
   win.on('close', (e) => {
-    if (!app._quitting) { e.preventDefault(); win.hide(); }
+    if (app._quitting) return;
+    e.preventDefault();
+    win.webContents.executeJavaScript(
+      `(() => { try { return JSON.parse(localStorage.getItem('amo_settings')||'{}').minimize !== false; } catch(e){ return true; } })()`
+    ).then(shouldHide => {
+      if (shouldHide) { win.hide(); }
+      else { app._quitting = true; app.quit(); }
+    }).catch(() => { win.hide(); });
   });
 
   win.on('maximize',   () => win.webContents.send('win-maximized'));
@@ -1733,7 +1746,9 @@ function spawnPythonProcess(script, options = {}) {
   const launchConfig = resolvePythonLaunchConfig();
   if (!launchConfig) return null;
 
-  return spawn(launchConfig.command, [...launchConfig.args, script], options);
+  const extraArgs = options.args || [];
+  delete options.args;
+  return spawn(launchConfig.command, [...launchConfig.args, script, ...extraArgs], options);
 }
 
 function startPython() {
@@ -1867,7 +1882,7 @@ function createOverlayWindow() {
           const gameStats = await liveClientRequest('/liveclientdata/gamestats');
           if (gameStats && (gameStats.gameTime ?? 0) >= 3) {
             const nextSkill = currentSkillOrder[0] || null;
-            overlayWin.webContents.send('overlay-skill-up', { nextSkill, levels: {Q:0,W:0,E:0,R:0} });
+            overlayWin.webContents.send('overlay-skill-up', { nextSkill, levels: {Q:0,W:0,E:0,R:0}, hudScale: initialHudScale });
             console.log('[SkillOverlay] enviado tras carga overlay:', nextSkill);
           }
         }
@@ -1994,7 +2009,6 @@ function stopOCR() {
     }
   }
 }
-
 
 function startOCR() {
   if (ocrProc) {
@@ -2967,6 +2981,7 @@ ipcMain.handle('amo-upsert', async (_, { puuid, data }) => {
         unlocked_themes: data.unlocked_themes,
         unlocked_packs:  data.unlocked_packs,
         quests_data:     data.quests_data,
+        summoner_name:   data.summoner_name || null,
         updated_at:      new Date().toISOString()
       }, { onConflict: 'riot_puuid' });
     if (error) { console.error('[AMO] upsert error:', error); return false; }

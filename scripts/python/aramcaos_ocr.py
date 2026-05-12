@@ -24,8 +24,10 @@ CHAMPION_CACHE = CACHE_DIR / "champions"
 AUGMENTS_ES = CACHE_DIR / "augments_es.json"
 ICONS_DIR = IMG_DIR / "aumentos"
 
-POLL_IDLE   = 0.15   # poll del botón cuando no hay aumentos
-POLL_ACTIVE = 0.08   # poll entre confirmaciones cuando hay aumentos
+POLL_IDLE        = 0.15   # poll inicial del botón
+POLL_IDLE_MED    = 0.50   # tras 30s sin botón
+POLL_IDLE_SLOW   = 1.00   # tras 2min sin botón
+POLL_ACTIVE      = 0.08   # poll entre confirmaciones cuando hay aumentos
 
 # Botón azul de selección — coordenadas relativas al área 16:9
 BOTON_REL = {"x": 0.445, "y": 0.7625, "w": 0.1105, "h": 0.0625}
@@ -364,6 +366,34 @@ def get_tier(aug_id):
         return int(tier)
     return None
 
+def _crear_ocr():
+    """Intenta GPU (DML → CUDA) y cae a CPU si no está disponible."""
+    import onnxruntime as ort
+    providers_disponibles = ort.get_available_providers()
+    print(f"[OCR] providers ONNX disponibles: {providers_disponibles}", flush=True)
+
+    if "DmlExecutionProvider" in providers_disponibles:
+        try:
+            engine = RapidOCR(providers=["DmlExecutionProvider", "CPUExecutionProvider"])
+            engine(np.zeros((40, 200, 3), dtype=np.uint8))
+            print("[OCR] usando DirectML (GPU)", flush=True)
+            return engine
+        except Exception as e:
+            print(f"[OCR] DirectML falló, probando CUDA: {e}", flush=True)
+
+    if "CUDAExecutionProvider" in providers_disponibles:
+        try:
+            engine = RapidOCR(det_use_cuda=True, rec_use_cuda=True)
+            engine(np.zeros((40, 200, 3), dtype=np.uint8))
+            print("[OCR] usando CUDA (NVIDIA GPU)", flush=True)
+            return engine
+        except Exception as e:
+            print(f"[OCR] CUDA falló, usando CPU: {e}", flush=True)
+
+    print("[OCR] usando CPU (sin GPU disponible)", flush=True)
+    return RapidOCR()
+
+
 def hay_boton(sct, W, H):
     """Detecta si el botón azul de selección de aumentos está visible."""
     game_w   = round(H * 16 / 9)
@@ -395,22 +425,20 @@ def main_loop():
     load_augments_es()
     load_augments_general()
     load_icon_templates()
-    icon_templates.clear()  # liberar memoria, ya tenemos icon_template_list
+    icon_templates.clear()
 
-    sct = mss.mss()
-    W, H = get_monitor(sct)
-
-    rapid = RapidOCR()
-
-    # Pre-calentar modelo ONNX durante la carga de partida
+    rapid = _crear_ocr()
     try:
-        _dummy = np.zeros((int(H * 0.0611) + 20, int(H * 0.2368) + 20, 3), dtype=np.uint8)
-        rapid(_dummy)
+        _dummy = np.zeros((int(1440 * 0.0611) + 20, int(1440 * 0.2368) + 20, 3), dtype=np.uint8)
+        for _ in range(4):
+            rapid(_dummy)
         print("[OCR] RapidOCR precalentado OK", flush=True)
     except Exception:
         pass
 
-    sct   = mss.mss()
+    sct = mss.mss()
+    W, H = get_monitor(sct)
+    sct = mss.mss()
 
     zonas_texto = calcular_zonas_texto(W, H)
     zonas_icono = calcular_zonas_icono(W, H)
@@ -430,6 +458,7 @@ def main_loop():
     last_ids = None
     stable_ids = None
     stable_count = 0
+    tiempo_sin_boton = time.time()
     slot_cache = [
         {"visible": False, "icon_fp": None, "texto": "", "candidatos": [], "analysis_reused": False}
         for _ in range(3)
@@ -439,14 +468,20 @@ def main_loop():
         # ── Fase idle: esperar al botón ──────────────────────────
         if not hay_boton(sct, W, H):
             if not boton_visible:
-                time.sleep(POLL_IDLE)
+                elapsed = time.time() - tiempo_sin_boton
+                if elapsed > 120:
+                    time.sleep(POLL_IDLE_SLOW)
+                elif elapsed > 30:
+                    time.sleep(POLL_IDLE_MED)
+                else:
+                    time.sleep(POLL_IDLE)
                 continue
             else:
                 boton_visible = True
-            # Botón no visible pero estábamos leyendo — seguir en fase activa
-            # El ocultado lo decide la lógica de texto más abajo
+                tiempo_sin_boton = time.time()
 
         # ── Fase activa: analizar las 3 cartas ──────────────────
+        _t0 = time.time()
         cards = []
         cartas_reales = 0  # ← cartas visibles en pantalla sin cache
         for idx in range(3):
@@ -513,6 +548,7 @@ def main_loop():
                 boton_visible    = False
                 tiempo_sin_texto = None
                 last_ids         = None
+                tiempo_sin_boton = time.time()
                 stable_ids       = None
                 stable_count     = 0
                 slot_cache = [
@@ -523,6 +559,7 @@ def main_loop():
             continue
 
         tiempo_sin_texto = None
+        print(f"[PERF] captura+análisis: {(time.time()-_t0)*1000:.0f}ms", flush=True)
 
         # Sin texto suficiente todavía (cartas visibles pero OCR no leyó aún)
         if not any(len(c["texto"]) >= UMBRAL_TEXTO for c in cards):

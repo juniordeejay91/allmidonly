@@ -1,0 +1,24 @@
+Collecting onnxruntime-directml
+  Using cached onnxruntime_directml-1.24.4-cp311-cp311-win_amd64.whl.metadata (5.2 kB)
+Collecting flatbuffers (from onnxruntime-directml)
+  Using cached flatbuffers-25.12.19-py2.py3-none-any.whl.metadata (1.0 kB)
+Collecting numpy>=1.21.6 (from onnxruntime-directml)
+  Using cached numpy-2.4.4-cp311-cp311-win_amd64.whl.metadata (6.6 kB)
+Collecting packaging (from onnxruntime-directml)
+  Using cached packaging-26.2-py3-none-any.whl.metadata (3.5 kB)
+Collecting protobuf (from onnxruntime-directml)
+  Using cached protobuf-7.34.1-cp310-abi3-win_amd64.whl.metadata (595 bytes)
+Collecting sympy (from onnxruntime-directml)
+  Using cached sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy->onnxruntime-directml)
+  Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Using cached onnxruntime_directml-1.24.4-cp311-cp311-win_amd64.whl (25.1 MB)
+Using cached numpy-2.4.4-cp311-cp311-win_amd64.whl (12.6 MB)
+Using cached flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)
+Using cached packaging-26.2-py3-none-any.whl (100 kB)
+Using cached protobuf-7.34.1-cp310-abi3-win_amd64.whl (437 kB)
+Using cached sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Installing collected packages: mpmath, flatbuffers, sympy, protobuf, packaging, numpy, onnxruntime-directml
+
+Successfully installed flatbuffers-25.12.19 mpmath-1.3.0 numpy-2.4.4 onnxruntime-directml-1.24.4 packaging-26.2 protobuf-7.34.1 sympy-1.14.0

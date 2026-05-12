@@ -7777,7 +7777,14 @@ async function _amoGetAll(){
 async function _amoPatchAll(patch){
   if(!_amoCanTrack()) return;
   const cur = await _amoGetAll();
-  const next = Object.assign({}, cur, patch);
+  // Incluir nombre de invocador si está disponible
+  const summonerName = (() => {
+    try {
+      const ln = document.getElementById('linked-name');
+      return ln?.textContent?.trim() || null;
+    } catch(e) { return null; }
+  })();
+  const next = Object.assign({}, cur, patch, summonerName ? { summoner_name: summonerName } : {});
   _amoSessionCache = next;
   await window.electronAPI.invoke('amo-upsert', { puuid: riotPuuid, data: next });
 }

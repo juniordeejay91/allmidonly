@@ -51,6 +51,8 @@ Write-Host "[Python] instalando pip"
 Write-Host "[Python] instalando dependencias de OCR y proxy"
 & $PythonExe -m pip install --no-warn-script-location --upgrade pip
 & $PythonExe -m pip install --no-warn-script-location -r $RequirementsPath --target $SitePackages
+Write-Host "[Python] forzando onnxruntime-directml (GPU support)"
+& $PythonExe -m pip install --no-warn-script-location onnxruntime-directml --target $SitePackages --upgrade --force-reinstall
 
 Write-Host "[Python] runtime listo"
 & $PythonExe --version
